@@ -55,12 +55,22 @@ All route handlers have been successfully extracted into modular files:
 
 ## 🚧 In Progress (Phase 4)
 
+### Integration Ready
+All route files are complete and ready for integration!
+
+**Created Integration Guide**: `PHASE4_INTEGRATION_GUIDE.md`
+- Detailed step-by-step integration instructions
+- Route mounting code ready to use
+- Testing checklist for all endpoints
+- Backup strategy in place
+
 ### Next Steps
-1. **Integrate routes into api-server.ts**
-   - Import route creation functions
-   - Mount routes with dependency injection
-   - Remove inline route handlers (~2500 lines to be removed)
-   - Target: Reduce api-server.ts from 4,168 to ~200-300 lines
+1. **Follow PHASE4_INTEGRATION_GUIDE.md**
+   - Add route imports to api-server.ts (line 20)
+   - Mount routes (replace lines 1531-4094 with ~80 lines)
+   - Keep helper functions (lines 1-1530)
+   - Keep auto-restore and startup (lines 4095-4168)
+   - Target: Reduce from 4,168 to ~1,700 lines (~60% reduction)
 
 2. **Core functions to remain in api-server.ts**:
    - `createSession` - Main session creation logic
