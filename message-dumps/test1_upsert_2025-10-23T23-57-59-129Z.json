@@ -1,0 +1,59 @@
+{
+  "event": "messages.upsert",
+  "type": "notify",
+  "timestamp": "2025-10-23T23:57:59.129Z",
+  "sessionId": "test1",
+  "messages": [
+    {
+      "key": {
+        "remoteJid": "status@broadcast",
+        "remoteJidAlt": "127964289175591@lid",
+        "fromMe": false,
+        "id": "A5580E2C6D6BA786AA63E6B4F9189642",
+        "participant": "972549138245@s.whatsapp.net",
+        "addressingMode": "pn"
+      },
+      "messageTimestamp": 1761263874,
+      "pushName": "נעמי טויטו סטודיו מט משרד פרסום ואסטרטגיה",
+      "broadcast": true,
+      "message": {
+        "senderKeyDistributionMessage": {
+          "groupId": "status@broadcast",
+          "axolotlSenderKeyDistributionMessage": "Mwj+roDHBRAAGiAwFqPAxMuylbbW66wwi0URutlY8oPVSSW9V5EBWR1wcSIhBV0/gx18KSilw/ypSI9X1RNwuDQQc9VFQTxubiwlLGlw"
+        },
+        "videoMessage": {
+          "url": "https://mmg.whatsapp.net/v/t62.7161-24/533511768_24791417160552862_7434182871720376327_n.enc?ccb=11-4&oh=01_Q5Aa2wG725cfMbVsym_GWUHzjDmYAjD4scOSXqpmECWyfsG00w&oe=69223F44&_nc_sid=5e03e0&mms3=true",
+          "mimetype": "video/mp4",
+          "fileSha256": "vn1vEVYQ51bm1uj94ULNVE9flD/rI91gxcomNuE8cpU=",
+          "fileLength": "12164605",
+          "seconds": 90,
+          "mediaKey": "3LHZH2nFSRDrZ/AavoUEGimh5zRlRx2LgoP/vEzZTDI=",
+          "caption": "יותר מידי ליום אחד 🤯\nכמה יפים המותגים שלנו",
+          "height": 850,
+          "width": 478,
+          "fileEncSha256": "rcLoZpCacJ0WVqvRmNENJhWkCa5VAFhvVRzSy3pO7Bw=",
+          "directPath": "/v/t62.7161-24/533511768_24791417160552862_7434182871720376327_n.enc?ccb=11-4&oh=01_Q5Aa2wG725cfMbVsym_GWUHzjDmYAjD4scOSXqpmECWyfsG00w&oe=69223F44&_nc_sid=5e03e0",
+          "mediaKeyTimestamp": "1761263836",
+          "jpegThumbnail": "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",
+          "contextInfo": {
+            "forwardingScore": 0,
+            "featureEligibilities": {
+              "canBeReshared": true
+            },
+            "pairedMediaType": "NOT_PAIRED_MEDIA",
+            "statusSourceType": "VIDEO"
+          },
+          "streamingSidecar": "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",
+          "thumbnailDirectPath": "/v/t62.36147-24/534795411_1564915984871399_3825859120731445691_n.enc?ccb=11-4&oh=01_Q5Aa2wHVqTt502bqPqI5RjrznMSW7pfV1qwClLe7EDCKwhzH7w&oe=69224A27&_nc_sid=5e03e0",
+          "thumbnailSha256": "iBa7YTtgErazaeL1pEEWtrVTqE8ojrZIu53jC8Ougjw=",
+          "thumbnailEncSha256": "v1KEkhSzLrp3K2Jp9i7XhDAGUriLle+AxrKxi4eWbkM=",
+          "externalShareFullVideoDurationInSeconds": 0
+        },
+        "messageContextInfo": {
+          "messageSecret": "C5BhV73BUjPM1IpPYqzoySKu80dsglcUQRS3/sERSW8="
+        }
+      },
+      "verifiedBizName": "נעמי טויטו סטודיו מט משרד פרסום ואסטרטגיה"
+    }
+  ]
+}

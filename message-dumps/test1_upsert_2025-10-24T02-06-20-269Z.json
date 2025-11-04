@@ -1,0 +1,58 @@
+{
+  "event": "messages.upsert",
+  "type": "notify",
+  "timestamp": "2025-10-24T02:06:20.269Z",
+  "sessionId": "test1",
+  "messages": [
+    {
+      "key": {
+        "remoteJid": "120363297936235668@g.us",
+        "fromMe": false,
+        "id": "A5C8367874AE5F13D40E442033268502",
+        "participant": "91156788555863@lid",
+        "participantAlt": "972559287580@s.whatsapp.net",
+        "addressingMode": "lid"
+      },
+      "messageTimestamp": 1761271579,
+      "pushName": "אין עוד מלבדו...!!",
+      "broadcast": false,
+      "message": {
+        "videoMessage": {
+          "url": "https://mmg.whatsapp.net/v/t62.7161-24/569030001_1330580678537235_2901695946798881917_n.enc?ccb=11-4&oh=01_Q5Aa2wGvDJzZNx87IQNfMN7akshGMXydPvDZPQjL6c_1qgoYNQ&oe=692236DE&_nc_sid=5e03e0&mms3=true",
+          "mimetype": "video/mp4",
+          "fileSha256": "n1aXb/UV27MOqetgRTh/STgu8T4LPRLDsdoI6UABETs=",
+          "fileLength": "14626366",
+          "seconds": 96,
+          "mediaKey": "jFEetzC/2kqbjIruaIuvI5xpcph7msO+Kdm5s9+85TI=",
+          "height": 850,
+          "width": 478,
+          "fileEncSha256": "MHNRd5uwbRm+dS9oUAHyiwpICi6xj608PN0/7YaQX2M=",
+          "directPath": "/v/t62.7161-24/569030001_1330580678537235_2901695946798881917_n.enc?ccb=11-4&oh=01_Q5Aa2wGvDJzZNx87IQNfMN7akshGMXydPvDZPQjL6c_1qgoYNQ&oe=692236DE&_nc_sid=5e03e0",
+          "mediaKeyTimestamp": "1761216130",
+          "jpegThumbnail": "/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEABsbGxscGx4hIR4qLSgtKj04MzM4PV1CR0JHQl2NWGdYWGdYjX2Xe3N7l33gsJycsOD/2c7Z//////////////8BGxsbGxwbHiEhHiotKC0qPTgzMzg9XUJHQkdCXY1YZ1hYZ1iNfZd7c3uXfeCwnJyw4P/Zztn////////////////CABEIAEgAKAMBIgACEQEDEQH/xAAwAAACAwEBAAAAAAAAAAAAAAAABQMEBgIBAQEBAQEBAAAAAAAAAAAAAAAAAQMEAv/aAAwDAQACEAMQAAAA7rCy+GxQY4dEp0Y7LYbp1c0bGGFbhSMyxqp1e3lep2OYKJwIbZK4WZG6oGVPBHOnBePQXLAH/8QAKBAAAgICAQMDAwUAAAAAAAAAAQIAAwQREgUTISIxQRAyURQkNFJh/9oACAEBAAE/AA1rAsX0BHzPPpYmfrGZffRi5FrtpG2RKbLueivplr8aWX5+lOlcEjYlT1hvTUY77PiNU7Ppn8kRV/yV1j3ijS+SBO2D7OCY5CuGI2oSIanG/iI6KTob3DdR3Ty+Royi4bI/qNAxndvBJlFPcwjoercxMaxiFYamQCtzj8GAzf4nS0/aLKgA5nU04Zbz2nzOkfw0ijVk64mrkeGZGNh1VluMwk441Yh+/QM6vQTSHjStBlMA9nELK78ZKwvMeBBZik7Nglt2LYNMwImdiV94mj7Z/8QAHREAAgEEAwAAAAAAAAAAAAAAAREAAgMEIDEyYv/aAAgBAgEBPwAplCXB5cqyA+kZQnLBhx6CdAXt/8QAHBEBAAIDAAMAAAAAAAAAAAAAAQACEBEhAxQg/9oACAEDAQE/AKKnXsqmpXwKdtCoKSxrST27U5hcJr41NT//2Q==",
+          "contextInfo": {
+            "expiration": 86400,
+            "disappearingMode": {
+              "initiator": "CHANGED_IN_CHAT",
+              "trigger": "UNKNOWN"
+            },
+            "pairedMediaType": "NOT_PAIRED_MEDIA"
+          },
+          "streamingSidecar": "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",
+          "externalShareFullVideoDurationInSeconds": 0
+        },
+        "messageContextInfo": {
+          "messageSecret": "WoLSn5wJhs2tvP5/qOcFb/i6amPOl5axSmSY7f0BVE0=",
+          "messageAssociation": {
+            "associationType": "MEDIA_ALBUM",
+            "parentMessageKey": {
+              "remoteJid": "120363297936235668@g.us",
+              "fromMe": true,
+              "id": "A571F89F576BF049F59F49E1947B7DCF"
+            }
+          }
+        }
+      }
+    }
+  ]
+}

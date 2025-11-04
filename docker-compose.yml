@@ -1,0 +1,74 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: baileys-postgres
+    environment:
+      - POSTGRES_DB=baileys
+      - POSTGRES_USER=baileys
+      - POSTGRES_PASSWORD=baileys_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U baileys"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  ffmpeg:
+    build: ./ffmpeg-service
+    container_name: baileys-ffmpeg
+    ports:
+      - "3001:3001"  # FFmpeg API
+    volumes:
+      - ./Media:/media
+      - ./temp:/temp
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  baileys:
+    build: .
+    container_name: baileys-api
+    ports:
+      - "3000:3000"  # REST API
+    volumes:
+      # Persist session data (multiple WhatsApp accounts)
+      - ./sessions:/app/sessions
+      # Mount media directory
+      - ./Media:/app/Media
+      # Mount message dumps directory for debugging
+      - ./message-dumps:/app/message-dumps
+      # Mount contacts storage
+      - ./contacts-storage:/app/contacts-storage
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=baileys
+      - DB_USER=baileys
+      - DB_PASSWORD=baileys_password
+      - FFMPEG_SERVICE_URL=http://ffmpeg:3001
+      # Encryption key warmup configuration
+      - AUTO_WARMUP_ENABLED=true           # Set to 'false' to disable auto-warmup
+      - AUTO_WARMUP_BATCH_SIZE=1000        # Contacts per batch (default: 1000)
+      # Smart warmup: >5K contacts = 1 status with resend, <5K = simple batches
+    depends_on:
+      postgres:
+        condition: service_healthy
+      ffmpeg:
+        condition: service_started
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

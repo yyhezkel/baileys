@@ -1,0 +1,47 @@
+{
+  "event": "messages.upsert",
+  "type": "notify",
+  "timestamp": "2025-10-24T01:41:22.917Z",
+  "sessionId": "test1",
+  "messages": [
+    {
+      "key": {
+        "remoteJid": "972542822755@s.whatsapp.net",
+        "fromMe": false,
+        "id": "AC3FCC173D19238EA196571A9A26FB1E",
+        "participant": "",
+        "addressingMode": "pn"
+      },
+      "messageTimestamp": 1761270082,
+      "broadcast": false,
+      "message": {
+        "protocolMessage": {
+          "type": "APP_STATE_SYNC_KEY_SHARE",
+          "appStateSyncKeyShare": {
+            "keys": [
+              {
+                "keyId": {
+                  "keyId": "AAAAAD2f"
+                },
+                "keyData": {
+                  "keyData": "xkBH1OrjQpgLRnCF+SNbrYPZHRtPGJJskQhLHWg3TZo=",
+                  "fingerprint": {
+                    "rawId": 1177278632,
+                    "currentIndex": 33,
+                    "deviceIndexes": [
+                      0,
+                      33,
+                      20,
+                      25
+                    ]
+                  },
+                  "timestamp": "1761270081680"
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

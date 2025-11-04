@@ -1,0 +1,62 @@
+{
+  "event": "messages.upsert",
+  "type": "notify",
+  "timestamp": "2025-10-24T01:03:37.135Z",
+  "sessionId": "test1",
+  "messages": [
+    {
+      "key": {
+        "remoteJid": "120363297875814638@g.us",
+        "fromMe": false,
+        "id": "A5939EF8966507AA9F4E3F66EE16C396",
+        "participant": "91156788555863@lid",
+        "participantAlt": "972559287580@s.whatsapp.net",
+        "addressingMode": "lid"
+      },
+      "messageTimestamp": 1761267816,
+      "pushName": "אין עוד מלבדו...!!",
+      "broadcast": false,
+      "message": {
+        "senderKeyDistributionMessage": {
+          "groupId": "120363297875814638@g.us",
+          "axolotlSenderKeyDistributionMessage": "Mwj+06OWAhAAGiCmr+8dwej5bVzoxm6rrGgMpu9GOR5aHG9JdRlF+d9YUyIhBZB7+WKMVNJZpCriL9Bl4IBNxn3iLRJWdBYpuwa15tt7"
+        },
+        "imageMessage": {
+          "url": "https://mmg.whatsapp.net/v/t62.7118-24/532259596_4062290704032371_4716185974321642013_n.enc?ccb=11-4&oh=01_Q5Aa2wGXJPy7QvGSL86djoR6i1VQ4LZGMncqjJKyOpnNlouMjA&oe=69224327&_nc_sid=5e03e0&mms3=true",
+          "mimetype": "image/jpeg",
+          "caption": "*12 שנים לפטירתו של* \n*הגאון הגדול מרן מורינו*\n*הרב עובדיה יוסף זצוק\"ל*\n\nנא להדליק נר לזכר הצדיק\nשיעמוד וימליץ טוב בעדנו\nובעד כל עם ישראל. \n\n*מִי יִתֵּן לָנוּ תְּמוּרָתוֹ ???*\n😰 😰 😰 😰 😰 😰",
+          "fileSha256": "DFWrOoMhtpcC6Lxa5qOnkk4fHrwJJxa8XgqGUzj3wFE=",
+          "fileLength": "130485",
+          "height": 1200,
+          "width": 997,
+          "mediaKey": "Gugkj1zoiyeUMUd5DXzJ/Zfgk2KOgnHoo8FXYIjfSUE=",
+          "fileEncSha256": "NR7+pH90JT0NRU7oL2jIg5fN06zRTbath49nQM7SOHw=",
+          "directPath": "/v/t62.7118-24/532259596_4062290704032371_4716185974321642013_n.enc?ccb=11-4&oh=01_Q5Aa2wGXJPy7QvGSL86djoR6i1VQ4LZGMncqjJKyOpnNlouMjA&oe=69224327&_nc_sid=5e03e0",
+          "mediaKeyTimestamp": "1761124144",
+          "jpegThumbnail": "/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEABsbGxscGx4hIR4qLSgtKj04MzM4PV1CR0JHQl2NWGdYWGdYjX2Xe3N7l33gsJycsOD/2c7Z//////////////8BGxsbGxwbHiEhHiotKC0qPTgzMzg9XUJHQkdCXY1YZ1hYZ1iNfZd7c3uXfeCwnJyw4P/Zztn////////////////CABEIAEgAOwMBIgACEQEDEQH/xAAvAAACAwEBAAAAAAAAAAAAAAADBAABAgUGAQEBAQEAAAAAAAAAAAAAAAABAAID/9oADAMBAAIQAxAAAADurHS4dFFmuYqE3jpjOpdenUVHx6PJ29s5zlgIKTAdDSlhR5tc4bW0oObAbVFyjS+tHi51ekJHkQ+yC64ZZOb1mZN5HmShLSV//8QAKBAAAgICAgIBAgcBAAAAAAAAAQIAAwQREiExQSIFURATIENTYXGB/9oACAEBAAE/ACepadK5/qVDYJmYQKwP0NrfiE9TJbSGKwrp5GWuLV23/IV+xnEziYVO4cka8y+8MvmKy2UlN96i44/caPifNQjR6K1VepmoqldCGMVTQYwvVKraw3QO568bljpVpyJZlowGgZkXC4r1NCW2pZ6hY+BKqGADRbmC6I8Ryl3HrqPpOvUs9ajQ74GA6O5Xk8wF13AQAwPkxSRsTI2CBATBWCNkmMCKyfR/BTxYGBuagjucLGYlF2ZbiZFhHwj4GRUu2WbYdRyda9QDZAlP02xgCREwFWV1LWNATUbSj5HqflY7d8Fj4hddL5mP9LZdNYYOWOPukVkdQynqG+oHQOz9hGe8j4IB/seqx00zAmDDv/kIn//EABoRAQEBAQEBAQAAAAAAAAAAAAEAAhExECH/2gAIAQIBAT8A1ZyofedhZdMeFk/J7HslnyYJGyvIlhv/xAAeEQACAQQDAQAAAAAAAAAAAAAAAQIQESFBIDEyUf/aAAgBAwEBPwBDeWaNUtG+SyR9J4dUyfoSomiXfD//2Q==",
+          "contextInfo": {
+            "expiration": 86400,
+            "disappearingMode": {
+              "initiator": "CHANGED_IN_CHAT",
+              "trigger": "UNKNOWN"
+            },
+            "pairedMediaType": "NOT_PAIRED_MEDIA",
+            "statusSourceType": "IMAGE"
+          },
+          "scansSidecar": "sM4vZF6EI6fohstA/mw03XOt3SG0sZ4kkmlIBvx2oJTyc2QI6Dnuow==",
+          "scanLengths": [
+            15343,
+            53762,
+            24506,
+            36874
+          ],
+          "midQualityFileSha256": "srd8kjNg8SqcuktdeyXs5GSavPulh848zOs6zhCfc0s="
+        },
+        "messageContextInfo": {
+          "messageSecret": "NC9NaNpiSiqqP6n524xKefco8zwmdw0cnD2a+XxGMno="
+        }
+      },
+      "verifiedBizName": "אין עוד מלבדו...!!"
+    }
+  ]
+}

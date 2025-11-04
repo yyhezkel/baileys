@@ -1,0 +1,43 @@
+{
+  "event": "messages.upsert",
+  "type": "notify",
+  "timestamp": "2025-10-24T01:08:26.807Z",
+  "sessionId": "test1",
+  "messages": [
+    {
+      "key": {
+        "remoteJid": "120363297875814638@g.us",
+        "fromMe": false,
+        "id": "A5281B07AD9963F6AC789E57848F0967",
+        "participant": "177824749097021@lid",
+        "participantAlt": "972507920056@s.whatsapp.net",
+        "addressingMode": "lid"
+      },
+      "messageTimestamp": 1761268106,
+      "pushName": "מונטיפיורי נדלן והשקעות",
+      "broadcast": false,
+      "message": {
+        "senderKeyDistributionMessage": {
+          "groupId": "120363297875814638@g.us",
+          "axolotlSenderKeyDistributionMessage": "MwiNxpzhBxADGiAFqwFgHTTIxt8tctWCoTfZGmUaVVJOLYhLOld6xZFOJCIhBV1ZRwGB/8jbWfe5PUYRkFKc+IQRGJjb1GkJKwaYqGdC"
+        },
+        "extendedTextMessage": {
+          "text": "בס\"ד\nלקראת שבת נח אנו קוראים לכם לצאת מאזור הנוחות! זה הזמן לחשוב על השקעה בנכס שמשביח את עצמו. למשל: דירות למכירה שמיועדות לפינוי בינוי. נכס שמשביח את עצמו לפעמים אף במיליון ש\"ח, מבלי שהקונה צריך לבזבז זמן על שיפוץ.\nברשותנו מאגר דירות למכירה שמיועדות לפינוי בינוי בירושלים.\n054-6575551\n\nאנחנו נכנסנו לחודש מר חשוון. ומדוע הוא חודש מר? משום שאין בו חגים. אבל דווקא בחודש זה פסק המבול.  לפעמים דווקא בתוך השגרה מוצאים את המתוק.\nוכעת אנחנו רוצים ליצור \n1. דרושים בתי סבתא למכירה בכל הארץ. רק בתים עם פוטנציאל בניית בניין מגורים במקום הבית הפרטי ייענו.\n2. דרושים בנייני מגורים למכירה בכל הארץ. אולם אנו מחפשים בניינים עם תוספת זכויות בנייה משמעותית, או פוטנציאל של הריסה ובנייה.\n3. דרושות דירות למכירה חתומות לפינוי בינוי בחולון, בת ים, חיפה והקריות.\n4. דירות להשכרה למשפחות בכל רחבי הארץ.\nלפרטים:\n054-6575551\n\nהזדמנות נדירה\nלמכירה בבלעדיות \nרחוב ביאליק רמת גן:\n\nוילה באמצע מרכז העיר!!! \nמושכרת עכשיו 10,000 ש״ח \nחתומה לפינוי בינוי \nצפויים לקבל במקום הוילה\n3 דירות חדשות של 96 מ״ר כל דירה\nפלוס חנייה פלוס מחסן \nהעיסקה במחיר של 7.8 מיליון \nחי 050-7920056\n\n\nלמכירה משרדים \n6,000 מ״ר\nבבורסה ברמת גן\n\nמושכרים 7 אחוזים\n80 מיליון שקלים\nלהסרה 1\nחי משען מונטיפיורי\nמנהל מונטיפיורי נדל\"ן והשקעות\n050-7920056",
+          "previewType": "NONE",
+          "contextInfo": {
+            "expiration": 86400,
+            "disappearingMode": {
+              "initiator": "CHANGED_IN_CHAT",
+              "trigger": "UNKNOWN"
+            }
+          },
+          "inviteLinkGroupTypeV2": "DEFAULT"
+        },
+        "messageContextInfo": {
+          "messageSecret": "pYa4BfKwykrYJeynO4hHZv1BgXo3nptJjcoyc2PWRTI="
+        }
+      },
+      "verifiedBizName": "מונטיפיורי נדלן והשקעות"
+    }
+  ]
+}

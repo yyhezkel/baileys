@@ -1,0 +1,38 @@
+{
+  "event": "messages.upsert",
+  "type": "notify",
+  "timestamp": "2025-10-24T00:46:15.960Z",
+  "sessionId": "test1",
+  "messages": [
+    {
+      "key": {
+        "remoteJid": "status@broadcast",
+        "remoteJidAlt": "149357521277022@lid",
+        "fromMe": false,
+        "id": "3EB020231E32929DF71071",
+        "participant": "972539861643@s.whatsapp.net",
+        "addressingMode": "pn"
+      },
+      "messageTimestamp": 1761266774,
+      "pushName": "רותי וינטר אקדמיה למקצועות היופי",
+      "broadcast": true,
+      "message": {
+        "senderKeyDistributionMessage": {
+          "groupId": "status@broadcast",
+          "axolotlSenderKeyDistributionMessage": "Mwi3kt7QBRC/GhognYZ59UxQjDNffKSnq1SxbwUHoVOVksvCiJ3MLn0bWFwiIQUxazBsM3fKH5NJ0OLgRbjIUSjX5gMtfBC5ne4fjWbOLA=="
+        },
+        "protocolMessage": {
+          "key": {
+            "remoteJid": "status@broadcast",
+            "fromMe": true,
+            "id": "3EB07E4B14713DC6719A39",
+            "participant": "972539861643@s.whatsapp.net"
+          },
+          "type": "REVOKE"
+        },
+        "messageContextInfo": {}
+      },
+      "verifiedBizName": "רותי וינטר אקדמיה למקצועות היופי"
+    }
+  ]
+}

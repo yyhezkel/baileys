@@ -1,0 +1,27 @@
+{
+  "event": "messages.upsert",
+  "type": "notify",
+  "timestamp": "2025-10-24T01:02:29.952Z",
+  "sessionId": "test1",
+  "messages": [
+    {
+      "key": {
+        "remoteJid": "558699671739-1613580002@g.us",
+        "fromMe": false,
+        "id": "ACDB3F74D913B3FF4037D384C989D156",
+        "participant": "10978104242205@lid",
+        "participantAlt": "5511913372146@s.whatsapp.net",
+        "addressingMode": "lid"
+      },
+      "messageTimestamp": 1761267749,
+      "pushName": "𝐏𝐞𝐝𝐫𝐨 𝐇𝐞𝐧𝐫𝐢𝐪𝐮𝐞 ϟ⁩",
+      "broadcast": false,
+      "message": {
+        "conversation": "Trocaram o jid por lid",
+        "messageContextInfo": {
+          "messageSecret": "UCk4DYc5lOinpEB3RTZy7DKcATadXKRCUaMGeCZ0zJA="
+        }
+      }
+    }
+  ]
+}

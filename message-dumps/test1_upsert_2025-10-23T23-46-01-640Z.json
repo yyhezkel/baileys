@@ -1,0 +1,50 @@
+{
+  "event": "messages.upsert",
+  "type": "append",
+  "timestamp": "2025-10-23T23:46:01.640Z",
+  "sessionId": "test1",
+  "messages": [
+    {
+      "key": {
+        "remoteJid": "120363174593809831@newsletter",
+        "fromMe": false,
+        "id": "3AE1DEB169C836DC10F4",
+        "participant": "",
+        "addressingMode": "pn",
+        "server_id": "1258"
+      },
+      "messageTimestamp": 1761260707,
+      "broadcast": false,
+      "message": {
+        "imageMessage": {
+          "url": "https://mmg.whatsapp.net/o1/v/t24/f2/m235/AQMQ5TgQTF5-acFCE3M-wkyfhV1j7nI7GE2A87irFBSNiXBBrtpp5etl2ar9z9T410ulcKWZHLAHzpEyphFh-YRKA9a3fkg0HRcNhKy3RQ?ccb=9-4&oh=01_Q5Aa2wHAMNL4Tqk0CBJlTxNk_0g6RiGChQYpqJ3UDUk5pZ4TVg&oe=69221F68&_nc_sid=e6ed6c&mms3=true",
+          "mimetype": "image/jpeg",
+          "caption": "📝 *WhatsApp beta for Android 2.25.31.13: what's new?*\n\nWhatsApp is rolling out a feature to manage storage directly within the chat info screen, and it's available to some beta testers!\n\nhttps://wabetainfo.com/whatsapp-beta-for-android-2-25-31-13-whats-new/",
+          "fileSha256": "BO+CN8qE5JOY0lTHzeC5auJY3qYo7HoJMbOVGYy03ec=",
+          "fileLength": "354763",
+          "height": 3064,
+          "width": 4160,
+          "mediaKey": "NcePo99Xv8mDGIdx+O21zla6/pLKctkrLIJRkj6cNyU=",
+          "directPath": "/m1/v/t24/An-v0o97U7Uo_rctT0hyfTeGry59WyGNcW1VrWAWZQM6zhniHqPDw9kB0DWUWEwNlSut745VEq8l0qBIvwpaBQBrVgC81A0zTks8siTbsrRlQJIuhodPdeH0awG1AE3rrw?ccb=10-5&oh=01_Q5Aa2wFW8eik69w84wuS2xw3rkgfF8xXry64GdFZWVV9h6R-5A&oe=69220972&_nc_sid=5e03e0",
+          "mediaKeyTimestamp": "1761260706",
+          "jpegThumbnail": "/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDABsSFBcUERsXFhceHBsgKEIrKCUlKFE6PTBCYFVlZF9VXVtqeJmBanGQc1tdhbWGkJ6jq62rZ4C8ybqmx5moq6T/2wBDARweHigjKE4rK06kbl1upKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKT/wgARCABIAEgDASIAAhEBAxEB/8QAGgAAAgMBAQAAAAAAAAAAAAAAAAUBAgQDBv/EABcBAQEBAQAAAAAAAAAAAAAAAAABAgP/2gAMAwEAAhADEAAAAHpl0sWjP1tuUFuZdCWKEs6ohFkG9ntW9HRRSzJjSSN1kBM4Suqtz6c4SvED+rARWVNzI987vprzWzGH0Pm2VNBUQsA0AAAAAAD/xAAWEQEBAQAAAAAAAAAAAAAAAAABECD/2gAIAQIBAT8A0xy1jv8A/8QAGhEBAAMBAQEAAAAAAAAAAAAAAQACMREQQP/aAAgBAwEBPwARzzk5OQqGS1bOeIufD//EACwQAAEDAgQFBAEFAAAAAAAAAAEAAhEDEgQhMXIFEDIzcSIjUYFhExQVJEH/2gAIAQEAAT8AuVylXK5XKVcrk4URXsh9uhMp2CpkS1zh9ouIpEA56Sm4RlrZLnE6mU3BA1DNwZGkqrhKbabnNc4ECdUapOHDpzOSbhaZaD6jl8oYNt5JLrf8Eo4UGrdeQ2dEen6VV3svjUFNqVQ1p/cTpkmGWAn4VcD9F/gqo7+lIyWHxNe5gNfInRDQIAxmjd9QnwQR8uTMJQtBsGiAgQq/ZftKyOGa06EqngcOA1wpiRnybojoU45ncm9I8cq/ZftKafaaPym9I8czoU4+s7kzoHjlX7L9pTT6G7k3pHjk1gBkSjoU8+6dyZ0Dxyr9l+0pp9Ldyb0jxyHGQD2XQjxmnaYpPlOqEkvjOZhM4ywMAdSfIC/mhPZdCqcXpvpuaKTpIhAkAfgym8ZphoBpPkBDjTZzouhSpUqVKlSpUr///gADAP/Z",
+          "contextInfo": {
+            "pairedMediaType": "NOT_PAIRED_MEDIA",
+            "statusSourceType": "IMAGE"
+          },
+          "scansSidecar": "hTIpSQQZNhqxwna7NnJXKsNUAtDbMuqHVNLwNt1wAVZ4rbolnoGS/Q==",
+          "scanLengths": [
+            62833,
+            173779,
+            47791,
+            70358
+          ],
+          "thumbnailDirectPath": "/m1/v/t24/An81N16BrnW0xCd0ZzBd0hS917uF6Jw8fJ8tjsAxAZ1G7uz8jYW1uG-9iOV2S3RddtQj-qhpXYysPQyd0vkE3dXQAVDyU_Rmfub_rX9x9JipQw0Sa9lO7IffVtz8rCsQ_TCswUSx2xrsMZcQTvsdfTjVQA?ccb=10-5&oh=01_Q5Aa2wF3g9WnpNC8sRVP32WoCuajMdAZQXENutjopw9gekweWw&oe=69224170&_nc_sid=5e03e0",
+          "thumbnailSha256": "X4LCF9U0o2bQwmFi+QFrQZwt/E5C7j4dVoVfdL/022Y=",
+          "thumbnailEncSha256": "",
+          "imageSourceType": "USER_IMAGE"
+        }
+      }
+    }
+  ]
+}

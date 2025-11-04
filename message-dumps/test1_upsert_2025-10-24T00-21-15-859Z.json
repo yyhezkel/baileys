@@ -1,0 +1,25 @@
+{
+  "event": "messages.upsert",
+  "type": "notify",
+  "timestamp": "2025-10-24T00:21:15.859Z",
+  "sessionId": "test1",
+  "messages": [
+    {
+      "key": {
+        "remoteJid": "status@broadcast",
+        "remoteJidAlt": "54061390921900@lid",
+        "fromMe": false,
+        "id": "ACA2ED0ADB4272ABD5AAC6E7F0F4C46B",
+        "participant": "972527077048@s.whatsapp.net",
+        "addressingMode": "pn"
+      },
+      "messageTimestamp": 1761265274,
+      "pushName": "ברכי מרקסון.מטפלתבטראומות",
+      "broadcast": true,
+      "messageStubType": 2,
+      "messageStubParameters": [
+        "No session found to decrypt message"
+      ]
+    }
+  ]
+}

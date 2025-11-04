@@ -1,0 +1,54 @@
+{
+  "event": "messages.upsert",
+  "type": "notify",
+  "timestamp": "2025-10-24T00:32:02.780Z",
+  "sessionId": "test1",
+  "messages": [
+    {
+      "key": {
+        "remoteJid": "status@broadcast",
+        "remoteJidAlt": "23369017761955@lid",
+        "fromMe": false,
+        "id": "A5B8983AA3605FBE688C36914A82C0B5",
+        "participant": "972584989827@s.whatsapp.net",
+        "addressingMode": "pn"
+      },
+      "messageTimestamp": 1761265916,
+      "pushName": "שף משה לבינסון",
+      "broadcast": true,
+      "message": {
+        "senderKeyDistributionMessage": {
+          "groupId": "status@broadcast",
+          "axolotlSenderKeyDistributionMessage": "Mwjqq+ajAhAAGiDgYYQV6t8z+OzCkx7vEpx0iVaanAqhhoOfV1FxM8oumiIhBYzn3V8U45IrJUsRkzqgqe3tvvvBZEUqt7DK0zOc8igK"
+        },
+        "videoMessage": {
+          "url": "https://mmg.whatsapp.net/v/t62.7161-24/568787682_1209981364296841_6277433011590183891_n.enc?ccb=11-4&oh=01_Q5Aa2wGFXzeWhiSipO9lqOel1m_vKnc-ZeTHOYjzhbFmaQ9HTw&oe=69222C19&_nc_sid=5e03e0&mms3=true",
+          "mimetype": "video/mp4",
+          "fileSha256": "FLlCdDvPAXgwIWASODZe3B68kRU5uCeytihi9H5JKtw=",
+          "fileLength": "3776995",
+          "seconds": 37,
+          "mediaKey": "VoeAAJmppndlZ7dXAYw/gFQQEhfn3oEjwnrQIBQUqV8=",
+          "height": 850,
+          "width": 478,
+          "fileEncSha256": "VxPXlvisEvfGIEGEfBy7OwozWpk61sojoA49WeX36kg=",
+          "directPath": "/v/t62.7161-24/568787682_1209981364296841_6277433011590183891_n.enc?ccb=11-4&oh=01_Q5Aa2wGFXzeWhiSipO9lqOel1m_vKnc-ZeTHOYjzhbFmaQ9HTw&oe=69222C19&_nc_sid=5e03e0",
+          "mediaKeyTimestamp": "1761265845",
+          "jpegThumbnail": "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",
+          "contextInfo": {
+            "pairedMediaType": "NOT_PAIRED_MEDIA",
+            "statusSourceType": "VIDEO"
+          },
+          "streamingSidecar": "FsSvJGE0G4tWsoPyA4DMDoWW6S1FOYXOtukuCiwvLDybWPYA0SC4OQbneqYiqXN864XMeBbtszYGKUQg64kfbJI6FeibzXMmRzWDyTGorSu4HupZd+ml2jjkiDIDuD0chjN0omYU3P+bG51hP2T6V4OmAgH8nF/ZPqtsEiiikNn2QcgDJQVS2cr26S/oaUoqcrVn1uT4LmvoXZBNWZoa49P9F2+Mft+7tEyEZWoLL6EJWKQm6MQp8MKlnA+JcyVp5cp3fUJohpLyu27x7984oTnPIccA27cI5sl50IaBA2EC8s/G3B8/jyQXVQUfxo+F8XfKPxIgQyPe710111jpeY+Y83hAzpz+s8fa4fzBwtMm+3+2eWELaSZ3pkkYLwH7bh8RnmWadqrUaezjoj1R+29lvDgs0vgOyWKkDK72+N0xTY7pEQyqp3OIIy6tnlIGHTBJhDWS8gDVsMSplNP/GIJEUqdjia3hmqgUesqIUZYgRj1517/0nvwOg/3VjFUT5IB2EWovteF/N+5O0RuVemv0+gA60X9fZMNK1WkAM1f9G7IqzJ4KhbzItTWQzpGsKraaSUKRZ8JL2jAnjivyNsb8+VZbhigIxDKMBTglCrXKrMFsiFWBrkZSlIOBpTDRsM5u4wo1dyvaxlRpJ5qEJxdGknElan4Xh8H96pyDXlENYyqEUT5gsSxXwVmVZ1JI6R3aH3ZvijFoHJYvDyKMHHOWNAAylw9x+B5huUL3DpSGKQws3zfANxzJhom7rmwFpAWwfw==",
+          "thumbnailDirectPath": "/v/t62.36147-24/571546498_1305679570821100_4118768730448632417_n.enc?ccb=11-4&oh=01_Q5Aa2wHR9KxWLPjrMaciWK6s3JGnfG2-EEtMdRdjrtt1KOR69w&oe=69223A41&_nc_sid=5e03e0",
+          "thumbnailSha256": "qCwhV0TTTJ5BzLrm/ytRiMzUmoiOanDuZBb3WKnfVGU=",
+          "thumbnailEncSha256": "Vh4clGXoJHq/myv1kBOCdxf8UHyNYrhR8diOCEiq2o4=",
+          "externalShareFullVideoDurationInSeconds": 0
+        },
+        "messageContextInfo": {
+          "messageSecret": "D9+Du+EGJl3FMmbOt7H2Zwk3UfEi6W25uijh7CtfJUY="
+        }
+      },
+      "verifiedBizName": "שף משה לבינסון"
+    }
+  ]
+}

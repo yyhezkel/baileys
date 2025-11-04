@@ -1,0 +1,20 @@
+{
+  "event": "messages.upsert",
+  "type": "append",
+  "timestamp": "2025-10-24T01:05:46.334Z",
+  "sessionId": "test1",
+  "messages": [
+    {
+      "key": {
+        "remoteJid": "120363304082260288@g.us",
+        "fromMe": false,
+        "id": "216867433"
+      },
+      "messageTimestamp": "1761267946",
+      "messageStubType": "GROUP_PARTICIPANT_ADD",
+      "messageStubParameters": [
+        "{\"id\":\"240578348453972@lid\",\"admin\":null}"
+      ]
+    }
+  ]
+}

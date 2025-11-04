@@ -1,0 +1,46 @@
+{
+  "event": "messages.upsert",
+  "type": "notify",
+  "timestamp": "2025-10-23T23:48:22.891Z",
+  "sessionId": "test1",
+  "messages": [
+    {
+      "key": {
+        "remoteJid": "558699671739-1613580002@g.us",
+        "fromMe": false,
+        "id": "A53A4DA4C0F020A128A330C67F0370FD",
+        "participant": "248662097674326@lid",
+        "participantAlt": "558140400694@s.whatsapp.net",
+        "addressingMode": "lid"
+      },
+      "messageTimestamp": 1761263302,
+      "pushName": "Digital Cliques",
+      "broadcast": false,
+      "message": {
+        "extendedTextMessage": {
+          "text": "Mas aqui já é uma conta logada, então quando vai pelo número não aparece essa tela?",
+          "previewType": "NONE",
+          "contextInfo": {
+            "stanzaId": "A5CBDE2325E8A89F93C086AD251F7EAA",
+            "participant": "279181481001019@lid",
+            "quotedMessage": {
+              "conversation": "Logo pelo código mesmo . É mais rápido"
+            }
+          },
+          "inviteLinkGroupTypeV2": "DEFAULT"
+        },
+        "messageContextInfo": {
+          "deviceListMetadata": {
+            "senderKeyHash": "SrVRLYAd9RotEw==",
+            "senderTimestamp": "1761263180",
+            "recipientKeyHash": "dnOIj6hsaNLv7w==",
+            "recipientTimestamp": "1761260196"
+          },
+          "deviceListMetadataVersion": 2,
+          "messageSecret": "vOGUfMrfDjvWJjAGpfr2G9ewmmJ2KX0CA4eGvltmZwI="
+        }
+      },
+      "verifiedBizName": "Digital Cliques"
+    }
+  ]
+}

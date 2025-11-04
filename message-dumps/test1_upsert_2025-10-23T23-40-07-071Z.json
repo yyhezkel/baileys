@@ -1,0 +1,61 @@
+{
+  "event": "messages.upsert",
+  "type": "notify",
+  "timestamp": "2025-10-23T23:40:07.071Z",
+  "sessionId": "test1",
+  "messages": [
+    {
+      "key": {
+        "remoteJid": "status@broadcast",
+        "remoteJidAlt": "201094714146906@lid",
+        "fromMe": false,
+        "id": "A553B52B0796368543F3A8D4397C9A2B",
+        "participant": "972548144448@s.whatsapp.net",
+        "addressingMode": "pn"
+      },
+      "messageTimestamp": 1761262799,
+      "pushName": "חיים פיליפ קריין שיווקי לעסקים",
+      "broadcast": true,
+      "message": {
+        "senderKeyDistributionMessage": {
+          "groupId": "status@broadcast",
+          "axolotlSenderKeyDistributionMessage": "Mwj14/R2EBkaIFyUwROSlDFBSf+b2M0G7tXu24cr46hs1rfuaFMosA9UIiEFUEZ9PO+XjP5f3vQbWv/MOG0NFLK6ucmw5lRuekvBxCY="
+        },
+        "imageMessage": {
+          "url": "https://mmg.whatsapp.net/o1/v/t24/f2/m239/AQPADWb-Zhkmu9lRwEbEundFDTzGtiEMQwyudYawRIx6Y8Sq0T5BR-jiCWkjeUdPrsnfH_uXQ00c0zdRBKG4MI-BR-2v1E7ZiXqHqPTj3g?ccb=9-4&oh=01_Q5Aa2wH91l_iabWu8KKmhM6J1wQYH-p6IoN2gTk33Io6-Xnr-g&oe=692239AE&_nc_sid=e6ed6c&mms3=true",
+          "mimetype": "image/jpeg",
+          "caption": "נתפס בעדשה 🧐",
+          "fileSha256": "lROHhNDD5+2ir5Q0wsizTEyrWrY7444MigZzZtdnWiE=",
+          "fileLength": "59966",
+          "height": 1084,
+          "width": 738,
+          "mediaKey": "h5f+WCgk5DTKWX/ASgHeCGXcalHE1xAR2gI0KSmxj2w=",
+          "fileEncSha256": "nN0mbXQEJAojiIdQUnrUurQrPlNYpw404GbsnPUQRJ0=",
+          "directPath": "/o1/v/t24/f2/m239/AQPADWb-Zhkmu9lRwEbEundFDTzGtiEMQwyudYawRIx6Y8Sq0T5BR-jiCWkjeUdPrsnfH_uXQ00c0zdRBKG4MI-BR-2v1E7ZiXqHqPTj3g?ccb=9-4&oh=01_Q5Aa2wH91l_iabWu8KKmhM6J1wQYH-p6IoN2gTk33Io6-Xnr-g&oe=692239AE&_nc_sid=e6ed6c",
+          "mediaKeyTimestamp": "1761261424",
+          "jpegThumbnail": "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",
+          "contextInfo": {
+            "forwardingScore": 0,
+            "featureEligibilities": {
+              "canBeReshared": true
+            },
+            "pairedMediaType": "NOT_PAIRED_MEDIA",
+            "statusSourceType": "IMAGE"
+          },
+          "scansSidecar": "2yCDuisMyt6O2LsyWDMyCUkqgvLoqVxXssl1aOFxaLoyxrfP7hvi+Q==",
+          "scanLengths": [
+            6763,
+            23077,
+            12225,
+            17901
+          ],
+          "midQualityFileSha256": "F3OOspUzqX+dtzAo2QPqP8eiCcpngmeGUznoQghqPOo="
+        },
+        "messageContextInfo": {
+          "messageSecret": "+uno41yQ2/Fo+3umUrxfYsU5Q264BbTmXEDG9yJpLQ8="
+        }
+      },
+      "verifiedBizName": "חיים פיליפ קריין שיווקי לעסקים"
+    }
+  ]
+}

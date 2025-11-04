@@ -1,0 +1,58 @@
+{
+  "event": "messages.upsert",
+  "type": "notify",
+  "timestamp": "2025-10-24T02:06:22.638Z",
+  "sessionId": "test1",
+  "messages": [
+    {
+      "key": {
+        "remoteJid": "120363297936235668@g.us",
+        "fromMe": false,
+        "id": "A59671EBC4FFEC0FF0C8B83C628CD8B4",
+        "participant": "91156788555863@lid",
+        "participantAlt": "972559287580@s.whatsapp.net",
+        "addressingMode": "lid"
+      },
+      "messageTimestamp": 1761271582,
+      "pushName": "אין עוד מלבדו...!!",
+      "broadcast": false,
+      "message": {
+        "videoMessage": {
+          "url": "https://mmg.whatsapp.net/v/t62.7161-24/566227779_1358426299268001_5586985491387379044_n.enc?ccb=11-4&oh=01_Q5Aa2wHW8HdvsVmptmjKpGV-OUpRHkKHLJfScuXZ_LWGIR9H9g&oe=692238BF&_nc_sid=5e03e0&mms3=true",
+          "mimetype": "video/mp4",
+          "fileSha256": "fEExv1OO3lxUgeP4d3VUKsquYi/nGJUQ7wuQEf++TgU=",
+          "fileLength": "7887316",
+          "seconds": 54,
+          "mediaKey": "Fjyi4y/cdNbktz3t2n1zQ7EcEwWJVKAKOAVKg/uKi2g=",
+          "height": 850,
+          "width": 478,
+          "fileEncSha256": "hGCXcfSai3DwvbMcXFWV9nCv7sAzSp3etM2Z673m5r0=",
+          "directPath": "/v/t62.7161-24/566227779_1358426299268001_5586985491387379044_n.enc?ccb=11-4&oh=01_Q5Aa2wHW8HdvsVmptmjKpGV-OUpRHkKHLJfScuXZ_LWGIR9H9g&oe=692238BF&_nc_sid=5e03e0",
+          "mediaKeyTimestamp": "1761220294",
+          "jpegThumbnail": "/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEABsbGxscGx4hIR4qLSgtKj04MzM4PV1CR0JHQl2NWGdYWGdYjX2Xe3N7l33gsJycsOD/2c7Z//////////////8BGxsbGxwbHiEhHiotKC0qPTgzMzg9XUJHQkdCXY1YZ1hYZ1iNfZd7c3uXfeCwnJyw4P/Zztn////////////////CABEIAEgAKAMBIgACEQEDEQH/xAAvAAADAAMBAAAAAAAAAAAAAAAABAUBAgMGAQEBAQEAAAAAAAAAAAAAAAABAAID/9oADAMBAAIQAxAAAACzNYRx037qczTpHHHoEkXjfF1Wi0EfOnFbf0XHPRTfeZFsyJoo9pXBGjLmuZIxgCIYVZAT/8QAIxAAAgMAAQQCAwEAAAAAAAAAAQIAAxESBCEiMRNBI1Fxgf/aAAgBAQABPwAgAaZY1trHG4rOFg7rYdlPUoQRZ2cSzrE+jLLnYdhgll+NxUQm3mP1OpqJ42CEYJfdSq8IyqvcezFfvnImBPkrIjqVJDRrdcAgmPcjgqK27CBwMASUDxnX1gOG4xarPlw1vPycm1LIqghTka+qp0rJ8jMQjGEMadtlt3PqkHDjxb2YuQ26pxTuTbi47HPuHQIw4cTYfbDDAmlTvqACMIfRnUHa/wDZUfBf5PkEJ2ZonUPgcD6M6bzpQz//xAAbEQADAAIDAAAAAAAAAAAAAAAAARECIBITMf/aAAgBAgEBPwC0nI6sRYxeiWtLr//EABwRAQABBAMAAAAAAAAAAAAAAAEAAhAhQRMgMf/aAAgBAwEBPwCkNxxqcjBz5FxYqjY6Nv/Z",
+          "contextInfo": {
+            "expiration": 86400,
+            "disappearingMode": {
+              "initiator": "CHANGED_IN_CHAT",
+              "trigger": "UNKNOWN"
+            },
+            "pairedMediaType": "NOT_PAIRED_MEDIA"
+          },
+          "streamingSidecar": "e1Do/bffSbj4AztRVsqUc9Q/HtFQzGARutk3+pXX1+IIVxkntx78y0m421MLB9UuBl+FcrdKU8+n45A3Ct0CiEXdcpwSxzTAbxxA9nkxXHvvqeIzt5eJ6NGATBc0ajaYjOpHkzF2nuawLhGJmfud1foZbJOcBMFmZ1NWYm+gtvE8/Rn4IbXOQ6Dg+JE/hUgMspmYRexR9o+2Fm7fWIi1M/Y3WmZUXVlQlGrttFZu3uIqMjMYBfJfxJUMaZDYDLzfMole+9dNJvZF4A70Knbk350QxfjdLPPO0AlD01rALrfOyXjL3HV+Vm7dXNPKxuWRU9YnCmqYA+aT8oMDmQb33tomjKL8V4XfTNil4Zdw2TupOqovNO43sQZzYXnbz+avs1VO09cI+0emIeDsSODRc9KUgrQplz5wpGp+vzYOP6Fxkh9UJUwOLnnTd0eDzrB21IPVNgYfWVaLi1o7CLFbWAh9HmMP9l3Abx0zMsMUXOISf9j5NvFXVSBW1XlNPxNBERMx3LNqevOmr2XniUzg050+Wcn9ONyFh4ukPtHspP7apwGliYZCDWXhoROLPDqYyeredM0Vkq9rQGYGT7mzmwdr5ZpnJZ9O2czLE3xsKDsPiOXmMdJ77sIUc/x94YmgSJvMZ4kIu5L37UcZCuUtLpXqnnXXK/ctAEesSXRldeug68yHL5Ta1NlLse6oSur3Rk47PIHQObq8zL8UQqfmwr25qRSG+8BLlJ7xi80MwOy8IihigMwI1BCJ7fAO6GNbS5Y/yE+bjWrur+AbPFPy81ecWLdwVi3i9eSxRSbYBsgZs5mWvDgxoyfmDCVPVVu8kkpgrwgynzgYRrk+09Zvy6vYrwxoV4+tmYpJyprkoR9xEpthgPKdWgawxV7Fms0lQdIbaLKp+MndLenEITDJXzU5fHbeSway1jaCsTkg6p+vq3A6gnZB3Dw25c7pjUA2Qcj+WpP4/zJdUHRk6cz7/Hh278c4DgjrxVQSAXMuJyvijAeTv2ZYpM9N3a7sNyv2QJkpBhiuduunMNRsa/RjIhcGegQa+daoPI9rXnJcFbxZC85tNRmFiydIg4mstjmZLOKt/vXoYWstWDMdobprXzewPqAfy3cSx7YNp19jvqG1czAZ4S1zJUKluhcV/ihai6lrwJkomuzer6OdPfHWFIy276ivDLQwHfYf8ep8UWDt2u3oPKtbyd+bZusY8Xofzc1Kt8P/Y5TEph+NVKUXcPcDqU+61GHtm7o5WNeAVuH+2F+D+yPouIZVAruTr/UJeWYSqbnwjiwZB+iJ8PubiDXZmNA+lfQGwSAysObP8l4XijBcicsdojxKSmcsiLSgsmxqsivySilTFupDvd9FsGVKiBdgUWK0hah+oUlRCKOByDFpJCrQyHBCy/rFO7aOeAcpYyirPvutjVEhA1drsmOT84KztkenT5vLIjzPeudMW4wU+szfuC0xcooxClJMnsnjI2SXoZchwgkN1FAL1orxCALZ6rmxduMiEMXBjps/e0zXr/mEhoQlJyZgSIVyx5K/7c5sXU7gK8Q7TXcNfDYUfMAnFdYTDlxgoR9V9sSVFxr+9wY5VRkdbbMCKf1Kof+9MMEMZbXwzQ==",
+          "externalShareFullVideoDurationInSeconds": 0
+        },
+        "messageContextInfo": {
+          "messageSecret": "9kYX/24+MGigH6TV0kU4JkUv2P50aM02cE75o7iu/fc=",
+          "messageAssociation": {
+            "associationType": "MEDIA_ALBUM",
+            "parentMessageKey": {
+              "remoteJid": "120363297936235668@g.us",
+              "fromMe": true,
+              "id": "A571F89F576BF049F59F49E1947B7DCF"
+            }
+          }
+        }
+      }
+    }
+  ]
+}

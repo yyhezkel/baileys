@@ -1,0 +1,49 @@
+{
+  "event": "messages.upsert",
+  "type": "notify",
+  "timestamp": "2025-10-24T01:41:14.051Z",
+  "sessionId": "test1",
+  "messages": [
+    {
+      "key": {
+        "remoteJid": "120363402938750363@g.us",
+        "fromMe": false,
+        "id": "ACE6DDEFD9D8FB480E7516AB300CC1E9",
+        "participant": "37426579898614@lid",
+        "participantAlt": "972545499100@s.whatsapp.net",
+        "addressingMode": "lid"
+      },
+      "messageTimestamp": 1761270073,
+      "pushName": "אין עוד מלבדו 😊",
+      "broadcast": false,
+      "message": {
+        "senderKeyDistributionMessage": {
+          "groupId": "120363402938750363@g.us",
+          "axolotlSenderKeyDistributionMessage": "MwjH65COBBAJGiAR2SCTS0t4P+HWxMyzLJdt9aFZrCB7HajmbjnSCc1kzSIhBTfpBhYpANgrmB+qzJnjzhfG+W8PzvUZWPMet3pAA8Fv"
+        },
+        "stickerMessage": {
+          "url": "https://mmg.whatsapp.net/v/t62.15575-24/535288947_866657679018480_6784518390735501828_n.enc?ccb=11-4&oh=01_Q5Aa2wHum225ps2pDSGldvNGodEhcuN-eEwIaIxxfgndNFAakg&oe=6922395C&_nc_sid=5e03e0&mms3=true",
+          "fileSha256": "1+vBBlRYDJ9D8j5qJGKK94cuZeGasJTHYddbWVBDIZw=",
+          "fileEncSha256": "nm33nhP2xWBKOi3YC5u3x+abYKiV7HurhFDnBqyWu1Y=",
+          "mediaKey": "ukMN7YKrf2euertH2+IZljAOJvQsk8slEYHzsoymfx8=",
+          "mimetype": "image/webp",
+          "height": 64,
+          "width": 64,
+          "directPath": "/v/t62.15575-24/535288947_866657679018480_6784518390735501828_n.enc?ccb=11-4&oh=01_Q5Aa2wHum225ps2pDSGldvNGodEhcuN-eEwIaIxxfgndNFAakg&oe=6922395C&_nc_sid=5e03e0&_nc_hot=1761270053",
+          "fileLength": "77446",
+          "mediaKeyTimestamp": "1761269880",
+          "firstFrameLength": 77044,
+          "firstFrameSidecar": "c8fUxxMZrK7JRw==",
+          "isAnimated": true,
+          "stickerSentTs": "1761269957415",
+          "isAvatar": false,
+          "isAiSticker": false,
+          "isLottie": false
+        },
+        "messageContextInfo": {
+          "messageSecret": "0+NZ5NcHQ6MzPoZ30Nqfd6IQ4lNoXDZ5dvDYPHw9QME="
+        }
+      }
+    }
+  ]
+}

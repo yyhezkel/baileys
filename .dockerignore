@@ -1,0 +1,16 @@
+node_modules
+lib
+.git
+.github
+*.log
+*.md
+.DS_Store
+baileys_auth_info
+logs
+Baileys-master
+Baileys-master.zip
+.prettierrc
+.prettierignore
+.editorconfig
+.gitignore
+.gitattributes

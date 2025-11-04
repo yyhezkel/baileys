@@ -1,0 +1,67 @@
+{
+  "event": "messages.upsert",
+  "type": "notify",
+  "timestamp": "2025-10-23T23:47:20.670Z",
+  "sessionId": "test1",
+  "messages": [
+    {
+      "key": {
+        "remoteJid": "558699671739-1613580002@g.us",
+        "fromMe": false,
+        "id": "A53246487609B82BE4A5A55C310A987D",
+        "participant": "279181481001019@lid",
+        "participantAlt": "559492555642@s.whatsapp.net",
+        "addressingMode": "lid"
+      },
+      "messageTimestamp": 1761263239,
+      "pushName": "Bispo",
+      "broadcast": false,
+      "message": {
+        "senderKeyDistributionMessage": {
+          "groupId": "558699671739-1613580002@g.us",
+          "axolotlSenderKeyDistributionMessage": "MwiqhfpmEAIaIOK0iltQwY7pVrS20z2GQ1ms95tcfdAnkjCOfTVe2CAOIiEFz70dhinoAD/NeW9jDrFCxZe9hdghMsTRCWbthWMU3Ck="
+        },
+        "extendedTextMessage": {
+          "text": "Eu não estou logando por QR code. Demora demais.",
+          "previewType": "NONE",
+          "contextInfo": {
+            "stanzaId": "A5D6A9DAF56C94C4909D99C02961C9CC",
+            "participant": "248662097674326@lid",
+            "quotedMessage": {
+              "imageMessage": {
+                "url": "https://mmg.whatsapp.net/v/t62.7118-24/535703319_1477688730180338_1181463453682196580_n.enc?ccb=11-4&oh=01_Q5Aa2wGEsVy6XwB7MkYAeE-TmiYNACDQTizv-oc6KlMfg4fvQQ&oe=6921C411&_nc_sid=5e03e0&mms3=true",
+                "mimetype": "image/jpeg",
+                "caption": "Alguém mais tá percebendo essa lentidão pra abrir o whatsapp?",
+                "fileSha256": "wiN5wTY1pqzFxRHD9PT1Z0LSLE9+OLc8VUZSc0oWUr4=",
+                "fileLength": "26480",
+                "height": 1280,
+                "width": 720,
+                "mediaKey": "0chtCtq46vi4AIPphCTKADUlw4eIMQCseWW6i0vwF3E=",
+                "fileEncSha256": "j6X4nGdkHJEs54Spk/aaOZO7rvPfAgww0Bd2d5n0nK4=",
+                "directPath": "/v/t62.7118-24/535703319_1477688730180338_1181463453682196580_n.enc?ccb=11-4&oh=01_Q5Aa2wGEsVy6XwB7MkYAeE-TmiYNACDQTizv-oc6KlMfg4fvQQ&oe=6921C411&_nc_sid=5e03e0",
+                "mediaKeyTimestamp": "1761241847",
+                "jpegThumbnail": "/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEABsbGxscGx4hIR4qLSgtKj04MzM4PV1CR0JHQl2NWGdYWGdYjX2Xe3N7l33gsJycsOD/2c7Z//////////////8BGxsbGxwbHiEhHiotKC0qPTgzMzg9XUJHQkdCXY1YZ1hYZ1iNfZd7c3uXfeCwnJyw4P/Zztn////////////////CABEIADwAIQMBIgACEQEDEQH/xAAtAAADAQEBAAAAAAAAAAAAAAAAAgMBBAUBAQEBAAAAAAAAAAAAAAAAAAABAv/aAAwDAQACEAMQAAAAmrJKmCGkw7BKJNOiFTNJd3ne5qTUcmLt/KD0U4ROs5Sv/8QAJhAAAgEDAgQHAAAAAAAAAAAAAAECAxAREkEEEyFTFCAiMTIzUv/aAAgBAQABPwB0Kg+FnvJIfCvuRPCreqjkU+6jLGNDRi7GrJkVqeCcYR3eR2Uhy6muT92N2UhMbRkyQo6lnmRRhxX2Ux1Gl8okpKfWU4o9H683/8QAGBEAAgMAAAAAAAAAAAAAAAAAABEBMFH/2gAIAQIBAT8ApYxxh//EABcRAAMBAAAAAAAAAAAAAAAAAAEQIBH/2gAIAQMBAT8AjWJ//9k=",
+                "contextInfo": {
+                  "pairedMediaType": "SD_IMAGE_PARENT"
+                },
+                "scansSidecar": "3dIxdpscGbgGaMkyNkctEKoftsr8dZ/eDtMftTpFmhMaIn9GERQ4mQ==",
+                "scanLengths": [
+                  4765,
+                  11956,
+                  3119,
+                  6640
+                ],
+                "midQualityFileSha256": "vTtB4a1Mrl0HKjKf7aSGjuy8vqviYFkRZ1IffO3YNlQ="
+              }
+            }
+          },
+          "inviteLinkGroupTypeV2": "DEFAULT"
+        },
+        "messageContextInfo": {
+          "messageSecret": "8GdZUlPYdI34cONbMvQm1PKOUHZY6XzeJtj3TVWLpRM="
+        }
+      },
+      "verifiedBizName": "Bispo"
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "event": "messages.upsert",
+  "type": "notify",
+  "timestamp": "2025-10-24T00:23:02.375Z",
+  "sessionId": "test1",
+  "messages": [
+    {
+      "key": {
+        "remoteJid": "status@broadcast",
+        "remoteJidAlt": "143920126230675@lid",
+        "fromMe": false,
+        "id": "3ECAFE949154B3838A2A14",
+        "participant": "972537167675@s.whatsapp.net",
+        "addressingMode": "pn"
+      },
+      "messageTimestamp": 1761265377,
+      "pushName": "שולי בן לולו בית ספר למכירות",
+      "broadcast": true,
+      "message": {
+        "senderKeyDistributionMessage": {
+          "groupId": "status@broadcast",
+          "axolotlSenderKeyDistributionMessage": "MwjOj8GBARDTTRog133jw3OceRxbUYVtuS0nOaPKWuqt2HNHZbMBMERrl/EiIQW2SiLsOwCAM6Is114zngaFyZ2UZOlNckEA6QF8ZkaGCA=="
+        },
+        "imageMessage": {
+          "url": "https://mmg.whatsapp.net/o1/v/t24/f2/m233/AQNmcU8ogSrG6SSSAWDikr7dS83k3ckhFQr8eT6c1rlZOLeVrJG6-Ee6WGrdF5v6a9wUk3KV4RlrTC1F3VAQtJm4gLe_m8iFr-RemAwXRA?ccb=9-4&oh=01_Q5Aa2wH13xY4KNujrVs4ZSGnBFbv5q3iPXnz6MYK3XftWKQ_OA&oe=692231E0&_nc_sid=e6ed6c&mms3=true",
+          "mimetype": "image/jpeg",
+          "caption": "👑👑👑",
+          "fileSha256": "s0lnWCjvep+/DVDvsHeDL7IXMY+ZCLtWj7VIY3cBUjQ=",
+          "fileLength": "263243",
+          "height": 1600,
+          "width": 1200,
+          "mediaKey": "qanUoQ3Ay3hpJr4Q32E2Y0In1g2ZSL6i6YPEAnCcQGE=",
+          "fileEncSha256": "ScucieOXLgoXpZQS5yPGSd6Qj/WRFQR/1b1caMn4wQY=",
+          "directPath": "/o1/v/t24/f2/m233/AQNmcU8ogSrG6SSSAWDikr7dS83k3ckhFQr8eT6c1rlZOLeVrJG6-Ee6WGrdF5v6a9wUk3KV4RlrTC1F3VAQtJm4gLe_m8iFr-RemAwXRA?ccb=9-4&oh=01_Q5Aa2wH13xY4KNujrVs4ZSGnBFbv5q3iPXnz6MYK3XftWKQ_OA&oe=692231E0&_nc_sid=e6ed6c",
+          "mediaKeyTimestamp": "1761265371",
+          "jpegThumbnail": "/9j/2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRTc4UG1RV19iZ2hnPk1xeXBkeFxlZ2P/2wBDARESEhgVGC8aGi9jQjhCY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2P/wAARCAArACADASIAAhEBAxEB/8QAGgAAAgMBAQAAAAAAAAAAAAAAAwUBAgQGAP/EAC4QAAIBAgQEBQMFAQAAAAAAAAECAwQRABIhMQUTImEyQVFxgRSRwSQ0QlLRof/EABcBAQEBAQAAAAAAAAAAAAAAAAIDBAH/xAAgEQACAQQCAwEAAAAAAAAAAAABAgADERIhMUEEEyJx/9oADAMBAAIRAxEAPwDl6iGWdyY4H0GoCnTBeGUkYlzVsUjIfCoGhPfDOOcIOT9US1wGbVrg+ftgphplVEkllJJstrISfTA1bUoiEyK6WgDtTVCyZ0TKYlQ3Jvca4leOUUUeSOmuAPCEAHzffFkoKYgNUCUyq11ZXPTr54FVcPo59EaQMTct5A97j/mCWAONp3E7M1wzxUoEb0ppswtmRSwYe+/xjBWV6KzQpAz5XDAsvg2P4wznk62p4IxPOT1Jfpj7sfxvj0VOacku95RvITY27eg74zJW9dzbZl8CfkHUBwwSzQSSyyXZ2IQXuAL4vNVPB0tT5bDRo9R9j/uNSwIbvTnkvfxIOlz3U6H33xSachctbGsYOnMW5jPzuvzcYRdKnPMFmXiJOGcxuYkhyGOxXKLFT6++GkdX9X+nlflVH9l2kUb2/wAwn4YxMtUSSTmGp+cErP27tsydSkbg+uG6Bv2BWIj1rxRjLddfL0wm47Xinhjh8Zk6mW/8Rt9zrhrSu0tDE8huzICT645Djbs/FajMxNmsOwGMniplUOXUrVay67n/2Q=="
+        }
+      },
+      "verifiedBizName": "שולי בן לולו בית ספר למכירות"
+    }
+  ]
+}

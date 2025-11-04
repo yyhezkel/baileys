@@ -1,0 +1,56 @@
+{
+  "event": "messages.upsert",
+  "type": "notify",
+  "timestamp": "2025-10-24T01:39:06.438Z",
+  "sessionId": "test1",
+  "messages": [
+    {
+      "key": {
+        "remoteJid": "status@broadcast",
+        "remoteJidAlt": "255335923208369@lid",
+        "fromMe": false,
+        "id": "AC6CB80A1F014D14B1709B6D4B375FF1",
+        "participant": "972523095343@s.whatsapp.net",
+        "addressingMode": "pn"
+      },
+      "messageTimestamp": 1761269946,
+      "pushName": "אריאל אלחרר",
+      "broadcast": true,
+      "message": {
+        "imageMessage": {
+          "url": "https://mmg.whatsapp.net/v/t62.7118-24/530691316_1888056391777430_5461310291717739961_n.enc?ccb=11-4&oh=01_Q5Aa2wE6QhSF5QdKWO0CGTQFf2pDqJ-4Gi0GbZLM8uDJRwNN3Q&oe=69223EC2&_nc_sid=5e03e0&mms3=true",
+          "mimetype": "image/jpeg",
+          "fileSha256": "zge23SUdoHdUyD8mHcHaEtl1dHqYDKD2L6U2m/Bktok=",
+          "fileLength": "245780",
+          "height": 1600,
+          "width": 1204,
+          "mediaKey": "R8xKQTv834U6R5eDQZfGLBWTia8HK8UPIVi5bixVjBc=",
+          "fileEncSha256": "Z8cPc/KLobRAdJf1EAM/VXpwxrcG+jJdizDrK6gMHJo=",
+          "directPath": "/v/t62.7118-24/530691316_1888056391777430_5461310291717739961_n.enc?ccb=11-4&oh=01_Q5Aa2wE6QhSF5QdKWO0CGTQFf2pDqJ-4Gi0GbZLM8uDJRwNN3Q&oe=69223EC2&_nc_sid=5e03e0",
+          "mediaKeyTimestamp": "1761258442",
+          "jpegThumbnail": "/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEABsbGxscGx4hIR4qLSgtKj04MzM4PV1CR0JHQl2NWGdYWGdYjX2Xe3N7l33gsJycsOD/2c7Z//////////////8BGxsbGxwbHiEhHiotKC0qPTgzMzg9XUJHQkdCXY1YZ1hYZ1iNfZd7c3uXfeCwnJyw4P/Zztn////////////////CABEIAD8AMAMBIgACEQEDEQH/xAAuAAADAQEBAAAAAAAAAAAAAAACAwQFAAEBAAMBAAAAAAAAAAAAAAAAAAABAgP/2gAMAwEAAhADEAAAADXmnhvTMAtgfntTX0ROWs5AMPO12RDsMRgJ2smppCwB6gFVjUVMb2LgOwf/xAAkEAACAgICAQQDAQAAAAAAAAABAgADBBESIUEFEyIxFDJRYv/aAAgBAQABPwBMutXGjotHzO20I+UTGuYwoIoGoEPuDx3LEIdgBD1DDNgCUlbNctbl5PPQbs+YedfwM/HcBXbRSZC1VgqsoxVvr6Y8odoWErLWsAP2mTZrgN74iNlWFeIPULkr3EsGNh/6eXuLFR9/IjuY9LWBuAPMfUsCoCLCfc3N9GYdKOG5zIVthPCiJiYnA6UtMOoVE8FmZ6be9xs6IJllFtZIKH7mAP75IE9SYfk2AQFUQqI19yacKI2YWbeiZQ3vI+0EtpRXr4/E73LMO217H876EC/w9QVJUm/smWcVu2P1hyaKx8Sdr9y+5r7OaE9CYznaz//EABwRAAICAgMAAAAAAAAAAAAAAAABAhESITFBYf/aAAgBAgEBPwCkItigiitGXQitm+bIv0lOUWf/xAAdEQADAAICAwAAAAAAAAAAAAAAARESIQIQQmGB/9oACAEDAQE/AOojLUmypCfol2M8V02pEjhxyyvw/9k=",
+          "contextInfo": {
+            "pairedMediaType": "NOT_PAIRED_MEDIA",
+            "statusSourceType": "IMAGE"
+          },
+          "scansSidecar": "rePlpWFkyxmxIcYsSsOcVnvvbWqLdAzD9I27RqNyoDwb3fayfRdHBg==",
+          "scanLengths": [
+            23595,
+            100608,
+            48769,
+            72808
+          ],
+          "midQualityFileSha256": "wdnHacKMR9IOevj8r88N2RXlrAWRC4caFMvS9R6jf18="
+        },
+        "messageContextInfo": {
+          "deviceListMetadata": {
+            "recipientKeyHash": "g1SdBa8WSI1tOA==",
+            "recipientTimestamp": "1761269921"
+          },
+          "deviceListMetadataVersion": 2,
+          "messageSecret": "wuyrrGqqoy4gIJE8Y0uPCFZg+SVP4fcpf1G+GgRG3xk="
+        }
+      }
+    }
+  ]
+}

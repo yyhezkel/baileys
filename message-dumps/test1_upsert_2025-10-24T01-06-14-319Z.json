@@ -1,0 +1,22 @@
+{
+  "event": "messages.upsert",
+  "type": "append",
+  "timestamp": "2025-10-24T01:06:14.320Z",
+  "sessionId": "test1",
+  "messages": [
+    {
+      "key": {
+        "remoteJid": "120363297875814638@g.us",
+        "fromMe": false,
+        "id": "3120219200",
+        "participant": "91156788555863@lid"
+      },
+      "messageTimestamp": "1761267974",
+      "participant": "91156788555863@lid",
+      "messageStubType": "GROUP_PARTICIPANT_ADD",
+      "messageStubParameters": [
+        "{\"id\":\"280874352390269@lid\",\"phoneNumber\":\"972507350157@s.whatsapp.net\",\"admin\":null}"
+      ]
+    }
+  ]
+}

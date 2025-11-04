@@ -1,0 +1,27 @@
+{
+  "event": "messages.upsert",
+  "type": "notify",
+  "timestamp": "2025-10-24T01:02:43.120Z",
+  "sessionId": "test1",
+  "messages": [
+    {
+      "key": {
+        "remoteJid": "558699671739-1613580002@g.us",
+        "fromMe": false,
+        "id": "A56DA96FAE276C12F3C5E4CCE0BA9873",
+        "participant": "279181481001019@lid",
+        "participantAlt": "559492555642@s.whatsapp.net",
+        "addressingMode": "lid"
+      },
+      "messageTimestamp": 1761267762,
+      "pushName": "Bispo",
+      "broadcast": false,
+      "message": {
+        "conversation": "Certo",
+        "messageContextInfo": {
+          "messageSecret": "oV/BbqBrko5u6LqdRTOYBmc+ficVHZSXT3+5u3ZSzZs="
+        }
+      }
+    }
+  ]
+}

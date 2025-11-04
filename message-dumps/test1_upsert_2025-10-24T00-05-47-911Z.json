@@ -1,0 +1,38 @@
+{
+  "event": "messages.upsert",
+  "type": "append",
+  "timestamp": "2025-10-24T00:05:47.911Z",
+  "sessionId": "test1",
+  "messages": [
+    {
+      "key": {
+        "remoteJid": "status@broadcast",
+        "fromMe": true,
+        "id": "3EB07A7F0B9414F1C2E1C9"
+      },
+      "message": {
+        "videoMessage": {
+          "url": "https://mmg.whatsapp.net/v/t62.7161-24/536297622_1656983631928290_3558836830184228506_n.enc?ccb=11-4&oh=01_Q5Aa2wGUP1I5cdMy97flEFhjMZKE8HQ4HZi-dtjxJxcz5L_5xA&oe=692232F6&_nc_sid=5e03e0&mms3=true",
+          "mimetype": "video/mp4",
+          "fileSha256": "r82k+tru7FPtpuToScRL4n+ZFGP1G3JTT8ZxplyWy4U=",
+          "fileLength": "13708846",
+          "mediaKey": "bZPKn9/T4xwEVZHOaZCP+nz4xNhBpSxTF/je89fbizM=",
+          "caption": "Check this out! 📸",
+          "fileEncSha256": "Hk/tnExsQyiUvlVJ0r5Eb/BQvuxPrt5LF6BWB33KEEY=",
+          "directPath": "/v/t62.7161-24/536297622_1656983631928290_3558836830184228506_n.enc?ccb=11-4&oh=01_Q5Aa2wGUP1I5cdMy97flEFhjMZKE8HQ4HZi-dtjxJxcz5L_5xA&oe=692232F6&_nc_sid=5e03e0",
+          "mediaKeyTimestamp": "1761264347",
+          "jpegThumbnail": "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",
+          "contextInfo": {
+            "forwardingScore": 0,
+            "featureEligibilities": {
+              "canBeReshared": true
+            }
+          }
+        }
+      },
+      "messageTimestamp": "1761264347",
+      "status": "PENDING",
+      "participant": "972542822755:29@s.whatsapp.net"
+    }
+  ]
+}

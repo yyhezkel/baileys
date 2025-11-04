@@ -1,0 +1,632 @@
+{
+  "event": "messages.upsert",
+  "type": "notify",
+  "timestamp": "2025-10-24T02:03:39.791Z",
+  "sessionId": "test1",
+  "messages": [
+    {
+      "key": {
+        "remoteJid": "972542822755@s.whatsapp.net",
+        "fromMe": false,
+        "id": "AC1ED89894E1F2D7F181A1A1E713EA0B",
+        "participant": "",
+        "addressingMode": "pn"
+      },
+      "messageTimestamp": 1761271419,
+      "broadcast": false,
+      "message": {
+        "protocolMessage": {
+          "type": "APP_STATE_SYNC_KEY_SHARE",
+          "appStateSyncKeyShare": {
+            "keys": [
+              {
+                "keyId": {
+                  "keyId": "AAAAAD2C"
+                },
+                "keyData": {
+                  "keyData": "FZ57R4zog7ut5mvTHR0E15dHnhydrPruYEv7egjEb6k=",
+                  "fingerprint": {
+                    "rawId": 1177278632,
+                    "currentIndex": 6,
+                    "deviceIndexes": [
+                      0,
+                      3,
+                      5
+                    ]
+                  },
+                  "timestamp": "0"
+                }
+              },
+              {
+                "keyId": {
+                  "keyId": "AAAAAD2D"
+                },
+                "keyData": {
+                  "keyData": "NlcuavUjLxDY3YWv44o/69akQv+o+eNJiKh/x2aiozA=",
+                  "fingerprint": {
+                    "rawId": 1177278632,
+                    "currentIndex": 6,
+                    "deviceIndexes": [
+                      0,
+                      3
+                    ]
+                  },
+                  "timestamp": "1756388329516"
+                }
+              },
+              {
+                "keyId": {
+                  "keyId": "AAAAAD2A"
+                },
+                "keyData": {
+                  "keyData": "FwJV98K8SWNyjhsnvc69WXZb2cNnR1pRoExNeOd+kG0=",
+                  "fingerprint": {
+                    "rawId": 1177278632,
+                    "currentIndex": 5,
+                    "deviceIndexes": [
+                      0,
+                      2,
+                      3,
+                      5
+                    ]
+                  },
+                  "timestamp": "1756366953113"
+                }
+              },
+              {
+                "keyId": {
+                  "keyId": "AAAAAD2B"
+                },
+                "keyData": {
+                  "keyData": "hZnJv5kKAl1tKFOztPklQaNWqSbkLFKf+lmgpZvz2cQ=",
+                  "fingerprint": {
+                    "rawId": 1177278632,
+                    "currentIndex": 5,
+                    "deviceIndexes": [
+                      0,
+                      3,
+                      5
+                    ]
+                  },
+                  "timestamp": "0"
+                }
+              },
+              {
+                "keyId": {
+                  "keyId": "AAAAAD1+"
+                },
+                "keyData": {
+                  "keyData": "wD/SgqjUvY9Qfq2+1jxG93dqVlDjnopemJlPl+J2aPQ=",
+                  "fingerprint": {
+                    "rawId": 1177278632,
+                    "currentIndex": 3,
+                    "deviceIndexes": [
+                      0,
+                      1,
+                      2,
+                      3
+                    ]
+                  },
+                  "timestamp": "1754055130764"
+                }
+              },
+              {
+                "keyId": {
+                  "keyId": "AAAAAD1/"
+                },
+                "keyData": {
+                  "keyData": "hydnb9fhuw0GrzVbN2gUEysgebhDC5ZL/ciQHRnrk7k=",
+                  "fingerprint": {
+                    "rawId": 1177278632,
+                    "currentIndex": 4,
+                    "deviceIndexes": [
+                      0,
+                      2,
+                      3,
+                      4
+                    ]
+                  },
+                  "timestamp": "0"
+                }
+              },
+              {
+                "keyId": {
+                  "keyId": "AAAAAD19"
+                },
+                "keyData": {
+                  "keyData": "+o1FvFlTlCM1Sg1zV7pOYb9ZYvyynmTyGREix7H3jSQ=",
+                  "fingerprint": {
+                    "rawId": 1177278632,
+                    "currentIndex": 1,
+                    "deviceIndexes": [
+                      0,
+                      1
+                    ]
+                  },
+                  "timestamp": "1751454563250"
+                }
+              },
+              {
+                "keyId": {
+                  "keyId": "AAAAAD2K"
+                },
+                "keyData": {
+                  "keyData": "g+nH8jl+NFC9pZAiWqbGyjZVgoSkTNW933TCpCUzAnU=",
+                  "fingerprint": {
+                    "rawId": 1177278632,
+                    "currentIndex": 12,
+                    "deviceIndexes": [
+                      0,
+                      8
+                    ]
+                  },
+                  "timestamp": "1756651635008"
+                }
+              },
+              {
+                "keyId": {
+                  "keyId": "AAAAAD2L"
+                },
+                "keyData": {
+                  "keyData": "Vc+2SvgK7qSimkQ/5DvZHrjWwVcdbbIrwpCF99BV0Ow=",
+                  "fingerprint": {
+                    "rawId": 1177278632,
+                    "currentIndex": 13,
+                    "deviceIndexes": [
+                      0,
+                      8
+                    ]
+                  },
+                  "timestamp": "1756659257518"
+                }
+              },
+              {
+                "keyId": {
+                  "keyId": "AAAAAD2J"
+                },
+                "keyData": {
+                  "keyData": "BFxgL677P+2VXG351Z5YrejOD1HnTNT/GWIZOzYNh2A=",
+                  "fingerprint": {
+                    "rawId": 1177278632,
+                    "currentIndex": 11,
+                    "deviceIndexes": [
+                      0,
+                      8
+                    ]
+                  },
+                  "timestamp": "1756649901567"
+                }
+              },
+              {
+                "keyId": {
+                  "keyId": "AAAAAD2G"
+                },
+                "keyData": {
+                  "keyData": "wb2zFXcauEsQQQb2ZyNr7tlzVyluTvn2PzOLGHtURAw=",
+                  "fingerprint": {
+                    "rawId": 1177278632,
+                    "currentIndex": 9,
+                    "deviceIndexes": [
+                      0,
+                      8,
+                      9
+                    ]
+                  },
+                  "timestamp": "1756644582953"
+                }
+              },
+              {
+                "keyId": {
+                  "keyId": "AAAAAD2H"
+                },
+                "keyData": {
+                  "keyData": "jVjZm5BQ81Moe8BaEnN79w1jDCsznlTk/zArqRzVxAc=",
+                  "fingerprint": {
+                    "rawId": 1177278632,
+                    "currentIndex": 9,
+                    "deviceIndexes": [
+                      0,
+                      8
+                    ]
+                  },
+                  "timestamp": "1756646321271"
+                }
+              },
+              {
+                "keyId": {
+                  "keyId": "AAAAAD2E"
+                },
+                "keyData": {
+                  "keyData": "P14NV8k10ky+8jhgntsB6GlrgOnIYo5DsS6ZlkoLo38=",
+                  "fingerprint": {
+                    "rawId": 1177278632,
+                    "currentIndex": 8,
+                    "deviceIndexes": [
+                      0,
+                      7,
+                      8
+                    ]
+                  },
+                  "timestamp": "1756472920700"
+                }
+              },
+              {
+                "keyId": {
+                  "keyId": "AAAAAD2S"
+                },
+                "keyData": {
+                  "keyData": "PAoSdP6dYASqCaUZQj6Cs+GT832rHqDzhXkweqRXFTU=",
+                  "fingerprint": {
+                    "rawId": 1177278632,
+                    "currentIndex": 19,
+                    "deviceIndexes": [
+                      0,
+                      8
+                    ]
+                  },
+                  "timestamp": "1756753705143"
+                }
+              },
+              {
+                "keyId": {
+                  "keyId": "AAAAAD2T"
+                },
+                "keyData": {
+                  "keyData": "9BX1nv14GKPFRM3TilTfR8eb9TmeX7p/e+W+CoSerq0=",
+                  "fingerprint": {
+                    "rawId": 1177278632,
+                    "currentIndex": 20,
+                    "deviceIndexes": [
+                      0,
+                      20,
+                      8
+                    ]
+                  },
+                  "timestamp": "1759421520181"
+                }
+              },
+              {
+                "keyId": {
+                  "keyId": "AAAAAD2Q"
+                },
+                "keyData": {
+                  "keyData": "jJ7RNQUYWLhqS6SZJf47WFb24pA1tatBzb3tB3bYKL8=",
+                  "fingerprint": {
+                    "rawId": 1177278632,
+                    "currentIndex": 19,
+                    "deviceIndexes": [
+                      0,
+                      8
+                    ]
+                  },
+                  "timestamp": "1756753471683"
+                }
+              },
+              {
+                "keyId": {
+                  "keyId": "AAAAAD2R"
+                },
+                "keyData": {
+                  "keyData": "A8oZwnjWwLxlu2/m6rNEx7ByMmC6rUio+qe3i3Iqka4=",
+                  "fingerprint": {
+                    "rawId": 1177278632,
+                    "currentIndex": 19,
+                    "deviceIndexes": [
+                      0,
+                      19,
+                      8
+                    ]
+                  },
+                  "timestamp": "1756753474849"
+                }
+              },
+              {
+                "keyId": {
+                  "keyId": "AAAAAD2O"
+                },
+                "keyData": {
+                  "keyData": "P47PK8auZ7+vn5qZiayY4qHpbvIqWzsoibYUF/ljCk8=",
+                  "fingerprint": {
+                    "rawId": 1177278632,
+                    "currentIndex": 16,
+                    "deviceIndexes": [
+                      0,
+                      8
+                    ]
+                  },
+                  "timestamp": "1756727007868"
+                }
+              },
+              {
+                "keyId": {
+                  "keyId": "AAAAAD2P"
+                },
+                "keyData": {
+                  "keyData": "qxDNLYElkWP7p4oPVriQvEjLBawP5RCufz2Fj3ZrnTw=",
+                  "fingerprint": {
+                    "rawId": 1177278632,
+                    "currentIndex": 17,
+                    "deviceIndexes": [
+                      0,
+                      8
+                    ]
+                  },
+                  "timestamp": "1756751562552"
+                }
+              },
+              {
+                "keyId": {
+                  "keyId": "AAAAAD2M"
+                },
+                "keyData": {
+                  "keyData": "3aLx4C6oJxbFR+QJtW54+hS20YBvH0l5sn0aKAfbzik=",
+                  "fingerprint": {
+                    "rawId": 1177278632,
+                    "currentIndex": 14,
+                    "deviceIndexes": [
+                      0,
+                      8
+                    ]
+                  },
+                  "timestamp": "1756672666061"
+                }
+              },
+              {
+                "keyId": {
+                  "keyId": "AAAAAD2N"
+                },
+                "keyData": {
+                  "keyData": "cAm6wFpYZfUAe8P8dHlfztR2c44lfKRsTako5VSKUQM=",
+                  "fingerprint": {
+                    "rawId": 1177278632,
+                    "currentIndex": 15,
+                    "deviceIndexes": [
+                      0,
+                      8
+                    ]
+                  },
+                  "timestamp": "1756707051992"
+                }
+              },
+              {
+                "keyId": {
+                  "keyId": "AAAAAD2a"
+                },
+                "keyData": {
+                  "keyData": "1XbNoeZCsybbPCmWvJ3tiQNJwCrODBwuq+XxF820PAA=",
+                  "fingerprint": {
+                    "rawId": 1177278632,
+                    "currentIndex": 28,
+                    "deviceIndexes": [
+                      0,
+                      20,
+                      25,
+                      27
+                    ]
+                  },
+                  "timestamp": "0"
+                }
+              },
+              {
+                "keyId": {
+                  "keyId": "AAAAAD2b"
+                },
+                "keyData": {
+                  "keyData": "byv+RTS1RizfsIsvUyZgWRSYPIoME57XQFbPp62alC0=",
+                  "fingerprint": {
+                    "rawId": 1177278632,
+                    "currentIndex": 29,
+                    "deviceIndexes": [
+                      0,
+                      20,
+                      25,
+                      27
+                    ]
+                  },
+                  "timestamp": "1761239537139"
+                }
+              },
+              {
+                "keyId": {
+                  "keyId": "AAAAAD2Y"
+                },
+                "keyData": {
+                  "keyData": "GtE2ESuk1nitIX34ergA593N6xMUa/o6pi0q431X/w0=",
+                  "fingerprint": {
+                    "rawId": 1177278632,
+                    "currentIndex": 25,
+                    "deviceIndexes": [
+                      0,
+                      20,
+                      25
+                    ]
+                  },
+                  "timestamp": "1759995032124"
+                }
+              },
+              {
+                "keyId": {
+                  "keyId": "AAAAAD2Z"
+                },
+                "keyData": {
+                  "keyData": "SDiHChuYmY3vu1tQWjE1+iAodtoHiAjgQSAhucY1Cdg=",
+                  "fingerprint": {
+                    "rawId": 1177278632,
+                    "currentIndex": 26,
+                    "deviceIndexes": [
+                      0,
+                      20,
+                      25
+                    ]
+                  },
+                  "timestamp": "1760535164470"
+                }
+              },
+              {
+                "keyId": {
+                  "keyId": "AAAAAD2W"
+                },
+                "keyData": {
+                  "keyData": "+r8M40w/pRYgfwvGmLRpMp9Hr4GEiQfqW3Ci+d7W2oY=",
+                  "fingerprint": {
+                    "rawId": 1177278632,
+                    "currentIndex": 22,
+                    "deviceIndexes": [
+                      0,
+                      20
+                    ]
+                  },
+                  "timestamp": "1759745956075"
+                }
+              },
+              {
+                "keyId": {
+                  "keyId": "AAAAAD2X"
+                },
+                "keyData": {
+                  "keyData": "2wuXIsVcIvQJHhkh59jH6YRpvKejGK8VE93N8iKgOsM=",
+                  "fingerprint": {
+                    "rawId": 1177278632,
+                    "currentIndex": 24,
+                    "deviceIndexes": [
+                      0,
+                      20,
+                      23
+                    ]
+                  },
+                  "timestamp": "1759749760001"
+                }
+              },
+              {
+                "keyId": {
+                  "keyId": "AAAAAD2U"
+                },
+                "keyData": {
+                  "keyData": "IghFvw1dfHcJVX+X/GpO+rGpTovEaL751W3roFOlyto=",
+                  "fingerprint": {
+                    "rawId": 1177278632,
+                    "currentIndex": 20,
+                    "deviceIndexes": [
+                      0,
+                      20
+                    ]
+                  },
+                  "timestamp": "1759668803670"
+                }
+              },
+              {
+                "keyId": {
+                  "keyId": "AAAAAD2V"
+                },
+                "keyData": {
+                  "keyData": "kDeUV5JZfTJB84j31q4BXHoycE4WCJMvhyJd2LAEkU0=",
+                  "fingerprint": {
+                    "rawId": 1177278632,
+                    "currentIndex": 21,
+                    "deviceIndexes": [
+                      0,
+                      20
+                    ]
+                  },
+                  "timestamp": "1759745258108"
+                }
+              },
+              {
+                "keyId": {
+                  "keyId": "AAAAAD2g"
+                },
+                "keyData": {
+                  "keyData": "lvt8He6P9jHW29xI49osai89XN3n3Bcl/cseMiqypf8=",
+                  "fingerprint": {
+                    "rawId": 1177278632,
+                    "currentIndex": 33,
+                    "deviceIndexes": [
+                      0,
+                      20,
+                      25
+                    ]
+                  },
+                  "timestamp": "1761270804437"
+                }
+              },
+              {
+                "keyId": {
+                  "keyId": "AAAAAD2e"
+                },
+                "keyData": {
+                  "keyData": "llNZuMmf2I0OeblG441BIQIIu/MpEztm6AiijJaxlKE=",
+                  "fingerprint": {
+                    "rawId": 1177278632,
+                    "currentIndex": 31,
+                    "deviceIndexes": [
+                      0,
+                      20,
+                      25
+                    ]
+                  },
+                  "timestamp": "1761268253240"
+                }
+              },
+              {
+                "keyId": {
+                  "keyId": "AAAAAD2f"
+                },
+                "keyData": {
+                  "keyData": "xkBH1OrjQpgLRnCF+SNbrYPZHRtPGJJskQhLHWg3TZo=",
+                  "fingerprint": {
+                    "rawId": 1177278632,
+                    "currentIndex": 33,
+                    "deviceIndexes": [
+                      0,
+                      33,
+                      20,
+                      25
+                    ]
+                  },
+                  "timestamp": "1761270081680"
+                }
+              },
+              {
+                "keyId": {
+                  "keyId": "AAAAAD2c"
+                },
+                "keyData": {
+                  "keyData": "/Y6HvzSA+BTEvtSd9fD7Ur+zv8jbLA2GW59Yplj8E2I=",
+                  "fingerprint": {
+                    "rawId": 1177278632,
+                    "currentIndex": 30,
+                    "deviceIndexes": [
+                      0,
+                      20,
+                      25,
+                      27
+                    ]
+                  },
+                  "timestamp": "0"
+                }
+              },
+              {
+                "keyId": {
+                  "keyId": "AAAAAD2d"
+                },
+                "keyData": {
+                  "keyData": "G1W3eSZiaVAVfoJWDmWvKDpzi/UPKq6SuyKm/VeZiSs=",
+                  "fingerprint": {
+                    "rawId": 1177278632,
+                    "currentIndex": 30,
+                    "deviceIndexes": [
+                      0,
+                      20,
+                      25
+                    ]
+                  },
+                  "timestamp": "1761260016485"
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

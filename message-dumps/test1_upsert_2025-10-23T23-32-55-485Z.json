@@ -1,0 +1,26 @@
+{
+  "event": "messages.upsert",
+  "type": "notify",
+  "timestamp": "2025-10-23T23:32:55.485Z",
+  "sessionId": "test1",
+  "messages": [
+    {
+      "key": {
+        "remoteJid": "status@broadcast",
+        "remoteJidAlt": "149357521277022@lid",
+        "fromMe": false,
+        "id": "3EB02D1C2FA4FF9AA6C057",
+        "participant": "972539861643@s.whatsapp.net",
+        "addressingMode": "pn"
+      },
+      "messageTimestamp": 1761262374,
+      "pushName": "רותי וינטר אקדמיה למקצועות היופי",
+      "broadcast": true,
+      "verifiedBizName": "רותי וינטר אקדמיה למקצועות היופי",
+      "messageStubType": 2,
+      "messageStubParameters": [
+        "No session found to decrypt message"
+      ]
+    }
+  ]
+}

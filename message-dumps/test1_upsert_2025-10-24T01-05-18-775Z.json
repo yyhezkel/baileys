@@ -1,0 +1,35 @@
+{
+  "event": "messages.upsert",
+  "type": "notify",
+  "timestamp": "2025-10-24T01:05:18.775Z",
+  "sessionId": "test1",
+  "messages": [
+    {
+      "key": {
+        "remoteJid": "558699671739-1613580002@g.us",
+        "fromMe": false,
+        "id": "ACCFAB62AE58EDA4938EBB515DCB7DA1",
+        "participant": "10978104242205@lid",
+        "participantAlt": "5511913372146@s.whatsapp.net",
+        "addressingMode": "lid"
+      },
+      "messageTimestamp": 1761267918,
+      "pushName": "𝐏𝐞𝐝𝐫𝐨 𝐇𝐞𝐧𝐫𝐢𝐪𝐮𝐞 ϟ⁩",
+      "broadcast": false,
+      "message": {
+        "extendedTextMessage": {
+          "text": "Antes os Ids eram os c.us, como agora é tudo lid, mesmo que você veja os numeros pelo aparelho, na hora de puxar eles vem como lid",
+          "previewType": "NONE",
+          "contextInfo": {
+            "forwardingScore": 1,
+            "isForwarded": true
+          },
+          "inviteLinkGroupTypeV2": "DEFAULT"
+        },
+        "messageContextInfo": {
+          "messageSecret": "sbPjnNnpO84dcbQWIEfHJHeeA06o/ke0xr8tX4oiJ+o="
+        }
+      }
+    }
+  ]
+}

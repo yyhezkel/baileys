@@ -1,0 +1,47 @@
+{
+  "event": "messages.upsert",
+  "type": "notify",
+  "timestamp": "2025-10-23T23:41:10.436Z",
+  "sessionId": "test1",
+  "messages": [
+    {
+      "key": {
+        "remoteJid": "120363297936235668@g.us",
+        "fromMe": false,
+        "id": "A5CF24A242D329DCF6538A5461F03EA5",
+        "participant": "255980604530728@lid",
+        "participantAlt": "972507450824@s.whatsapp.net",
+        "addressingMode": "lid"
+      },
+      "messageTimestamp": 1761262869,
+      "pushName": "פרסום",
+      "broadcast": false,
+      "message": {
+        "senderKeyDistributionMessage": {
+          "groupId": "120363297936235668@g.us",
+          "axolotlSenderKeyDistributionMessage": "MwjPyNUhEAkaIFqUosX+Zcztk/Nyf/RqhGcyV38Qpki8OxglkjTPrpgHIiEFO79HL3dz9BIBLOgzJvYllkR+8425r7kyLwEYAyU4KVc="
+        },
+        "extendedTextMessage": {
+          "text": "https://chat.whatsapp.com/LyaDZEvk5dlHYnjb2PxVD7\n\nבעל עסק ? רוצה לפרסם משהו ?\nשלח הודעה וקבל פרסום בקבוצות שלנו \n\nhttps://chat.whatsapp.com/HeuPcQZ2rZhFXEt8lnKCBf\nפרסום עסקים 3\n\nלפרסום על פרסום והצעות לשלוח הודעה למנהל בפרטי\n\nפרסום עסקים 1\nhttps://chat.whatsapp.com/D1wg2OULg9p9SmJuQd4J51",
+          "matchedText": "https://chat.whatsapp.com/LyaDZEvk5dlHYnjb2PxVD7",
+          "description": "הזמנה לקבוצה ב-WhatsApp",
+          "title": "קבוצה לפרסום עסקים בלבד 2️⃣",
+          "previewType": "NONE",
+          "jpegThumbnail": "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",
+          "contextInfo": {
+            "expiration": 86400,
+            "disappearingMode": {
+              "initiator": "CHANGED_IN_CHAT",
+              "trigger": "UNKNOWN"
+            }
+          },
+          "inviteLinkGroupTypeV2": "DEFAULT"
+        },
+        "messageContextInfo": {
+          "messageSecret": "CG1uj3d1dmEiuydUbBL+X72XhHtMfXlmeaevRO96LgY="
+        }
+      },
+      "verifiedBizName": "פרסום"
+    }
+  ]
+}

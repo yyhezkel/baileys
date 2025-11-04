@@ -1,0 +1,42 @@
+{
+  "event": "messages.upsert",
+  "type": "notify",
+  "timestamp": "2025-10-24T00:20:50.176Z",
+  "sessionId": "test1",
+  "messages": [
+    {
+      "key": {
+        "remoteJid": "status@broadcast",
+        "remoteJidAlt": "143920126230675@lid",
+        "fromMe": false,
+        "id": "3ECACA1F385842F17D2D46",
+        "participant": "972537167675@s.whatsapp.net",
+        "addressingMode": "pn"
+      },
+      "messageTimestamp": 1761265244,
+      "pushName": "שולי בן לולו בית ספר למכירות",
+      "broadcast": true,
+      "message": {
+        "senderKeyDistributionMessage": {
+          "groupId": "status@broadcast",
+          "axolotlSenderKeyDistributionMessage": "MwjOj8GBARCpTRoglfF/O7jd9um0SBf2lqhbBjxAQszVfnzKKu3jYVJQtgIiIQW2SiLsOwCAM6Is114zngaFyZ2UZOlNckEA6QF8ZkaGCA=="
+        },
+        "videoMessage": {
+          "url": "https://mmg.whatsapp.net/v/t62.7161-24/531548967_854260367175135_1474831632918982966_n.enc?ccb=11-4&oh=01_Q5Aa2wG630_2WUOPmS81ERTrLpH8of3VRrdGmQSfJDjPX6ggpA&oe=69222C8A&_nc_sid=5e03e0&mms3=true",
+          "mimetype": "video/mp4",
+          "fileSha256": "ho+BqRNjusePETrjcdyBKKyYPxA/4YRYpyeJqh+E6Uc=",
+          "fileLength": "4397360",
+          "seconds": 34,
+          "mediaKey": "G6esjsz3vsCuhkB4PvVNjkIKVp01emPtBAUcJzb2v6E=",
+          "caption": "המלכה שלנו חוגגת יומולדת!!!❤️❤️❤️",
+          "fileEncSha256": "58V+145m0dXROn2gupjS/ZpK0GrmHNTTw8f854Aa7sc=",
+          "directPath": "/v/t62.7161-24/531548967_854260367175135_1474831632918982966_n.enc?ccb=11-4&oh=01_Q5Aa2wG630_2WUOPmS81ERTrLpH8of3VRrdGmQSfJDjPX6ggpA&oe=69222C8A&_nc_sid=5e03e0",
+          "mediaKeyTimestamp": "1761265232",
+          "jpegThumbnail": "/9j//gAQTGF2YzU5LjM3LjEwMAD/2wBDAAgEBAQEBAUFBQUFBQYGBgYGBgYGBgYGBgYHBwcICAgHBwcGBgcHCAgICAkJCQgICAgJCQoKCgwMCwsODg4RERT/xACQAAEBAQEBAQEAAAAAAAAAAAAFBgQDBwECAQADAQEBAAAAAAAAAAAAAAADBQQCAQYQAAIBAwMDAgIIAgsBAAAAAAECAxEEBSEAEjETBiJBBxRRcXRhNTLBsVIzFaGDciNiNkJjQyQ0EQACAQMDBQAABwEBAAAAAAABAgMEESETAEExURKBBXFyItEGkSNhMv/AABEIADkAIAMBIgACEQADEQD/2gAMAwEAAhEDEQA/ABsb5vlLuTtW8Su3RhFArcK+9SCi/Xqd7rvznJP442OuXuWKSNx7hd37kqsFkZDxQKV6caClDTrsyFL1GFrbw21pFyWCiIHZmmcJE0XbkFahho6qa6bE8gfKeM3VzarHKG4RSFwWdk7y6UZjxHp0NQfS2xp9Ooqo7Y0lZSq+XI/LgbN9D56UpQAkyMCXJUjHQWJycg70525J8LZroqtL9NFBPIMJSoXpr/m/fcpFYvlL9LWwSW5kmJVIo1HKQ6k8FoKLTUlqcQNdrX009z4DGG1dskpOutKz9T9f77ofhfgo8Thb/NXMQ+buA1rbFv8AZDpy4n/llYKzD2WmxLPppO5ydV7Lxc2976sJmkgQGw0luewF9mfD74h22Oy2QGStFmiu4oflEAiIgeGTRPWFB5oasxILMg01388xzjZvNXN0JIYo5Vi4RlCxqqAcuatw5EUAUVA0G4h5QQBTT1dOvTdH8PcfmMgs89skE8aFYf8A0stEKgN/h9xWAbp+UVHvvFZBFTJJPqrEgCeSuVVLrgEFsAm/vfEWWsqApZmZzk2Zrc4A4/4NtYnxryXNYC2FriZLlJL89vk8SR3BhErlP5qsKgNqwAPFqE7p8I0GT8ft7S65WU8PrktVYepkkMh4HXkvLUfR77Mxdz5Vjrsy3FqGnV4zCUmUgtC4kA4wlS/p9JUqx4sdd9cSb4Xd3MbeaIiGZkCqw4GSQaJy/MUBPEVJNKbiqK2NKKeZdNin+ihZlYMbgDK3sDjjd8NJpVMUSsXDKqEmNlt6bn3vy7FYy4zGStsajpE0z8C8tAkSjV3JP8IB0GpOm/WcD4/Z43HwWlgVljgUcBCwZnlLD1uyk1Z21Y0FPbQbiPEcZ/RFJZwguJl9Zf8A6U6iMfR/E/36e26mzkjmUSxnmfZlqKfTr1rvf8go6n6gSKKpEUSZZDH5ajd/Ly4GBg87H8qWOj8pHiLO2A3lYqv4W55ztO8xlxFdm5uIZgtvF3Iy0TUaZW1/NGUAdyGHFuRpXSm80hmid0VjbrBbB+bdxhJI5WuhPFuLlqlQTXf6nyWStYyqZC44ca8C/eSn3iUOP6t9Xjne1R7j5J3kij7/AHYEQuXoVWqlVrUgdOu0v0aCSgWDVMbJbSQXHUZJsVXrduvJG2VFWRTGQBWv/wCmJHocnYEWBaY8ZbhsdOdO1lLWa2VjWlFuEE0Da6eor9W07PxvyWxt9bL5hBUh7WWOZWB1qoU8vYdBruq8i/B7f+6n6bw+Jfhx+1S/rv0Mh8AD1v3/AH2rQeWDxzuckFw91BbTQzRGaREIljZNCw5U5AdBXaGQluJrui/LlDKksUTP25W7TCiipFVHUkA9Nv8AkX/yRfaov13F5L/WWL/sv3fan7YNRWQQ4UJTT1AJBb9SAm2CtrhbX47bs+eRDHJJbyJkRO3X+++//9k=",
+          "streamingSidecar": "xJDdkqZqX7QDR+JImUzDpET1uCx8ik/1mKnJdpX8HQElxFROxDBIpN0ZaZrqodkrOaEvRW+DTEkZVdDBCjad/Liu6MSRoqslwHqv2K7rPdQMfP3jHa+hKb8Sn2m15Gk+w/0YfCSrsOxI+MhdO4jkYfrMJSYLn8WK5YH4qh3epglHAkoxN9LKUNZRRRmOOutMMaliEqiXqcFUe+wPDHSEuFOem9BXEImW+4BLrkhUZnwU0cPgnBoyGcIQB5bXPTFndDyXiZIhHoVbJL6RZxYqxS73D6nvzjUT3wYYmd84+ImiMswZAS9zT3r9GnAyXVUMTkqs8rLbmkstBLS6GfL3xL8ZVhCyo93NIdAsNAG4EgWfilbbhSey9Es+ikw+wzrjw2OlmCKWGHMOBaN5Ly3/jL28bYsErH1tuQ2l877TZdwGIJkOCt+46xw/tzcerHkVL8XCEwXOaxOGUgWEUARC2CNmWsnrbhrAfUKv/HkOe7oL9eH/jEhyse4gOy/WbetcMNM/YBbbGvjoZmn+y+zUOrlqZfXsvxB/KlCUrcE9sTbisvDerEbtrZLOVSmyCcdbsAV4Te+2Fqr0ovxculFqqunzVYW3TonMxGT2CsJ6PNtdxpa0rxcj7Cub8vcIZmXrOt4Kz5T/MuwiUL+SZYnN29eZmg/iwNfvUzwrFoSiwRuzmiEgiFVZ8TJMfvfGoQhx9DqMRi/lQLfeDHNJygcu6BTRfrB27K0vN5Z9mxKoTiTFEOAQbWikN2duugtBvrRNNoxBgmcmRenVN/uiFP/HEaPN8NZMymAfIy50EZH4XPQS6ana/hr0qJRcNg94nCKjOafgDywXiul7Sz2xDXxrkBjpgMIZqLUHvXAZgOd31E2tslhiOotsW8yd0O1msmHw32J7aHrWdJA="
+        }
+      },
+      "verifiedBizName": "שולי בן לולו בית ספר למכירות"
+    }
+  ]
+}

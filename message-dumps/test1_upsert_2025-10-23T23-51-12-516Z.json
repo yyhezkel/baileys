@@ -1,0 +1,55 @@
+{
+  "event": "messages.upsert",
+  "type": "notify",
+  "timestamp": "2025-10-23T23:51:12.517Z",
+  "sessionId": "test1",
+  "messages": [
+    {
+      "key": {
+        "remoteJid": "status@broadcast",
+        "remoteJidAlt": "177356497014882@lid",
+        "fromMe": false,
+        "id": "A5D62E91AF430C7D7960DCCCE04F567F",
+        "participant": "972548861231@s.whatsapp.net",
+        "addressingMode": "pn"
+      },
+      "messageTimestamp": 1761263470,
+      "pushName": "עזרא טרבלסי אפקט פלוס",
+      "broadcast": true,
+      "message": {
+        "senderKeyDistributionMessage": {
+          "groupId": "status@broadcast",
+          "axolotlSenderKeyDistributionMessage": "MwjlvJD4BRAAGiAGMUX7gHmLT/wXiV7evyRB2J9o8cn4s9HgJk4ZLm58BSIhBUZqZtbAUYZhVZw7HeixdlJoSoGg1VXGfGdGBgjw4OAi"
+        },
+        "videoMessage": {
+          "url": "https://mmg.whatsapp.net/v/t62.7161-24/536624385_1741585226559438_2861760209432672412_n.enc?ccb=11-4&oh=01_Q5Aa2wFOywTqgApjL7rvWFEqsi3qjOFbmxmLfsjshfI_m197jw&oe=6922150A&_nc_sid=5e03e0&mms3=true",
+          "mimetype": "video/mp4",
+          "fileSha256": "ppJ0RsyQnzE93kdyjm/8+yUD0+WI9N6tI0qdk7vyGwA=",
+          "fileLength": "9848155",
+          "seconds": 53,
+          "mediaKey": "pAirz7iUY5Qepb7XECgJFv6RVqXjKpkJf8u+bboktqs=",
+          "caption": "איזה ערב",
+          "height": 850,
+          "width": 478,
+          "fileEncSha256": "ugAhV0Kcw1NXRqhvLJomw7s5szS9QJEQrb85t2bWCeQ=",
+          "directPath": "/v/t62.7161-24/536624385_1741585226559438_2861760209432672412_n.enc?ccb=11-4&oh=01_Q5Aa2wFOywTqgApjL7rvWFEqsi3qjOFbmxmLfsjshfI_m197jw&oe=6922150A&_nc_sid=5e03e0",
+          "mediaKeyTimestamp": "1761250926",
+          "jpegThumbnail": "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",
+          "contextInfo": {
+            "pairedMediaType": "NOT_PAIRED_MEDIA",
+            "statusSourceType": "VIDEO"
+          },
+          "streamingSidecar": "/i0LyyLMVQICq3QQoGnMvkecA2bp1UoCgg8Jt8Ye4KhEOrXv2fS/y2CkNFANdjnJU2b+LlBU2zqVs2rGzgx6fHhe8obO//m4PptCWnap1GMusqML5d6hRAwji7QDz1hwn3tk7vS8gwLQH0+p+FzXGTUNeVMuVLSM6Cdv171Mt2nIxjhPQmJO73Rvr3lIx5asqHPIElqhTwG+DxNVUjd5JBHR8gEngl8qijFwpJnrF1+HOtZnruvRGqDwY8ukKmMShU2BLT9jZK6F27x91xzgRSXmWRZwJPWbTpImUeHJaVH3/NvN6WxGRkQ/+vUFZ+ih1EtWcsvBCEx/EzBH2IutF1ugiEijaPPzI2QsAppvQ8VV2q9XIj2WpxQ/hEOL9W9ab1vYi6FqvFYN3C9rI9qbMrYOLCCZ2SHmdY5DgzoYngfyC+cj6jb5i6gJg+iZAawfjWkhefc2/u4CGMvMb742K5dBx4j2Rf5JkKY3oUeExjud7vR+alW9l5dIfAUCCq19XaCf9msIFpdDLtp47ydSBse5megNdqBRXkMeLmI+Qkd+U1AZyacfD8KUpt1824oh4+sIyNTQzHQCWZhCdXuPyktiusiittjYu8UoHzgmH7wQbEzKrFTK3hE8jEivhWmoO6yrE1gt3iVqj7PXeUyHulLVRs04xZHySYDOq5ornx/X799K5SXU6nb8Ls0nfrjc0aEFAdGlPsce+COGWMAGT1SkEqeUozQ2giv2yO1GDfjpKINTKeRXoVA1AFz+0YZlP+qhV9xHkbPsfBIhSiAKYXK7HMFxT9a/1hYp+ZLEKpnitZsm2hpWhzEAvpkdZPlxVZaoXNt5gx7c7hbrynmk6TiXUvMQbFv712CPBjs4DlPNend944OC0zknBkpN6qs1xJ+m0JyeaPl1SrQeLW0X6w03AWZS+d5Frn0+VnZkjrz2pfqfgfXUluao2TtSFMA8fhP5KKjg8Mr3ewBd0yTh21aVh7xZOR+WlFc6Ug7Cto2EhjBSI7KGE3Bvyi9CaygkS08g1nSZxo90p4By2AgglcQCaxs08QOfkqw/J7mvTQ78CGQzCNTkgjUS3ZYSXmdGD0YAqxg2OiXuHIeJKBDC+XMYF09DF/2Zw7BqtE1bDOGUiLMeF1UEyP7Kk2WfF44zFupM7p3P1Fh/ZRsg9Gem1fFQO3kC22FK3zBft8sPSSoAfzEAdze3uEH+bvEteus6pO9YdhIbEsOhVprWlhyt54KCGROwXWn3peGzo8ScG9oY0kL/+zldK/pNWjAo7YA6r/S7JY7BKf9ylii+oj7jlofYWUOt4hrn1e4g6AewwUgbBbOJhsfe+hpLvl0W7lAj9ZvDGbTrA96X195EI06jP1TzW8WgsepuNJTnDt0yiE/aQQxIn0Clu+rQCNSeA9kGuh6WHsZ52PCzg/DIAB3uIP5p15wvozxokHcFc3/7U5w5VTLyX26HJa7CJdecqfZKx1oln/UXt+HsstVrMLQG6w3eM7qectMpLl9OLvfVnfBT8mO3z5Dno4I6AMR0/u1LXwJqzjpBdeTCYUPttXlLJh9XCw/9x1TV+jNy67FknTzYqQYkDOpgbPw76NEDelW3e4dtXmLBdQ4l69xPNjLgoKzKdNTPwSIDnp3hdlAIQBpkccPibJcTU2NkNm9FdGcT4XjrsBU32sztzIEZJo00rRPGvk9YrCVkY3R2ruSUXZ9v6zF7FkCyVtkYyg62ElZkHEukqQIgqZ7D46txt6uPNrt1Yc2feDYBo30lpZGc+VoY9L9GBwHIr6ELrSX7WmfPFwKW6nFSEDvAY2OcUms82z7z+VbS0MAIXRmjJ+Jw7BZdns0SPcSpVPQqAoWky/Vy5ZCBeZIyJPUX2S+2w2ETZVd9GfCCHBWk+cSrcoA38VjAV3qxAdan9ndQroKinOFJHMWcSl068cwYX3pVQa+jNySn9bUaP3wJwG/9Vmwv01u9x2rUo5GFYxctJDc1Q07kRGWBpCY2chwV9sKcM0/uIVE170atbQ==",
+          "thumbnailDirectPath": "/v/t62.36147-24/535527566_1528619975001691_354184888205864003_n.enc?ccb=11-4&oh=01_Q5Aa2wGcsFDP6j7ynT3sN180tf6aHEy2QBYavRA7xggl5XsHLw&oe=692246B1&_nc_sid=5e03e0",
+          "thumbnailSha256": "QPs36Q4sM4UVosvK/2h/2VxgTRRxLZk6IHoBYDwQ9O8=",
+          "thumbnailEncSha256": "//vSvK7ZhOF4y7Dbe6Dui68sZ99CPT4Fsbo3px1tI1I=",
+          "externalShareFullVideoDurationInSeconds": 0
+        },
+        "messageContextInfo": {
+          "messageSecret": "s2CCbzqfsdUSXEUi36/MFzSCUL3zb6wLHwmtk2+ASPc="
+        }
+      },
+      "verifiedBizName": "עזרא טרבלסי אפקט פלוס"
+    }
+  ]
+}

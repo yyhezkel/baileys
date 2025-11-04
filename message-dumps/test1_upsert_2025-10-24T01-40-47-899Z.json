@@ -1,0 +1,27 @@
+{
+  "event": "messages.upsert",
+  "type": "notify",
+  "timestamp": "2025-10-24T01:40:47.899Z",
+  "sessionId": "test1",
+  "messages": [
+    {
+      "key": {
+        "remoteJid": "972542822755@s.whatsapp.net",
+        "fromMe": false,
+        "id": "AC36EF90A9D920614EDBF7D697835D9C",
+        "participant": "",
+        "addressingMode": "pn"
+      },
+      "messageTimestamp": 1761270047,
+      "broadcast": false,
+      "message": {
+        "protocolMessage": {
+          "type": "INITIAL_SECURITY_NOTIFICATION_SETTING_SYNC",
+          "initialSecurityNotificationSettingSync": {
+            "securityNotificationEnabled": true
+          }
+        }
+      }
+    }
+  ]
+}

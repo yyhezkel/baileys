@@ -1,0 +1,26 @@
+{
+  "event": "messages.upsert",
+  "type": "notify",
+  "timestamp": "2025-10-23T23:48:20.340Z",
+  "sessionId": "test1",
+  "messages": [
+    {
+      "key": {
+        "remoteJid": "558699671739-1613580002@g.us",
+        "fromMe": false,
+        "id": "A53A4DA4C0F020A128A330C67F0370FD",
+        "participant": "248662097674326@lid",
+        "participantAlt": "558140400694@s.whatsapp.net",
+        "addressingMode": "lid"
+      },
+      "messageTimestamp": 1761263299,
+      "pushName": "Digital Cliques",
+      "broadcast": false,
+      "verifiedBizName": "Digital Cliques",
+      "messageStubType": 2,
+      "messageStubParameters": [
+        "No session found to decrypt message"
+      ]
+    }
+  ]
+}

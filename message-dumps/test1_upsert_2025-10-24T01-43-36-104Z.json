@@ -1,0 +1,55 @@
+{
+  "event": "messages.upsert",
+  "type": "notify",
+  "timestamp": "2025-10-24T01:43:36.104Z",
+  "sessionId": "test1",
+  "messages": [
+    {
+      "key": {
+        "remoteJid": "120363297936235668@g.us",
+        "fromMe": false,
+        "id": "A548FF240FF31564CE7F07FA633D7BD5",
+        "participant": "91156788555863@lid",
+        "participantAlt": "972559287580@s.whatsapp.net",
+        "addressingMode": "lid"
+      },
+      "messageTimestamp": 1761270215,
+      "pushName": "אין עוד מלבדו...!!",
+      "broadcast": false,
+      "message": {
+        "senderKeyDistributionMessage": {
+          "groupId": "120363297936235668@g.us",
+          "axolotlSenderKeyDistributionMessage": "MwjhktfmAhABGiA3iNGq1Oi1MYaPmLEbaXqV1gXxIzADnQouKGGKDo/qryIhBSIkRQjNGKiWyTIj5F1xZ+3917TKrW5H7qXoRHyR2xEh"
+        },
+        "stickerMessage": {
+          "url": "https://mmg.whatsapp.net/v/t62.15575-24/535160711_1165263698863403_1054390469464044382_n.enc?ccb=11-4&oh=01_Q5Aa2wHAGgtWfmopvAPeWhrh-xiNqiQh2V65KCmroPGGlr6O8A&oe=69224CEB&_nc_sid=5e03e0&mms3=true",
+          "fileSha256": "/LmWRS5Ou5rYcvB2Y3xw36JHCXw1tETJWX9Cc5Zm+Co=",
+          "fileEncSha256": "i8F6+bG6mpUk0KPB5b8ycOiqR9RKnowBTJ9dSEStVYs=",
+          "mediaKey": "68v93wNaVWVWKxvHwBpA0nwV/f/tvrwYQ9pL5DTKSG0=",
+          "mimetype": "image/webp",
+          "height": 64,
+          "width": 64,
+          "directPath": "/v/t62.15575-24/535160711_1165263698863403_1054390469464044382_n.enc?ccb=11-4&oh=01_Q5Aa2wHAGgtWfmopvAPeWhrh-xiNqiQh2V65KCmroPGGlr6O8A&oe=69224CEB&_nc_sid=5e03e0&_nc_hot=1761270207",
+          "fileLength": "73660",
+          "mediaKeyTimestamp": "1761270189",
+          "isAnimated": false,
+          "contextInfo": {
+            "expiration": 86400,
+            "disappearingMode": {
+              "initiator": "CHANGED_IN_CHAT",
+              "trigger": "UNKNOWN"
+            }
+          },
+          "stickerSentTs": "1761270189214",
+          "isAvatar": false,
+          "isAiSticker": false,
+          "isLottie": false
+        },
+        "messageContextInfo": {
+          "messageSecret": "0hvy9PZc4Cqt3PGd0hQh5v2VWSBuUWpfzxPVo229I1c="
+        }
+      },
+      "verifiedBizName": "אין עוד מלבדו...!!"
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "event": "messages.upsert",
+  "type": "notify",
+  "timestamp": "2025-10-23T23:28:09.455Z",
+  "sessionId": "test1",
+  "messages": [
+    {
+      "key": {
+        "remoteJid": "status@broadcast",
+        "remoteJidAlt": "100188718899287@lid",
+        "fromMe": false,
+        "id": "ACC35EADC6C95BD7234239C10F248612",
+        "participant": "972533030110@s.whatsapp.net",
+        "addressingMode": "pn"
+      },
+      "messageTimestamp": 1761262087,
+      "pushName": "יוסי רוטנר",
+      "broadcast": true,
+      "message": {
+        "videoMessage": {
+          "url": "https://mmg.whatsapp.net/v/t62.7161-24/571049924_1323451769460412_3354050857390571659_n.enc?ccb=11-4&oh=01_Q5Aa2wEhRA83R7jaq-YyHGAGXGd8vUO1dy8_ZgZpQLJJTWA-MA&oe=69223C18&_nc_sid=5e03e0&mms3=true",
+          "mimetype": "video/mp4",
+          "fileSha256": "EmHsLY2zycsw0X49rupIqVLXURSzNo93UK1ImNuusO0=",
+          "fileLength": "4264041",
+          "seconds": 26,
+          "mediaKey": "tBExiYvT0NgCi8d54WneirPrfFU9zz+roXsZxP3l/iw=",
+          "caption": "אוהד של שירי יידל אני 💚🩵",
+          "height": 850,
+          "width": 478,
+          "fileEncSha256": "0RW41t+MGU1kZ56TIZ3ON2uJHs90sb6qEiK0dOkGLAs=",
+          "directPath": "/v/t62.7161-24/571049924_1323451769460412_3354050857390571659_n.enc?ccb=11-4&oh=01_Q5Aa2wEhRA83R7jaq-YyHGAGXGd8vUO1dy8_ZgZpQLJJTWA-MA&oe=69223C18&_nc_sid=5e03e0",
+          "mediaKeyTimestamp": "1761262081",
+          "jpegThumbnail": "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",
+          "contextInfo": {
+            "forwardingScore": 1,
+            "isForwarded": true,
+            "featureEligibilities": {
+              "canBeReshared": true
+            },
+            "statusAttributionType": "RESHARED_FROM_POST",
+            "pairedMediaType": "NOT_PAIRED_MEDIA",
+            "statusSourceType": "VIDEO"
+          },
+          "streamingSidecar": "7UA65IQFDn+4u12j9NIj2AahYHkBXDgqaA6qlz21Lsarq6CzAE8faLXB8PjZXmMpN3t0D+3kcx7K0I+r/fs5Q1pBQdPdkj6wR/T59zAj2w5w8Df/XmvibY6z0nfhNAER/ApBHGYBPmcpBd31VdIOey9CoUF61foV+KJEJ3cN3geo6pEunWPeD/MY6s5cDULeR7s8Q/H6Bb1puf8Uo3i4t3wIN+p+43vcifnQqMGNJax6G6K11QAurYDhIOi9llSqyJbuKyAqaEJLTK3g+jbVxA+tbKNKm4ScLFCYQfdD2iLtpV2DwfRqOS+dRm61zLERmhc7LQXiZNEtffIkS4LaPYCXMYx3UCJ5MA5Oc/zvMcab4We7R+CaCL0GxRm1JLMVRA8eJ0VZ2ILSrqnhfTiBpTADSROBgSyMZdzaXvajZwB582gXRv9YIp8BjbnG2lStIq0kk3/l4Cvw4KKXWwEdjIDr19rCPk5C1PaUw4GZ9gk3gkdi6mOmZNwxCitMJ4hKTFBmvl+XTAgFPVChHT2Q4j8WtndDKNTr+UEqr38OdM02HjTbMEw1NPCIr0QCH/Tb0nIVDbetzvtaovhZueuwVUyGEgvY6+Tby3VIPi9+ndw87Ysw5Ro54V2AloTPE2gCcke5o92jKu7chQDKVxy5ancUD38pxObYv8/NeigvPc6/scuNTZyriuDtxoQLoNWj1uyaOQHhtFwcYL6UQGCZMFmRjT5ojJ1/NwWw6wERbGiYqBqE+opXw7vbPAY4wifxMStARmrGZNp4z2MIPiIxDoO1B5RDf6c4X2l/8ThYQffz1QKlULqojwFOAumI9nACibE1tdpRny/A6liTFMZLDjS0yVjSZJltsrsRI+TRERfbT13+",
+          "thumbnailDirectPath": "/v/t62.36147-24/537148667_1384231319986862_1588149481418294065_n.enc?ccb=11-4&oh=01_Q5Aa2wG7LB9HFAaicwTj0egFhfsoAJdXLuOwRWO507xaw8WytA&oe=69223716&_nc_sid=5e03e0",
+          "thumbnailSha256": "c28FGNQ2B3v9pVVdTfO7DJkYzRU6B7B7AsCb4Lnv/qk=",
+          "thumbnailEncSha256": "w/ywFmWZwAHQFYfoFicPUgpKPdt/oOVweavupVtuTvo=",
+          "externalShareFullVideoDurationInSeconds": 0
+        },
+        "messageContextInfo": {
+          "messageSecret": "i/O8jpNz8+QtWZuoXzxdHD8LMmS3zlu6/AgAf+docuo="
+        }
+      }
+    }
+  ]
+}

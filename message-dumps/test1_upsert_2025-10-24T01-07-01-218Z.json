@@ -1,0 +1,32 @@
+{
+  "event": "messages.upsert",
+  "type": "notify",
+  "timestamp": "2025-10-24T01:07:01.218Z",
+  "sessionId": "test1",
+  "messages": [
+    {
+      "key": {
+        "remoteJid": "558699671739-1613580002@g.us",
+        "fromMe": false,
+        "id": "A5547ECE1B9E7693A2DE8E969767A862",
+        "participant": "279181481001019@lid",
+        "participantAlt": "559492555642@s.whatsapp.net",
+        "addressingMode": "lid"
+      },
+      "messageTimestamp": 1761268020,
+      "pushName": "Bispo",
+      "broadcast": false,
+      "message": {
+        "conversation": "Existe alguma solução que converta pra numeros normais ?",
+        "senderKeyDistributionMessage": {
+          "groupId": "558699671739-1613580002@g.us",
+          "axolotlSenderKeyDistributionMessage": "MwiqhfpmEAYaIM2m5ok4lqxgfzGfSCClJxo76lxF2FVggVvOMcvR6nGwIiEFz70dhinoAD/NeW9jDrFCxZe9hdghMsTRCWbthWMU3Ck="
+        },
+        "messageContextInfo": {
+          "messageSecret": "dXgwW28ofkbWGUy0emiuGXZh0lf/SIqh8NRSxKlakvw="
+        }
+      },
+      "verifiedBizName": "Bispo"
+    }
+  ]
+}

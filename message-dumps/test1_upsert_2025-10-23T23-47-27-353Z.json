@@ -1,0 +1,27 @@
+{
+  "event": "messages.upsert",
+  "type": "notify",
+  "timestamp": "2025-10-23T23:47:27.353Z",
+  "sessionId": "test1",
+  "messages": [
+    {
+      "key": {
+        "remoteJid": "558699671739-1613580002@g.us",
+        "fromMe": false,
+        "id": "A5CBDE2325E8A89F93C086AD251F7EAA",
+        "participant": "279181481001019@lid",
+        "participantAlt": "559492555642@s.whatsapp.net",
+        "addressingMode": "lid"
+      },
+      "messageTimestamp": 1761263246,
+      "pushName": "Bispo",
+      "broadcast": false,
+      "message": {
+        "conversation": "Logo pelo código mesmo . É mais rápido",
+        "messageContextInfo": {
+          "messageSecret": "hrmqwZwfpdmrVTdcp78IT4xxVgO2LQ4MKyFYg76bx6g="
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "event": "messages.upsert",
+  "type": "notify",
+  "timestamp": "2025-10-23T23:48:40.029Z",
+  "sessionId": "test1",
+  "messages": [
+    {
+      "key": {
+        "remoteJid": "status@broadcast",
+        "remoteJidAlt": "157363357118547@lid",
+        "fromMe": false,
+        "id": "A5C7A18B4D9A11DE5081B932EC844364",
+        "participant": "972533489730@s.whatsapp.net",
+        "addressingMode": "pn"
+      },
+      "messageTimestamp": 1761263316,
+      "pushName": "דוד וינטר",
+      "broadcast": true,
+      "message": {
+        "senderKeyDistributionMessage": {
+          "groupId": "status@broadcast",
+          "axolotlSenderKeyDistributionMessage": "MwiY6a6xBRAAGiCphPoz9+3VZAbHbdv/CxDmmwagoVTkBcu3qKvdDyoxzCIhBX5eJi04OnJBE2mLA1CShY6DJHWACzfbSCztWP8PLMRo"
+        },
+        "videoMessage": {
+          "url": "https://mmg.whatsapp.net/v/t62.7161-24/532153751_1369561574685565_2258322434697291846_n.enc?ccb=11-4&oh=01_Q5Aa2wGvDDdafJ0OlBPiathV4WORFa9geugNNAq9hKL_etpe4w&oe=69221A5A&_nc_sid=5e03e0&mms3=true",
+          "mimetype": "video/mp4",
+          "fileSha256": "K8fC/Y2W+96exo5CmsvuFvyX1WZ7VptIvHYmAu8HRig=",
+          "fileLength": "5548019",
+          "seconds": 37,
+          "mediaKey": "3uXx4vuV1Dtwmn7h4hc8+E9ZsqwQIdIUa1Da5cFt+AM=",
+          "height": 832,
+          "width": 464,
+          "fileEncSha256": "CWcaO6zl91jZuaZT7TnT1K13UDViidWv0KeL43ZMH1w=",
+          "directPath": "/v/t62.7161-24/532153751_1369561574685565_2258322434697291846_n.enc?ccb=11-4&oh=01_Q5Aa2wGvDDdafJ0OlBPiathV4WORFa9geugNNAq9hKL_etpe4w&oe=69221A5A&_nc_sid=5e03e0&_nc_hot=1761263302",
+          "mediaKeyTimestamp": "1761261842",
+          "jpegThumbnail": "/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkJCQkKCQoLCwoODw0PDhUTERETFR8WGBYYFh8wHiMeHiMeMCozKScpMypMOzU1O0xXSUVJV2pfX2qFf4WuruoBCQkJCQoJCgsLCg4PDQ8OFRMRERMVHxYYFhgWHzAeIx4eIx4wKjMpJykzKkw7NTU7TFdJRUlXal9faoV/ha6u6v/CABEIAKAAWQMBIgACEQEDEQH/xAAwAAEAAgMBAQAAAAAAAAAAAAAABAUBAwYCBwEBAQEBAAAAAAAAAAAAAAAAAAECA//aAAwDAQACEAMQAAAA+HJUUAAZ9TCJ4na4hvWyrSq6Lbi8qmRtzW3XcRLS+5rLxDgadJHuIrqJ8rZz6UFT3dLrPP2vNrLCypt8b6bbqsCvosuPM5ddtJ0fHnK6rSu6Y1+/C5wADupvA+eXX6PyNJ4st4kT3qa8e/FzgWAZYGWBljKjCAAAAAAAAAAAAAAAAAAAAAAAAAAf/8QALxAAAgEDAgQEBQQDAAAAAAAAAQIDAAQREiEFIDFBE1FSgQYQFCIyFTNxoWBhkf/aAAgBAQABPwDnC5PsTSxs3QUy6SR85LYpGX1e3NGpdgBjPYVDbNrwwZT1X/dL9k6AD7SB0ORg1JGniyAEnTvTDevBapYWlVVDYGcmnjeMkMOh5bKNJNUbRgsTqVTgbDyNJm4j8SNNO2ApOfx701u8LxqQWxuGNOoRTIGBdztnypgAxOx961L6qht1VBlnJKf3X6bri0sdRDZGGzU8OknbSRnNBSaEZYgCuCcLjvb4QyfgFLNvgkDsKk4fZWjzTmCBIlJw/pIAI3/nIq+4zGXK2sYIGRrYDBB8hUk80mdbk56joORJMGopI8fmwNX1rK4BjXX5kUba4U48F/8AlRxSJICyEfzVvdWNnqmmRpJgw0Rg4yO5JqWe+4k6qcvoU6UUYVBVtwIlA8znpnAq7jgtU0aEMh6d8Z5DbxsTlBv1NLaR9tqFoPOuNw3UEKNCD4ZP3svUUck5JJNEliSTk1Be3Nv+zJo9hX6txDp45xjHQVNNLPIZJGyx5I80gNID5V8RTFbVIRtryx39JG1PGUCk9x85WVmJVdI7DljU1GN6QDFfE5zd2qdvDP8AZpkyigjtTrpPPFe470t8vmKHEIlGWcVx29jubuJ4myEjx75qOZGTBq5AOdNEEc31U3qr6ib1mmkdurE/IMRXiHvRbP8An3//xAAeEQACAgEFAQAAAAAAAAAAAAAAARARAhIgITFBUP/aAAgBAgEBPwDcnDdF2VKY1Zz4KLF3Cc6GY4UyhfB//8QAGxEAAgIDAQAAAAAAAAAAAAAAAAERIAISMVD/2gAIAQMBAT8AtF2rPhFN0POSUNeD/9k=",
+          "contextInfo": {
+            "forwardingScore": 1,
+            "isForwarded": true,
+            "featureEligibilities": {
+              "canBeReshared": true
+            },
+            "pairedMediaType": "NOT_PAIRED_MEDIA"
+          },
+          "streamingSidecar": "cIjKraHNVG10lFGmaybad+pWt39CvC4qMUxXi3Ygy6eyN6GtHORFx9J5a5HBPv5/nfxh8fQYWJux5kDi4kXK4f/bo6xAAAsqzOp0/r752g12i/12N0T7nOEbygb9yBOip0SSsI9rtJIbugMKXjMW+vhvJJdxJInpvnnH9Sc0KyRAyHKnGgVLZD/gmTpbsPzYKyH3t5ZAo++L95Vy76MXs8dqSoWX2aYy1dSpus7qG7JgpScvzYPllt8C2HtTR4UvAQ9QDDOxC0e0Lnn7T3oBS2yW51neR55y9uosMzETO6wYRFudahYU6YRbJpEJ1zj1p2tswwjdT0TzFseCppwq2/EP5TG0bQQHzg+n3WJOTx37WqVnCZVVu4zPKS19bU8immwFTNKsNsAc9SDcgTUxjjeVQo7YbWgFUu3F2O59DpEHParZ3x7tTNmfTf0207R0gx1g867e3gCxu31iWOvEgc5/DCyglOQOHqfADwTXqHnKzJtnt+eRWqXJ+RXA3C9cZx+TDfj7eJMSzqq7DMC9apKXuJ40wNZv4P0wsryv/pBrn26m4+OOKY+dGxnKmwe8VLSJkLsCjBx8Re7zg6ayhL6SnZD1JMKsaiArXnHK9HBGRaK2yg3KWGVR54tXp6u/1nHS9ZsTwnnvW9u9D1sHfKqRGlDw0/6hVgGVAWloFNnKmrCJvE7J/dKrgYbbKetzXPWwuCcLy44VJUfCuW6K1ElkO2acTMhtjUy3IqICkkQb/G9digq1GH9NonT67nv8Q/ILNYcuCBIri4Gy/ZbJah7GoNG6Lb5WtqWd0X0uznelKqTytiDldNb0IxrDgtSplJZ8L6yXxYi5GVee8PsAkaMgjLQ473n3+Mjs+ijxvow/lIzxD/L1nkNTJr6O7jc35jhVVMkBKo7Rf+Z6P+ROutegBukWI4/6ekyrW07lGa5Za/TxMfYftxRHRLfHE0aF3zKncThGS2t/ZbVl/r+jFtp4pJfSiPAD2tlsM+6Isa6JrkPKFILJwvAFyuf3E1Wd/QzK2+8IviYuBy9OcnGjIDfBLBnnifMdnlAKYhaoin/HRP1aczhzV7eL19Q9Ahi8XTatyQ/HeehKr6/BYEqwpegcs1XpPlPVmG4KdkNV+R7AnQ==",
+          "thumbnailDirectPath": "/v/t62.36147-24/570206818_1328357925597212_3454255000189781450_n.enc?ccb=11-4&oh=01_Q5Aa2wGpMfooDUSe3Bgf7N2zcI7nju2k0oSsLhp3kKWTvVGz9Q&oe=692231D1&_nc_sid=5e03e0",
+          "thumbnailSha256": "D09FGt4rW5m0/eLh34rCW4Afgw86Kvz9V34S/fEIhN0=",
+          "thumbnailEncSha256": "PxN8nyGcYGUo/qQpLP7AmbHV4kWm+gDA6xWLy6kT8ZE=",
+          "externalShareFullVideoDurationInSeconds": 0
+        },
+        "messageContextInfo": {
+          "messageSecret": "uJHSHCcxOmiOYX286UmJQ5xn8ITK8N/GOke5Wv1K4y8="
+        }
+      },
+      "verifiedBizName": "דוד וינטר"
+    }
+  ]
+}

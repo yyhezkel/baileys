@@ -1,0 +1,52 @@
+{
+  "event": "messages.upsert",
+  "type": "notify",
+  "timestamp": "2025-10-24T01:04:54.635Z",
+  "sessionId": "test1",
+  "messages": [
+    {
+      "key": {
+        "remoteJid": "120363297875814638@g.us",
+        "fromMe": false,
+        "id": "A51B7F5246C83EE964B900D644B5E90E",
+        "participant": "91156788555863@lid",
+        "participantAlt": "972559287580@s.whatsapp.net",
+        "addressingMode": "lid"
+      },
+      "messageTimestamp": 1761267893,
+      "pushName": "אין עוד מלבדו...!!",
+      "broadcast": false,
+      "message": {
+        "stickerMessage": {
+          "url": "https://mmg.whatsapp.net/v/t62.15575-24/533524054_851853463936561_5843337652028825639_n.enc?ccb=11-4&oh=01_Q5Aa2wGxZq07klq7try9n2MphhsuOtOB-tS_xhP5V2Jx81RGbg&oe=69225D7B&_nc_sid=5e03e0&mms3=true",
+          "fileSha256": "6LDqWQ0XSlpk+EMpTg/uKGGb8201og8ZGeWDZOtKVBc=",
+          "fileEncSha256": "dlMHM22v4AxkRb+u/6mqiOS912tJO194Psd/8Kg9nmg=",
+          "mediaKey": "LwGolYZVB3QFcZP2yakCHrOU8hQbqkrq87Ynnh1cgwE=",
+          "mimetype": "image/webp",
+          "height": 64,
+          "width": 64,
+          "directPath": "/v/t62.15575-24/533524054_851853463936561_5843337652028825639_n.enc?ccb=11-4&oh=01_Q5Aa2wGxZq07klq7try9n2MphhsuOtOB-tS_xhP5V2Jx81RGbg&oe=69225D7B&_nc_sid=5e03e0",
+          "fileLength": "473050",
+          "mediaKeyTimestamp": "1761267891",
+          "firstFrameLength": 472650,
+          "firstFrameSidecar": "1G0N0QqCmFAOKw==",
+          "isAnimated": true,
+          "contextInfo": {
+            "expiration": 86400,
+            "disappearingMode": {
+              "initiator": "CHANGED_IN_CHAT",
+              "trigger": "UNKNOWN"
+            }
+          },
+          "stickerSentTs": "1761267891100",
+          "isAvatar": false,
+          "isAiSticker": false,
+          "isLottie": false
+        },
+        "messageContextInfo": {
+          "messageSecret": "FMrmCzOXGyIOHm4QbI5lrsoMAXjYwZPU/ohuHAG/4xg="
+        }
+      }
+    }
+  ]
+}

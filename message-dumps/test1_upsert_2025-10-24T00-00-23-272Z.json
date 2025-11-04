@@ -1,0 +1,37 @@
+{
+  "event": "messages.upsert",
+  "type": "append",
+  "timestamp": "2025-10-24T00:00:23.273Z",
+  "sessionId": "test1",
+  "messages": [
+    {
+      "key": {
+        "remoteJid": "status@broadcast",
+        "fromMe": true,
+        "id": "3EB068DAE7D8DE27BB4AEB"
+      },
+      "message": {
+        "imageMessage": {
+          "url": "https://mmg.whatsapp.net/o1/v/t24/f2/m238/AQN4bUkwl995f7ff35mjj6EnzLplJlUPXdfPI99gCjj1cfnJ7RiFclnAE9jDGEQE4chZEgez8481cpDrdW-kP4JeqXAaFhExOeVwqcM18g?ccb=9-4&oh=01_Q5Aa2wF2vObYKa87b91vQIQldDBRjVSRr1tvs3M9OF2a241Nvw&oe=6922232A&_nc_sid=e6ed6c&mms3=true",
+          "mimetype": "image/jpeg",
+          "caption": "Check this out! 📸",
+          "fileSha256": "7twxAOadwkhdKTRCMVtuI5BYdvzEV/HVQzwPo1FRVNY=",
+          "fileLength": "271709",
+          "mediaKey": "jBpHxz+wq2aoE8MIm++SinxSXq5ruIYO2ga0l3FSxGs=",
+          "fileEncSha256": "tkp4rdbmkN3/epUXDzlpjDxez6JJmVVsLYC5FULO/TE=",
+          "directPath": "/o1/v/t24/f2/m238/AQN4bUkwl995f7ff35mjj6EnzLplJlUPXdfPI99gCjj1cfnJ7RiFclnAE9jDGEQE4chZEgez8481cpDrdW-kP4JeqXAaFhExOeVwqcM18g?ccb=9-4&oh=01_Q5Aa2wF2vObYKa87b91vQIQldDBRjVSRr1tvs3M9OF2a241Nvw&oe=6922232A&_nc_sid=e6ed6c",
+          "mediaKeyTimestamp": "1761264022",
+          "contextInfo": {
+            "forwardingScore": 0,
+            "featureEligibilities": {
+              "canBeReshared": true
+            }
+          }
+        }
+      },
+      "messageTimestamp": "1761264022",
+      "status": "PENDING",
+      "participant": "972542822755:29@s.whatsapp.net"
+    }
+  ]
+}

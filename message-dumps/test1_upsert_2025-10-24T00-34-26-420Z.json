@@ -1,0 +1,61 @@
+{
+  "event": "messages.upsert",
+  "type": "notify",
+  "timestamp": "2025-10-24T00:34:26.420Z",
+  "sessionId": "test1",
+  "messages": [
+    {
+      "key": {
+        "remoteJid": "status@broadcast",
+        "remoteJidAlt": "73001575948471@lid",
+        "fromMe": false,
+        "id": "A549DCDAB0D118D2BEBD99E57A7A1462",
+        "participant": "972509761045@s.whatsapp.net",
+        "addressingMode": "pn"
+      },
+      "messageTimestamp": 1761266064,
+      "pushName": "שלמה רבינוביץ",
+      "broadcast": true,
+      "message": {
+        "senderKeyDistributionMessage": {
+          "groupId": "status@broadcast",
+          "axolotlSenderKeyDistributionMessage": "MwiYjZsxEAAaIG2LRJXMlOEadNeA9nZmlz7fyXJssGeCEXNI8lmSPx26IiEFa3Qrp2jRTkRplm4Pjy7Wa9Nd3NaHmbPg2jrGQGlls30="
+        },
+        "imageMessage": {
+          "url": "https://mmg.whatsapp.net/o1/v/t24/f2/m231/AQOOKB2EPlJW5VlHruh-LS-Yiv3I03Hsip1hMHtaMMEN_kzgcccipQKAEqz_F4RewSJ61WEDH81oPrqrVaZLahMh-MorlmdPe8AnD0EZXA?ccb=9-4&oh=01_Q5Aa2wEwn7-KSpHg0LHLdy7XoF4pFJMBWzJOAoDAUnloNroH3w&oe=69224B0B&_nc_sid=e6ed6c&mms3=true",
+          "mimetype": "image/jpeg",
+          "caption": "חזרנו שוב פעם הערב 🤩",
+          "fileSha256": "NZOmWM3nxP5tC52Nflv22jbqqwRaRbvBUgkBNt9ov1g=",
+          "fileLength": "226132",
+          "height": 2000,
+          "width": 1500,
+          "mediaKey": "rMvBjj0OdxBVUZyd/vmq/wqHGY84ycXCXm6pH1jXwUo=",
+          "fileEncSha256": "I1FTd5FlizXd823+O0PXgaw/AA2ozt0cEmJ8bDvchX0=",
+          "directPath": "/o1/v/t24/f2/m231/AQOOKB2EPlJW5VlHruh-LS-Yiv3I03Hsip1hMHtaMMEN_kzgcccipQKAEqz_F4RewSJ61WEDH81oPrqrVaZLahMh-MorlmdPe8AnD0EZXA?ccb=9-4&oh=01_Q5Aa2wEwn7-KSpHg0LHLdy7XoF4pFJMBWzJOAoDAUnloNroH3w&oe=69224B0B&_nc_sid=e6ed6c",
+          "mediaKeyTimestamp": "1761266058",
+          "jpegThumbnail": "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",
+          "contextInfo": {
+            "forwardingScore": 0,
+            "featureEligibilities": {
+              "canBeReshared": true
+            },
+            "pairedMediaType": "NOT_PAIRED_MEDIA",
+            "statusSourceType": "IMAGE"
+          },
+          "scansSidecar": "lUEqANTeIJSRtBsW6nBhh9aIsZxTt4DVUHrhBv9rNbLTFjc59sfNcg==",
+          "scanLengths": [
+            22966,
+            72562,
+            42437,
+            88167
+          ],
+          "midQualityFileSha256": "unszQzscWIoX/gL4D+ijiveVf76+2Q0pyqGR8c/xVis="
+        },
+        "messageContextInfo": {
+          "messageSecret": "Ti7tkkxZAbl52W1lrjo5UfWoh56lu242eQ+wS4kjW8I="
+        }
+      },
+      "verifiedBizName": "שלמה רבינוביץ"
+    }
+  ]
+}

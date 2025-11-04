@@ -1,0 +1,53 @@
+{
+  "event": "messages.upsert",
+  "type": "notify",
+  "timestamp": "2025-10-24T00:21:22.780Z",
+  "sessionId": "test1",
+  "messages": [
+    {
+      "key": {
+        "remoteJid": "status@broadcast",
+        "remoteJidAlt": "54061390921900@lid",
+        "fromMe": false,
+        "id": "ACA2ED0ADB4272ABD5AAC6E7F0F4C46B",
+        "participant": "972527077048@s.whatsapp.net",
+        "addressingMode": "pn"
+      },
+      "messageTimestamp": 1761265282,
+      "pushName": "ברכי מרקסון.מטפלתבטראומות",
+      "broadcast": true,
+      "message": {
+        "extendedTextMessage": {
+          "text": "https://vt.tiktok.com/ZSUvrLXKu/",
+          "matchedText": "https://vt.tiktok.com/ZSUvrLXKu/",
+          "description": "‏7698 לייקים, 94 תגובות. צפה/י בסרטון של liorasveta8.",
+          "title": "‏TikTok · liorasveta8",
+          "textArgb": 4294967295,
+          "backgroundArgb": 4287670337,
+          "font": "SYSTEM",
+          "previewType": "NONE",
+          "jpegThumbnail": "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",
+          "contextInfo": {
+            "statusSourceType": "TEXT"
+          },
+          "thumbnailDirectPath": "/v/t62.36144-24/533788154_2365368903895970_3693865435489609928_n.enc?ccb=11-4&oh=01_Q5Aa2wEMVc7mjl9s7WGDY3X6VqPe5ISdRFKHBRBZoXUyRCzMgA&oe=69223215&_nc_sid=5e03e0",
+          "thumbnailSha256": "2HlpeFAyNBg/Qmlb8XhmWlaaMC3aBOv5jAw+ct0qIxg=",
+          "thumbnailEncSha256": "sINtweYyBHi259gRdyCX8eqP+WPOrPM69aqJVF0gMdA=",
+          "mediaKey": "HTw8FZ5B0u3nyQMrBLvciooYBSquAEIATjZfnyu32Io=",
+          "mediaKeyTimestamp": "1761259322",
+          "thumbnailHeight": 629,
+          "thumbnailWidth": 630,
+          "inviteLinkGroupTypeV2": "DEFAULT"
+        },
+        "messageContextInfo": {
+          "deviceListMetadata": {
+            "recipientKeyHash": "dnOIj6hsaNLv7w==",
+            "recipientTimestamp": "1761260196"
+          },
+          "deviceListMetadataVersion": 2,
+          "messageSecret": "ew2OYDhORW2oH0cUDtG/V6/Bc/UJd5Df+yPzEq6DNG8="
+        }
+      }
+    }
+  ]
+}

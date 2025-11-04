@@ -1,0 +1,11 @@
+{
+  "event": "messaging-history.set",
+  "timestamp": "2025-10-24T02:16:06.614Z",
+  "sessionId": "test1",
+  "syncType": 1,
+  "isLatest": false,
+  "totalMessages": 0,
+  "totalChats": 0,
+  "messages": [],
+  "chats": []
+}

@@ -1,0 +1,28 @@
+{
+  "event": "messages.upsert",
+  "type": "append",
+  "timestamp": "2025-10-24T00:20:01.130Z",
+  "sessionId": "test1",
+  "messages": [
+    {
+      "key": {
+        "remoteJid": "status@broadcast",
+        "fromMe": true,
+        "id": "3EB07DE79D066C276C9150"
+      },
+      "message": {
+        "protocolMessage": {
+          "key": {
+            "remoteJid": "status@broadcast",
+            "fromMe": true,
+            "id": "3EB068DAE7D8DE27BB4AEB"
+          },
+          "type": "REVOKE"
+        }
+      },
+      "messageTimestamp": "1761265200",
+      "status": "PENDING",
+      "participant": "972542822755:29@s.whatsapp.net"
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "event": "messages.upsert",
+  "type": "notify",
+  "timestamp": "2025-10-24T02:17:30.621Z",
+  "sessionId": "test1",
+  "messages": [
+    {
+      "key": {
+        "remoteJid": "972542822755@s.whatsapp.net",
+        "fromMe": false,
+        "id": "ACA9A3C0F1BA6E99FAB5655B46A6DE8E",
+        "participant": "",
+        "addressingMode": "pn"
+      },
+      "messageTimestamp": 1761272249,
+      "broadcast": false,
+      "message": {
+        "protocolMessage": {
+          "type": "HISTORY_SYNC_NOTIFICATION",
+          "historySyncNotification": {
+            "fileSha256": "VjxfmV26kTVsBkJcNU8Ux4EtDUmZ1K97sWLcYWODJPI=",
+            "fileLength": "1338928",
+            "mediaKey": "4sD/h25ZhpW7S+Rp8TJVQaY5fbAdtNEMYzVkFWT8/10=",
+            "fileEncSha256": "s17ChmVnJU6UEx2R366CTrsvv8BQitwCgnj14NiiLC0=",
+            "directPath": "/v/t62.31111-24/533495078_810002165215691_6572877451049471329_n.enc?ccb=11-4&oh=01_Q5Aa2wFYsM2ZODqpXwAa8JMsMOEYDJQSgFQTSUR_dEm6FQIAzQ&oe=692269CD&_nc_sid=5e03e0",
+            "syncType": "RECENT",
+            "chunkOrder": 8,
+            "progress": 98,
+            "oldestMsgInChunkTimestampSec": "1758284089",
+            "encHandle": "AQKpBSRem9u3JIVH7QbvNm1MmDby9pNcdCmcDJr6gBOz-tQPtCx_mFpB8vXIv2zRaTmN6ongkrzqhwnau-ki8IPN1TYUSCOMoH6zniYuCtuswTtBHTfhy5A4Kn02fygkfGI"
+          }
+        }
+      }
+    }
+  ]
+}

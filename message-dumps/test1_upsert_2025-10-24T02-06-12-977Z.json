@@ -1,0 +1,42 @@
+{
+  "event": "messages.upsert",
+  "type": "notify",
+  "timestamp": "2025-10-24T02:06:12.977Z",
+  "sessionId": "test1",
+  "messages": [
+    {
+      "key": {
+        "remoteJid": "120363297936235668@g.us",
+        "fromMe": false,
+        "id": "A571F89F576BF049F59F49E1947B7DCF",
+        "participant": "91156788555863@lid",
+        "participantAlt": "972559287580@s.whatsapp.net",
+        "addressingMode": "lid"
+      },
+      "messageTimestamp": 1761271572,
+      "pushName": "אין עוד מלבדו...!!",
+      "broadcast": false,
+      "message": {
+        "senderKeyDistributionMessage": {
+          "groupId": "120363297936235668@g.us",
+          "axolotlSenderKeyDistributionMessage": "MwjhktfmAhAFGiBQYCxEf7ohnavpv/ij3oLdeaNVnAnvzviSEmw1B25f2iIhBSIkRQjNGKiWyTIj5F1xZ+3917TKrW5H7qXoRHyR2xEh"
+        },
+        "messageContextInfo": {
+          "messageSecret": "5iwIwM7WpuJUS2ErfE62K9i1w3AcrS3YnR34zE5JKww="
+        },
+        "albumMessage": {
+          "expectedImageCount": 1,
+          "expectedVideoCount": 22,
+          "contextInfo": {
+            "expiration": 86400,
+            "disappearingMode": {
+              "initiator": "CHANGED_IN_CHAT",
+              "trigger": "UNKNOWN"
+            }
+          }
+        }
+      },
+      "verifiedBizName": "אין עוד מלבדו...!!"
+    }
+  ]
+}

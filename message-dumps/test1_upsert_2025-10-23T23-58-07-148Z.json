@@ -1,0 +1,52 @@
+{
+  "event": "messages.upsert",
+  "type": "notify",
+  "timestamp": "2025-10-23T23:58:07.148Z",
+  "sessionId": "test1",
+  "messages": [
+    {
+      "key": {
+        "remoteJid": "status@broadcast",
+        "remoteJidAlt": "177356497014882@lid",
+        "fromMe": false,
+        "id": "A5673ABEA74442EDAEC9A62A737E4416",
+        "participant": "972548861231@s.whatsapp.net",
+        "addressingMode": "pn"
+      },
+      "messageTimestamp": 1761263885,
+      "pushName": "עזרא טרבלסי אפקט פלוס",
+      "broadcast": true,
+      "message": {
+        "imageMessage": {
+          "url": "https://mmg.whatsapp.net/o1/v/t24/f2/m237/AQMpWyYHrvxDUWSMZmYDcr6_XgxDWWhaCXPDhVwEInIlHRAyWjUhqIdmHQc0hzOe39MED0CL5vmD5HmohCMyBU6wDl6S4IEIBl7iLHxb2Q?ccb=9-4&oh=01_Q5Aa2wEgCerl3VepXOgcn6Ua-rmsSH5ryNNv3LKq7Cq0oj4wHg&oe=69221E78&_nc_sid=e6ed6c&mms3=true",
+          "mimetype": "image/jpeg",
+          "fileSha256": "9WrTq8RRam47Avizbon1WArea3y1siaZUfdGza86Rh0=",
+          "fileLength": "170812",
+          "height": 1600,
+          "width": 1200,
+          "mediaKey": "61UVsFjvAYBLXU6IGAZpF9JvQSszeER6HITd90PVMQw=",
+          "fileEncSha256": "wHZXuF2MGUjjA2lOuXpXnxPzEFV7AssOGgaVH6syb6Q=",
+          "directPath": "/o1/v/t24/f2/m237/AQMpWyYHrvxDUWSMZmYDcr6_XgxDWWhaCXPDhVwEInIlHRAyWjUhqIdmHQc0hzOe39MED0CL5vmD5HmohCMyBU6wDl6S4IEIBl7iLHxb2Q?ccb=9-4&oh=01_Q5Aa2wEgCerl3VepXOgcn6Ua-rmsSH5ryNNv3LKq7Cq0oj4wHg&oe=69221E78&_nc_sid=e6ed6c&_nc_hot=1761263875",
+          "mediaKeyTimestamp": "1761254439",
+          "jpegThumbnail": "/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEABsbGxscGx4hIR4qLSgtKj04MzM4PV1CR0JHQl2NWGdYWGdYjX2Xe3N7l33gsJycsOD/2c7Z//////////////8BGxsbGxwbHiEhHiotKC0qPTgzMzg9XUJHQkdCXY1YZ1hYZ1iNfZd7c3uXfeCwnJyw4P/Zztn////////////////CABEIAD4ALgMBIgACEQEDEQH/xAAvAAADAQEBAQAAAAAAAAAAAAADBAUCAQYAAQADAQAAAAAAAAAAAAAAAAABAgMA/9oADAMBAAIQAxAAAACl2IcN8sxhHpQq6S6sRdZlGacaNHpZrBUkawpXTFfRz5mN6lOjWeBZZUgIFk7mdcw//8QAJBAAAgICAgAGAwAAAAAAAAAAAQIAAxESBCEFEyIxUXEQMmH/2gAIAQEAAT8AUFR2eodTOUVTJ26Mq5BPoqWVpUF/XBM5yKt2oMa9wdOyYtPKK79/UvosdMaY6nAq1fIjCwOfWCJdUj2FmlaUA5UAmXW+WhJltzW2IMH+kQDS0t8zKN2U+5bcAxCAiV1lcATxG0BQkr5BCAKO41h9O2BF5nlWhGXIgrpcBwgOZnE5NTaOCcktONx23nN3W2Vo1rAAHM46GupVJncuqLMIq11DVfecqtbHG04vG1bbH4WwFcx0dsnaVqCuW955ae+Ip+OiJkknMrYM7DEPQiMS5EAhGGzGE//EABsRAQEBAAMBAQAAAAAAAAAAAAERAAIDIRAS/9oACAECAQE/ALmHuOSNTzVTdhyabq60Krm79zmXW6/f/8QAHREAAQUBAAMAAAAAAAAAAAAAAQACERIxEAMhIv/aAAgBAwEBPwCFc1rCIEam6F6aU5wXjrb6xPIMxzCjz//Z",
+          "contextInfo": {
+            "forwardingScore": 1,
+            "isForwarded": true,
+            "pairedMediaType": "NOT_PAIRED_MEDIA"
+          },
+          "scansSidecar": "SJYu0WvqkLfLxLD4pmfgCBtqeDzh05vjIsrr5QGFt6ROSXOTkE8SIQ==",
+          "scanLengths": [
+            22037,
+            67376,
+            29770,
+            51629
+          ],
+          "midQualityFileSha256": "1odtVOcTLD+EIkmKRg7cgRxVpFbjFfGCCi99vUneIVU="
+        },
+        "messageContextInfo": {
+          "messageSecret": "LmqG5fNeI/dMFSlcsArJz+ry/Bw2yE0Y/Q2ZOJDfQBA="
+        }
+      }
+    }
+  ]
+}

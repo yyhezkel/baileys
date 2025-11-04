@@ -1,0 +1,42 @@
+{
+  "event": "messages.upsert",
+  "type": "notify",
+  "timestamp": "2025-10-23T23:32:36.115Z",
+  "sessionId": "test1",
+  "messages": [
+    {
+      "key": {
+        "remoteJid": "status@broadcast",
+        "remoteJidAlt": "190666718081229@lid",
+        "fromMe": false,
+        "id": "AC18E6D6F5C599C8C1225DEF5C08C131",
+        "participant": "972587686900@s.whatsapp.net",
+        "addressingMode": "pn"
+      },
+      "messageTimestamp": 1761262355,
+      "pushName": "ישראל",
+      "broadcast": true,
+      "message": {
+        "senderKeyDistributionMessage": {
+          "groupId": "status@broadcast",
+          "axolotlSenderKeyDistributionMessage": "MwiN48azBRADGiCELZEGP6tqWV31PSx2bn9aC06VPak3BROw56WbUtioriIhBZVyiYA4MGVRdfy1wxK/+aX95+tSlc6VuoMGvrHTak5v"
+        },
+        "protocolMessage": {
+          "key": {
+            "remoteJid": "status@broadcast",
+            "fromMe": true,
+            "id": "AC5A0FF9F560DAD3444DD88F2CA190B8"
+          },
+          "type": "REVOKE"
+        },
+        "messageContextInfo": {
+          "deviceListMetadata": {
+            "recipientKeyHash": "dnOIj6hsaNLv7w==",
+            "recipientTimestamp": "1761260196"
+          },
+          "deviceListMetadataVersion": 2
+        }
+      }
+    }
+  ]
+}

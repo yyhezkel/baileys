@@ -1,0 +1,46 @@
+{
+  "event": "messages.upsert",
+  "type": "notify",
+  "timestamp": "2025-10-23T23:32:50.758Z",
+  "sessionId": "test1",
+  "messages": [
+    {
+      "key": {
+        "remoteJid": "status@broadcast",
+        "remoteJidAlt": "22724789416173@lid",
+        "fromMe": true,
+        "id": "AC07FF9ABF25CD8B5127B0354F09E5FC",
+        "participant": "972542822755@s.whatsapp.net",
+        "addressingMode": "pn"
+      },
+      "messageTimestamp": 1761262370,
+      "pushName": "Yossi Yehezkel",
+      "broadcast": true,
+      "status": 2,
+      "message": {
+        "senderKeyDistributionMessage": {
+          "groupId": "status@broadcast",
+          "axolotlSenderKeyDistributionMessage": "MwiA8eTnBxAIGiA/BHEodEzVkm/W6imJ7r/t+Zeydr8MMf+BOhU5NWhNOiIhBRDZGFZmiF/o1ptSVMGSla6xcnpWivOL9T1sgrNRiKZu"
+        },
+        "extendedTextMessage": {
+          "text": ".",
+          "textArgb": 4294967295,
+          "backgroundArgb": 4249710040,
+          "font": "SYSTEM",
+          "previewType": "NONE",
+          "contextInfo": {
+            "forwardingScore": 0,
+            "featureEligibilities": {
+              "canBeReshared": true
+            },
+            "statusSourceType": "TEXT"
+          },
+          "inviteLinkGroupTypeV2": "DEFAULT"
+        },
+        "messageContextInfo": {
+          "messageSecret": "R8zpxyzv/u4z5bspN/xVSH7po47XLbJa9TIpEgRg7Rk="
+        }
+      }
+    }
+  ]
+}

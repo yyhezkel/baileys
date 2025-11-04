@@ -1,0 +1,57 @@
+{
+  "event": "messages.upsert",
+  "type": "notify",
+  "timestamp": "2025-10-24T01:01:58.599Z",
+  "sessionId": "test1",
+  "messages": [
+    {
+      "key": {
+        "remoteJid": "558699671739-1613580002@g.us",
+        "fromMe": false,
+        "id": "A513DD6E156D8D5A5931A94BDF229C6F",
+        "participant": "279181481001019@lid",
+        "participantAlt": "559492555642@s.whatsapp.net",
+        "addressingMode": "lid"
+      },
+      "messageTimestamp": 1761267717,
+      "pushName": "Bispo",
+      "broadcast": false,
+      "message": {
+        "senderKeyDistributionMessage": {
+          "groupId": "558699671739-1613580002@g.us",
+          "axolotlSenderKeyDistributionMessage": "MwiqhfpmEAQaIJ10zHxet5QU3eonfHmw/uY1Pp2gfr/rO0U8zc0aqTo8IiEFz70dhinoAD/NeW9jDrFCxZe9hdghMsTRCWbthWMU3Ck="
+        },
+        "imageMessage": {
+          "url": "https://mmg.whatsapp.net/o1/v/t24/f2/m269/AQPxqkWIeOqdLIgW_5g7dxP_u8_3xsBDyVOpNiDGmxIaOxxM4HfG3koamkfm2ppqGUgCclOYJkKiCz-TPOXf8E_GYzgHGxodNU4fLcb9ZQ?ccb=9-4&oh=01_Q5Aa2wFyzR3S03G-EuhbzJQDuuD3pFAyjNLf4mcDbuXmGts_Ow&oe=69222ABB&_nc_sid=e6ed6c&mms3=true",
+          "mimetype": "image/jpeg",
+          "caption": "Alguém pode me dizer pq extrações de grupos de whatsapp os números estão vindo assim?",
+          "fileSha256": "RnlmYPAtZpjERaBhqqsI35mQsrhyD4HPJUsD/uRRjM0=",
+          "fileLength": "336543",
+          "height": 1600,
+          "width": 900,
+          "mediaKey": "r4qkoiesYp88dmRtFDLuREKeriUt3gPEQYsHud1EVxI=",
+          "fileEncSha256": "GAsCe0voVpaeH8PwQRy5bTjuLW12j8zSvDmhqwDegss=",
+          "directPath": "/o1/v/t24/f2/m269/AQPxqkWIeOqdLIgW_5g7dxP_u8_3xsBDyVOpNiDGmxIaOxxM4HfG3koamkfm2ppqGUgCclOYJkKiCz-TPOXf8E_GYzgHGxodNU4fLcb9ZQ?ccb=9-4&oh=01_Q5Aa2wFyzR3S03G-EuhbzJQDuuD3pFAyjNLf4mcDbuXmGts_Ow&oe=69222ABB&_nc_sid=e6ed6c",
+          "mediaKeyTimestamp": "1761267711",
+          "jpegThumbnail": "/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEABsbGxscGx4hIR4qLSgtKj04MzM4PV1CR0JHQl2NWGdYWGdYjX2Xe3N7l33gsJycsOD/2c7Z//////////////8BGxsbGxwbHiEhHiotKC0qPTgzMzg9XUJHQkdCXY1YZ1hYZ1iNfZd7c3uXfeCwnJyw4P/Zztn////////////////CABEIAEUAJwMBIgACEQEDEQH/xAAsAAADAQEBAAAAAAAAAAAAAAAAAgMEAQUBAQEAAAAAAAAAAAAAAAAAAAAB/9oADAMBAAIQAxAAAAD1BllZ06UGCaEirxcucCCzSND5nNJEM8idlaSYuTDKoDMB0A//xAAeEAEAAgIDAQEBAAAAAAAAAAABAAIRIQMQEjFBUf/aAAgBAQABPwC5UctkleShv0uY83GfsretvnXILjRKFcYfOSYEW3mUH1nJ0zyH5XcR/lcSn386uoahyLtD7G6rUDU4XOXXSvlnt1mrFthZR11dfOmG3akrbdtyltszGxiVc5hklGGZayjKhU3C0q/2FsTMXHVVxMz/xAAUEQEAAAAAAAAAAAAAAAAAAAAw/9oACAECAQE/AH//xAAWEQADAAAAAAAAAAAAAAAAAAARIDD/2gAIAQMBAT8AkV//2Q==",
+          "contextInfo": {
+            "pairedMediaType": "NOT_PAIRED_MEDIA",
+            "statusSourceType": "IMAGE"
+          },
+          "scansSidecar": "bWMXZ9Fc2PJIY7Km2a6styZ82aBt9YwgDsmuZzXOrtZva+AI0HYSUg==",
+          "scanLengths": [
+            15466,
+            132261,
+            73081,
+            115735
+          ],
+          "midQualityFileSha256": "Lb2Y26Ir5QSBvyv8zYKa9iMlA0eUd+/hI3TWraBoj2c="
+        },
+        "messageContextInfo": {
+          "messageSecret": "K8wMcLHGuxwkOehLJLpNM5C7NT3VQLZnUVb93RLN/58="
+        }
+      },
+      "verifiedBizName": "Bispo"
+    }
+  ]
+}
