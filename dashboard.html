@@ -560,6 +560,105 @@
             color: var(--text-muted);
             margin-bottom: 1.5rem;
         }
+
+        /* Tab buttons */
+        .tab-btn.active {
+            color: var(--primary) !important;
+            border-bottom-color: var(--primary) !important;
+        }
+
+        /* Filters */
+        .filters-row {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        /* Analytics grid */
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .analytics-card {
+            background: var(--bg-main);
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .analytics-card-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .analytics-card-label {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        /* Viewer list */
+        .viewer-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .viewer-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .viewer-item:last-child {
+            border-bottom: none;
+        }
+
+        /* Log entry */
+        .log-entry {
+            padding: 0.75rem;
+            border-left: 3px solid var(--border);
+            margin-bottom: 0.5rem;
+            background: var(--bg-main);
+            border-radius: 4px;
+        }
+
+        .log-entry.info {
+            border-left-color: var(--info);
+        }
+
+        .log-entry.success {
+            border-left-color: var(--success);
+        }
+
+        .log-entry.warning {
+            border-left-color: var(--warning);
+        }
+
+        .log-entry.error {
+            border-left-color: var(--error);
+        }
+
+        .log-timestamp {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 0.25rem;
+        }
+
+        .log-message {
+            font-size: 0.875rem;
+        }
     </style>
 </head>
 <body>
@@ -655,10 +754,29 @@
                     </div>
                 </div>
 
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 1.5rem; margin-bottom: 1.5rem;">
+                    <div class="card">
+                        <h2 style="margin-bottom: 1rem; font-size: 1.25rem;">Story Engagement (Last 7 Days)</h2>
+                        <div class="chart-container">
+                            <canvas id="engagementChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h2 style="margin-bottom: 1rem; font-size: 1.25rem;">Story Type Distribution</h2>
+                        <div class="chart-container">
+                            <canvas id="typeDistributionChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="card">
-                    <h2 style="margin-bottom: 1rem; font-size: 1.25rem;">Story Engagement (Last 7 Days)</h2>
-                    <div class="chart-container">
-                        <canvas id="engagementChart"></canvas>
+                    <h2 style="margin-bottom: 1rem; font-size: 1.25rem;">Top Performing Stories</h2>
+                    <div id="top-stories-list">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                            Loading top stories...
+                        </div>
                     </div>
                 </div>
 
@@ -706,6 +824,37 @@
                         <button class="btn btn-primary" onclick="showPostStoryModal()">
                             <span>➕</span> Post Story
                         </button>
+                    </div>
+                </div>
+
+                <!-- Filters -->
+                <div class="card" style="margin-bottom: 1.5rem;">
+                    <div class="filters-row">
+                        <div class="filter-group">
+                            <label class="form-label">Session</label>
+                            <select class="form-select" id="filter-session" onchange="applyStoryFilters()">
+                                <option value="">All Sessions</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="form-label">Type</label>
+                            <select class="form-select" id="filter-type" onchange="applyStoryFilters()">
+                                <option value="">All Types</option>
+                                <option value="text">Text</option>
+                                <option value="image">Image</option>
+                                <option value="video">Video</option>
+                                <option value="audio">Audio</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="form-label">Search</label>
+                            <input type="text" class="form-input" id="filter-search" placeholder="Search stories..." oninput="applyStoryFilters()">
+                        </div>
+                        <div class="filter-group" style="display: flex; align-items: flex-end;">
+                            <button class="btn btn-secondary" onclick="clearStoryFilters()" style="width: 100%;">
+                                Clear Filters
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -798,6 +947,136 @@
         </main>
     </div>
 
+    <!-- Post Story Modal -->
+    <div class="modal" id="postStoryModal">
+        <div class="modal-content" style="max-width: 700px;">
+            <div class="modal-header">
+                <h2 class="modal-title">Post Story</h2>
+                <button class="close-btn" onclick="closeModal('postStoryModal')">×</button>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Select Session</label>
+                <select class="form-select" id="story-session-select">
+                    <option value="">Select Session</option>
+                </select>
+            </div>
+
+            <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border);">
+                <button class="tab-btn active" data-tab="text" onclick="switchStoryTab('text')" style="flex: 1; padding: 0.75rem; border: none; background: transparent; cursor: pointer; border-bottom: 2px solid transparent; color: var(--text-muted); font-weight: 600; transition: all 0.2s;">
+                    📝 Text
+                </button>
+                <button class="tab-btn" data-tab="image" onclick="switchStoryTab('image')" style="flex: 1; padding: 0.75rem; border: none; background: transparent; cursor: pointer; border-bottom: 2px solid transparent; color: var(--text-muted); font-weight: 600; transition: all 0.2s;">
+                    🖼️ Image
+                </button>
+                <button class="tab-btn" data-tab="video" onclick="switchStoryTab('video')" style="flex: 1; padding: 0.75rem; border: none; background: transparent; cursor: pointer; border-bottom: 2px solid transparent; color: var(--text-muted); font-weight: 600; transition: all 0.2s;">
+                    🎥 Video
+                </button>
+            </div>
+
+            <div class="story-tab-content active" data-content="text">
+                <div class="form-group">
+                    <label class="form-label">Text Content</label>
+                    <textarea class="form-input" id="story-text" rows="4" placeholder="Enter your story text..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Background Color (optional)</label>
+                    <input type="color" class="form-input" id="story-bg-color" value="#25D366">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Font Style</label>
+                    <select class="form-select" id="story-font">
+                        <option value="0">Default</option>
+                        <option value="1">Serif</option>
+                        <option value="2">Sans Serif</option>
+                        <option value="3">Typewriter</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="story-tab-content" data-content="image" style="display: none;">
+                <div class="form-group">
+                    <label class="form-label">Image URL</label>
+                    <input type="url" class="form-input" id="story-image-url" placeholder="https://example.com/image.jpg">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Caption (optional)</label>
+                    <input type="text" class="form-input" id="story-image-caption" placeholder="Add a caption...">
+                </div>
+            </div>
+
+            <div class="story-tab-content" data-content="video" style="display: none;">
+                <div class="form-group">
+                    <label class="form-label">Video URL</label>
+                    <input type="url" class="form-input" id="story-video-url" placeholder="https://example.com/video.mp4">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Caption (optional)</label>
+                    <input type="text" class="form-input" id="story-video-caption" placeholder="Add a caption...">
+                </div>
+                <div class="form-group">
+                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                        <input type="checkbox" id="story-split-video">
+                        <span class="form-label" style="margin: 0;">Split long videos (30s segments)</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Send To</label>
+                <select class="form-select" id="story-recipients">
+                    <option value="all">All Contacts</option>
+                    <option value="own">Own Device Only</option>
+                    <option value="custom">Custom List</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                    <input type="checkbox" id="story-can-reshare" checked>
+                    <span class="form-label" style="margin: 0;">Allow recipients to reshare</span>
+                </label>
+            </div>
+
+            <div style="display: flex; gap: 1rem;">
+                <button class="btn btn-secondary" style="flex: 1;" onclick="closeModal('postStoryModal')">Cancel</button>
+                <button class="btn btn-primary" style="flex: 1;" onclick="postStory()">Post Story</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Story Details Modal -->
+    <div class="modal" id="storyDetailsModal">
+        <div class="modal-content" style="max-width: 900px;">
+            <div class="modal-header">
+                <h2 class="modal-title">Story Analytics</h2>
+                <button class="close-btn" onclick="closeModal('storyDetailsModal')">×</button>
+            </div>
+            <div id="story-details-content">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    Loading story details...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Session Logs Modal -->
+    <div class="modal" id="logsModal">
+        <div class="modal-content" style="max-width: 800px;">
+            <div class="modal-header">
+                <h2 class="modal-title">Session Logs</h2>
+                <button class="close-btn" onclick="closeModal('logsModal')">×</button>
+            </div>
+            <div id="logs-content">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    Loading logs...
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Create Session Modal -->
     <div class="modal" id="createSessionModal">
         <div class="modal-content">
@@ -862,10 +1141,24 @@
             localStorage.setItem('theme', currentTheme);
             document.getElementById('themeIcon').textContent = currentTheme === 'dark' ? '🌙' : '☀️';
             document.getElementById('themeText').textContent = currentTheme === 'dark' ? 'Dark Mode' : 'Light Mode';
+
+            const isDark = currentTheme === 'dark';
+
+            // Update engagement chart
             if (engagementChart) {
-                engagementChart.options.scales.y.grid.color = currentTheme === 'dark' ? '#475569' : '#e2e8f0';
-                engagementChart.options.scales.x.grid.color = currentTheme === 'dark' ? '#475569' : '#e2e8f0';
+                engagementChart.options.scales.y.grid.color = isDark ? '#475569' : '#e2e8f0';
+                engagementChart.options.scales.x.grid.color = isDark ? '#475569' : '#e2e8f0';
+                engagementChart.options.plugins.legend.labels.color = isDark ? '#cbd5e1' : '#475569';
+                engagementChart.options.scales.y.ticks.color = isDark ? '#cbd5e1' : '#475569';
+                engagementChart.options.scales.x.ticks.color = isDark ? '#cbd5e1' : '#475569';
                 engagementChart.update();
+            }
+
+            // Update type distribution chart
+            if (typeDistributionChart) {
+                typeDistributionChart.data.datasets[0].borderColor = isDark ? '#1e293b' : '#ffffff';
+                typeDistributionChart.options.plugins.legend.labels.color = isDark ? '#cbd5e1' : '#475569';
+                typeDistributionChart.update();
             }
         }
 
@@ -1059,15 +1352,29 @@
             const data = await apiCall('/stories');
             if (data && data.stories) {
                 stories = data.stories;
+                allStories = [...stories];
+                filteredStories = [...stories];
+
+                // Populate session filter dropdown
+                const sessionFilter = document.getElementById('filter-session');
+                if (sessionFilter) {
+                    const uniqueSessions = [...new Set(stories.map(s => s.sessionId))];
+                    sessionFilter.innerHTML = '<option value="">All Sessions</option>' +
+                        uniqueSessions.map(id => `<option value="${id}">${id}</option>`).join('');
+                }
+
                 renderStories();
                 updateStats();
+                updateTypeDistribution();
+                loadTopStories();
             }
         }
 
         function renderStories() {
             const container = document.getElementById('stories-container');
+            const storiesToShow = filteredStories.length > 0 || allStories.length === 0 ? filteredStories : allStories;
 
-            if (stories.length === 0) {
+            if (storiesToShow.length === 0 && allStories.length === 0) {
                 container.innerHTML = `
                     <div class="empty-state">
                         <div class="empty-state-icon">📸</div>
@@ -1076,6 +1383,17 @@
                         <button class="btn btn-primary" onclick="showPostStoryModal()">
                             <span>➕</span> Post Story
                         </button>
+                    </div>
+                `;
+                return;
+            }
+
+            if (storiesToShow.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🔍</div>
+                        <div class="empty-state-title">No Stories Found</div>
+                        <div class="empty-state-text">Try adjusting your filters</div>
                     </div>
                 `;
                 return;
@@ -1097,7 +1415,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            ${stories.map(story => `
+                            ${storiesToShow.map(story => `
                                 <tr>
                                     <td>${story.sessionId}</td>
                                     <td><span class="status-badge info">${story.type}</span></td>
@@ -1120,14 +1438,215 @@
         }
 
         async function viewStoryDetails(storyId) {
+            document.getElementById('storyDetailsModal').classList.add('active');
+            const container = document.getElementById('story-details-content');
+
+            // Fetch story details
             const data = await apiCall(`/story/${storyId}/views`);
-            console.log('Story details:', data);
-            // TODO: Show modal with detailed story stats
+
+            if (!data || !data.story) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-state-text">Failed to load story details</div></div>';
+                return;
+            }
+
+            const story = data.story;
+
+            container.innerHTML = `
+                <div class="analytics-grid">
+                    <div class="analytics-card">
+                        <div class="analytics-card-value">${story.views.total}</div>
+                        <div class="analytics-card-label">Total Views</div>
+                    </div>
+                    <div class="analytics-card">
+                        <div class="analytics-card-value">${story.likes.total}</div>
+                        <div class="analytics-card-label">Likes</div>
+                    </div>
+                    <div class="analytics-card">
+                        <div class="analytics-card-value">${story.reactions.total}</div>
+                        <div class="analytics-card-label">Reactions</div>
+                    </div>
+                    <div class="analytics-card">
+                        <div class="analytics-card-value">${story.replies.total}</div>
+                        <div class="analytics-card-label">Replies</div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 1.5rem;">
+                    <h3 style="margin-bottom: 1rem; font-size: 1.125rem;">Story Information</h3>
+                    <div style="background: var(--bg-main); padding: 1rem; border-radius: 8px;">
+                        <div style="margin-bottom: 0.75rem;">
+                            <span style="color: var(--text-muted);">Session:</span>
+                            <span style="margin-left: 0.5rem; font-weight: 600;">${story.sessionId}</span>
+                        </div>
+                        <div style="margin-bottom: 0.75rem;">
+                            <span style="color: var(--text-muted);">Type:</span>
+                            <span class="status-badge info" style="margin-left: 0.5rem;">${story.type}</span>
+                        </div>
+                        <div style="margin-bottom: 0.75rem;">
+                            <span style="color: var(--text-muted);">Posted:</span>
+                            <span style="margin-left: 0.5rem;">${new Date(story.createdAt).toLocaleString()}</span>
+                        </div>
+                        <div>
+                            <span style="color: var(--text-muted);">Story ID:</span>
+                            <span style="margin-left: 0.5rem; font-family: monospace; font-size: 0.875rem;">${story.storyId}</span>
+                        </div>
+                    </div>
+                </div>
+
+                ${story.views.total > 0 ? `
+                    <div style="margin-top: 1.5rem;">
+                        <h3 style="margin-bottom: 1rem; font-size: 1.125rem;">Viewers (${story.views.total})</h3>
+                        <div class="viewer-list">
+                            ${story.views.viewers && story.views.viewers.length > 0 ? story.views.viewers.map(viewer => `
+                                <div class="viewer-item">
+                                    <div>
+                                        <div style="font-weight: 600;">${viewer.jid.split('@')[0]}</div>
+                                        <div style="font-size: 0.75rem; color: var(--text-muted);">
+                                            ${viewer.timestamp ? new Date(viewer.timestamp).toLocaleString() : 'Recently'}
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('') : '<div style="padding: 1rem; text-align: center; color: var(--text-muted);">No viewer details available</div>'}
+                        </div>
+                    </div>
+                ` : ''}
+
+                ${story.reactions.total > 0 ? `
+                    <div style="margin-top: 1.5rem;">
+                        <h3 style="margin-bottom: 1rem; font-size: 1.125rem;">Reactions</h3>
+                        <div style="background: var(--bg-main); padding: 1rem; border-radius: 8px;">
+                            <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                                ${Object.entries(story.reactions.breakdown || {}).map(([emoji, count]) => `
+                                    <div style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background: var(--bg-card); border-radius: 8px;">
+                                        <span style="font-size: 1.5rem;">${emoji}</span>
+                                        <span style="font-weight: 600;">${count}</span>
+                                    </div>
+                                `).join('') || '<div style="color: var(--text-muted);">No reaction details available</div>'}
+                            </div>
+                        </div>
+                    </div>
+                ` : ''}
+            `;
         }
 
         function showPostStoryModal() {
-            // TODO: Implement post story modal
-            alert('Post story feature coming soon!');
+            // Populate session dropdown
+            const select = document.getElementById('story-session-select');
+            const connectedSessions = Object.keys(sessions).filter(id => sessions[id].status === 'connected');
+
+            if (connectedSessions.length === 0) {
+                alert('Please create and connect a session first!');
+                return;
+            }
+
+            select.innerHTML = '<option value="">Select Session</option>' +
+                connectedSessions.map(id => `<option value="${id}">${id}</option>`).join('');
+
+            // Reset form
+            document.getElementById('story-text').value = '';
+            document.getElementById('story-image-url').value = '';
+            document.getElementById('story-video-url').value = '';
+            document.getElementById('story-image-caption').value = '';
+            document.getElementById('story-video-caption').value = '';
+            document.getElementById('story-recipients').value = 'all';
+            document.getElementById('story-can-reshare').checked = true;
+
+            // Show text tab by default
+            switchStoryTab('text');
+
+            document.getElementById('postStoryModal').classList.add('active');
+        }
+
+        function switchStoryTab(tab) {
+            // Update tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.tab === tab);
+            });
+
+            // Update tab content
+            document.querySelectorAll('.story-tab-content').forEach(content => {
+                content.style.display = content.dataset.content === tab ? 'block' : 'none';
+            });
+        }
+
+        async function postStory() {
+            const sessionId = document.getElementById('story-session-select').value;
+            if (!sessionId) {
+                alert('Please select a session');
+                return;
+            }
+
+            const activeTab = document.querySelector('.tab-btn.active').dataset.tab;
+            const recipients = document.getElementById('story-recipients').value;
+            const canBeReshared = document.getElementById('story-can-reshare').checked;
+
+            let endpoint, body;
+
+            if (activeTab === 'text') {
+                const text = document.getElementById('story-text').value;
+                if (!text) {
+                    alert('Please enter text content');
+                    return;
+                }
+
+                endpoint = '/story/text';
+                body = {
+                    sessionId,
+                    text,
+                    backgroundColor: document.getElementById('story-bg-color').value,
+                    font: parseInt(document.getElementById('story-font').value),
+                    send_to_all_contacts: recipients === 'all',
+                    send_to_own_device: recipients === 'own',
+                    canBeReshared
+                };
+            } else if (activeTab === 'image') {
+                const url = document.getElementById('story-image-url').value;
+                if (!url) {
+                    alert('Please enter an image URL');
+                    return;
+                }
+
+                endpoint = '/story/image';
+                body = {
+                    sessionId,
+                    url,
+                    caption: document.getElementById('story-image-caption').value,
+                    send_to_all_contacts: recipients === 'all',
+                    send_to_own_device: recipients === 'own',
+                    canBeReshared
+                };
+            } else if (activeTab === 'video') {
+                const url = document.getElementById('story-video-url').value;
+                if (!url) {
+                    alert('Please enter a video URL');
+                    return;
+                }
+
+                endpoint = '/story/video';
+                body = {
+                    sessionId,
+                    url,
+                    caption: document.getElementById('story-video-caption').value,
+                    splitLongVideos: document.getElementById('story-split-video').checked,
+                    send_to_all_contacts: recipients === 'all',
+                    send_to_own_device: recipients === 'own',
+                    canBeReshared
+                };
+            }
+
+            const data = await apiCall(endpoint, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+
+            if (data && data.success) {
+                closeModal('postStoryModal');
+                loadStories();
+                alert('Story posted successfully!');
+            } else {
+                alert('Failed to post story: ' + (data?.error || 'Unknown error'));
+            }
         }
 
         // Contacts
@@ -1326,8 +1845,154 @@
             document.getElementById(modalId).classList.remove('active');
         }
 
-        function viewLogs(sessionId) {
-            alert(`View logs for ${sessionId} - Coming soon!`);
+        async function viewLogs(sessionId) {
+            document.getElementById('logsModal').classList.add('active');
+
+            const data = await apiCall(`/session/${sessionId}/logs`);
+            const container = document.getElementById('logs-content');
+
+            if (data && data.logs) {
+                if (data.logs.length === 0) {
+                    container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📄</div><div class="empty-state-title">No Logs</div></div>';
+                    return;
+                }
+
+                container.innerHTML = data.logs.map(log => `
+                    <div class="log-entry ${log.level}">
+                        <div class="log-timestamp">${log.timestamp}</div>
+                        <div class="log-message"><strong>${log.level.toUpperCase()}:</strong> ${log.message}</div>
+                        ${log.data ? `<pre style="margin-top: 0.5rem; font-size: 0.75rem; color: var(--text-muted);">${JSON.stringify(log.data, null, 2)}</pre>` : ''}
+                    </div>
+                `).join('');
+            } else {
+                container.innerHTML = '<div class="empty-state"><div class="empty-state-text">Failed to load logs</div></div>';
+            }
+        }
+
+        // Type distribution and top stories
+        let typeDistributionChart = null;
+
+        function updateTypeDistribution() {
+            if (!stories || stories.length === 0) return;
+
+            // Count story types
+            const typeCounts = {
+                text: 0,
+                image: 0,
+                video: 0,
+                audio: 0
+            };
+
+            stories.forEach(story => {
+                if (typeCounts.hasOwnProperty(story.type)) {
+                    typeCounts[story.type]++;
+                }
+            });
+
+            // Initialize chart if not exists
+            if (!typeDistributionChart) {
+                const ctx = document.getElementById('typeDistributionChart');
+                if (!ctx) return;
+
+                const isDark = currentTheme === 'dark';
+                typeDistributionChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Text', 'Image', 'Video', 'Audio'],
+                        datasets: [{
+                            data: [typeCounts.text, typeCounts.image, typeCounts.video, typeCounts.audio],
+                            backgroundColor: [
+                                '#25D366',
+                                '#34B7F1',
+                                '#f59e0b',
+                                '#ef4444'
+                            ],
+                            borderWidth: 2,
+                            borderColor: isDark ? '#1e293b' : '#ffffff'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: { color: isDark ? '#cbd5e1' : '#475569' }
+                            }
+                        }
+                    }
+                });
+            } else {
+                // Update existing chart
+                typeDistributionChart.data.datasets[0].data = [
+                    typeCounts.text,
+                    typeCounts.image,
+                    typeCounts.video,
+                    typeCounts.audio
+                ];
+                typeDistributionChart.update();
+            }
+        }
+
+        function loadTopStories() {
+            const container = document.getElementById('top-stories-list');
+            if (!container) return;
+
+            if (!stories || stories.length === 0) {
+                container.innerHTML = '<div style="padding: 2rem; text-align: center; color: var(--text-muted);">No stories available</div>';
+                return;
+            }
+
+            // Sort stories by views and get top 5
+            const topStories = [...stories]
+                .sort((a, b) => b.views.total - a.views.total)
+                .slice(0, 5);
+
+            container.innerHTML = topStories.map((story, index) => `
+                <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border-bottom: 1px solid var(--border);">
+                    <div style="font-size: 1.5rem; font-weight: 700; color: var(--text-muted); min-width: 30px;">
+                        #${index + 1}
+                    </div>
+                    <div style="flex: 1;">
+                        <div style="font-weight: 600; margin-bottom: 0.25rem;">${story.sessionId}</div>
+                        <div style="display: flex; gap: 1rem; font-size: 0.875rem; color: var(--text-muted);">
+                            <span class="status-badge info" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">${story.type}</span>
+                            <span>👁️ ${story.views.total} views</span>
+                            <span>❤️ ${story.likes.total} likes</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-secondary" style="padding: 0.5rem 0.75rem; font-size: 0.875rem;" onclick="viewStoryDetails('${story.storyId}')">
+                        View
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        // Story filters
+        let allStories = [];
+        let filteredStories = [];
+
+        function applyStoryFilters() {
+            const sessionFilter = document.getElementById('filter-session').value;
+            const typeFilter = document.getElementById('filter-type').value;
+            const searchFilter = document.getElementById('filter-search').value.toLowerCase();
+
+            filteredStories = allStories.filter(story => {
+                if (sessionFilter && story.sessionId !== sessionFilter) return false;
+                if (typeFilter && story.type !== typeFilter) return false;
+                if (searchFilter && !story.sessionId.toLowerCase().includes(searchFilter)) return false;
+                return true;
+            });
+
+            renderStories();
+        }
+
+        function clearStoryFilters() {
+            document.getElementById('filter-session').value = '';
+            document.getElementById('filter-type').value = '';
+            document.getElementById('filter-search').value = '';
+            filteredStories = [...allStories];
+            renderStories();
         }
     </script>
 </body>
