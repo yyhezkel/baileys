@@ -31,34 +31,36 @@ sendMessage('status@broadcast', message, {
 })
 ```
 
-## Adaptive Batch Sizing
+## Progressive Ramping Batch Sizing
 
-The batch size adapts based on total recipient count:
+The batch size progressively increases in a ramping sequence:
 
-| Total Recipients | Batch Size | Reasoning |
-|------------------|------------|-----------|
-| < 500 | 100 | Small list, prioritize precision |
-| 500 - 2,000 | 500 | Balanced performance |
-| 2,000 - 5,000 | 1,000 | Good performance, manageable |
-| 5,000 - 10,000 | 2,000 | High performance needed |
-| 10,000 - 20,000 | 5,000 | Maximum throughput |
-| 20,000+ | 10,000 | Enterprise scale |
+**Batch Sequence:** 100 → 500 → 1,000 → 2,000 → 4,000 → 5,000 → rest
 
-### Why Adaptive?
+| Total Recipients | Batch Progression | Example |
+|------------------|-------------------|---------|
+| 500 | 1 → 100 → rest | [1, 100, 399] |
+| 2,000 | 1 → 100 → 500 → 1,000 → rest | [1, 100, 500, 1000, 399] |
+| 10,000 | 1 → 100 → 500 → 1,000 → 2,000 → 4,000 → rest | [1, 100, 500, 1000, 2000, 4000, 1399] |
+| 20,000 | 1 → 100 → 500 → 1,000 → 2,000 → 4,000 → 5,000 → rest | [1, 100, 500, 1000, 2000, 4000, 5000, 5399] |
 
-**Small lists (< 500):**
-- Use smaller batches (100) for better error isolation
-- If one batch fails, only 100 contacts affected
-- Easier to debug and retry
+### Why Progressive Ramping?
 
-**Medium lists (500 - 5,000):**
-- Balance between speed and reliability
-- Batch sizes scale linearly with list size
+**Start Small, Scale Up:**
+- Begin with 100 to test connection stability
+- If successful, gradually increase batch size
+- Each successful batch validates the next larger size
 
-**Large lists (5,000+):**
-- Maximize throughput with large batches
-- Reduce overhead (fewer API calls)
-- WhatsApp servers handle large batches efficiently
+**Adaptive Stopping:**
+- If remaining contacts < batchSize * 1.5, send all remaining
+- Prevents tiny final batches
+- Optimizes final send
+
+**Benefits:**
+- **Error isolation**: Small initial batches catch issues early
+- **Performance scaling**: Larger batches as confidence builds
+- **Optimal throughput**: Ramps up to maximum safe speed
+- **Flexibility**: Works efficiently for any list size
 
 ## Implementation Strategy
 
@@ -77,38 +79,50 @@ const messageId = result.key.id
 // → 'ABC123DEF456GHI789'
 ```
 
-### Phase 2: Calculate Adaptive Batch Size
+### Phase 2: Create Progressive Ramping Batches
 
 ```typescript
-function calculateBatchSize(totalRecipients: number): number {
-  if (totalRecipients < 500) return 100
-  if (totalRecipients < 2000) return 500
-  if (totalRecipients < 5000) return 1000
-  if (totalRecipients < 10000) return 2000
-  if (totalRecipients < 20000) return 5000
-  return 10000  // Maximum for enterprise scale
-}
+function createProgressiveBatches(remainingRecipients: string[]): string[][] {
+  const batches: string[][] = []
+  const progressiveSequence = [100, 500, 1000, 2000, 4000, 5000]
 
-const batchSize = calculateBatchSize(recipients.length)
-// For 3,000 recipients → batch size = 1,000
+  let remaining = remainingRecipients.slice() // Copy array
+
+  for (const batchSize of progressiveSequence) {
+    // If we have enough contacts for this batch size (at least 1.5x)
+    // then create a batch of this size, otherwise send all remaining
+    if (remaining.length >= batchSize * 1.5) {
+      batches.push(remaining.slice(0, batchSize))
+      remaining = remaining.slice(batchSize)
+    } else {
+      // Not enough for this batch size, send all remaining and stop
+      break
+    }
+  }
+
+  // Add final batch with all remaining recipients
+  if (remaining.length > 0) {
+    batches.push(remaining)
+  }
+
+  return batches
+}
 ```
 
-### Phase 3: Batch Creation
+### Phase 3: Batch Creation Examples
 
 ```typescript
 const remainingRecipients = recipients.slice(1)  // Skip anchor
+const batches = createProgressiveBatches(remainingRecipients)
 
-const batches = []
-for (let i = 0; i < remainingRecipients.length; i += batchSize) {
-  batches.push(remainingRecipients.slice(i, i + batchSize))
-}
+// Example for 500 recipients:
+// batches = [[100 contacts], [399 contacts]]
 
-// Example for 3,000 recipients:
-// batches = [
-//   [batch 1: 1,000 contacts],
-//   [batch 2: 1,000 contacts],
-//   [batch 3: 999 contacts]
-// ]
+// Example for 2,000 recipients:
+// batches = [[100], [500], [1000], [399]]
+
+// Example for 20,000 recipients:
+// batches = [[100], [500], [1000], [2000], [4000], [5000], [5399]]
 ```
 
 ### Phase 4: Smart Resend (Batched)
@@ -381,19 +395,30 @@ logger.info({
 ### Unit Tests
 
 ```typescript
-describe('Smart Send', () => {
-  test('calculates correct batch size for 300 recipients', () => {
-    expect(calculateBatchSize(300)).toBe(100)
+describe('Progressive Batch Send', () => {
+  test('creates correct progressive batches for 500 recipients', () => {
+    const recipients = Array(499).fill('test@s.whatsapp.net') // 499 after anchor
+    const batches = createProgressiveBatches(recipients)
+    expect(batches.map(b => b.length)).toEqual([100, 399])
   })
 
-  test('calculates correct batch size for 3000 recipients', () => {
-    expect(calculateBatchSize(3000)).toBe(1000)
+  test('creates correct progressive batches for 2000 recipients', () => {
+    const recipients = Array(1999).fill('test@s.whatsapp.net') // 1999 after anchor
+    const batches = createProgressiveBatches(recipients)
+    expect(batches.map(b => b.length)).toEqual([100, 500, 1000, 399])
   })
 
-  test('creates correct number of batches', () => {
-    const recipients = Array(3000).fill('test@s.whatsapp.net')
-    const batches = createBatches(recipients, 1000)
-    expect(batches.length).toBe(3)
+  test('creates correct progressive batches for 20000 recipients', () => {
+    const recipients = Array(19999).fill('test@s.whatsapp.net') // 19999 after anchor
+    const batches = createProgressiveBatches(recipients)
+    expect(batches.map(b => b.length)).toEqual([100, 500, 1000, 2000, 4000, 5000, 5399])
+  })
+
+  test('sends all remaining when below threshold', () => {
+    const recipients = Array(200).fill('test@s.whatsapp.net')
+    const batches = createProgressiveBatches(recipients)
+    // 200 < 500*1.5, so sends: [100, 100]
+    expect(batches.map(b => b.length)).toEqual([100, 100])
   })
 })
 ```

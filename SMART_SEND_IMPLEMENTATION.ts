@@ -5,15 +5,38 @@
  */
 
 /**
- * Calculate adaptive batch size based on total recipients
+ * Create progressive ramping batches
+ * Start small and gradually increase batch sizes
+ *
+ * Examples:
+ * - 500 contacts: [100, 399] (1→100→rest)
+ * - 2,000 contacts: [100, 500, 1000, 399] (1→100→500→1000→rest)
+ * - 20,000 contacts: [100, 500, 1000, 2000, 4000, 5000, 5399] (1→100→500→1000→2000→4000→5000→rest)
  */
-function calculateAdaptiveBatchSize(totalRecipients: number): number {
-    if (totalRecipients < 500) return 100
-    if (totalRecipients < 2000) return 500
-    if (totalRecipients < 5000) return 1000
-    if (totalRecipients < 10000) return 2000
-    if (totalRecipients < 20000) return 5000
-    return 10000  // Maximum for enterprise scale
+function createProgressiveBatches(remainingRecipients: string[]): string[][] {
+    const batches: string[][] = []
+    const progressiveSequence = [100, 500, 1000, 2000, 4000, 5000]
+
+    let remaining = remainingRecipients.slice() // Copy array
+
+    for (const batchSize of progressiveSequence) {
+        // If we have enough contacts for this batch size (at least 1.5x)
+        // then create a batch of this size, otherwise send all remaining
+        if (remaining.length >= batchSize * 1.5) {
+            batches.push(remaining.slice(0, batchSize))
+            remaining = remaining.slice(batchSize)
+        } else {
+            // Not enough for this batch size, send all remaining and stop
+            break
+        }
+    }
+
+    // Add final batch with all remaining recipients
+    if (remaining.length > 0) {
+        batches.push(remaining)
+    }
+
+    return batches
 }
 
 /**
@@ -137,28 +160,17 @@ async function smartSendStatus(
 
     logger.info({ messageId }, 'Anchor message sent successfully')
 
-    // SMART SEND: Step 2 - Calculate adaptive batch size
+    // SMART SEND: Step 2 - Create progressive ramping batches
     const remainingRecipients = recipients.slice(1)
-    const batchSize = calculateAdaptiveBatchSize(recipients.length)
-
-    logger.info({
-        totalRecipients: recipients.length,
-        remainingRecipients: remainingRecipients.length,
-        batchSize
-    }, 'Calculated adaptive batch size')
-
-    // SMART SEND: Step 3 - Create batches
-    const batches: string[][] = []
-    for (let i = 0; i < remainingRecipients.length; i += batchSize) {
-        batches.push(remainingRecipients.slice(i, i + batchSize))
-    }
+    const batches = createProgressiveBatches(remainingRecipients)
 
     logger.info({
         messageId,
+        totalRecipients: recipients.length,
+        remainingRecipients: remainingRecipients.length,
         totalBatches: batches.length,
-        batchSize,
-        recipients: remainingRecipients.length
-    }, 'Starting batch resend')
+        batchSequence: batches.map(b => b.length)
+    }, 'Created progressive batches, starting resend')
 
     // SMART SEND: Step 4 - Send batches with same message ID
     let successfulBatches = 0
