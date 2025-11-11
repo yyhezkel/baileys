@@ -540,6 +540,405 @@ async function warmupEncryptionKeys(
     }
 }
 
+// ============================================================================
+// INTELLIGENT ADAPTIVE SCALING SYSTEM
+// ============================================================================
+
+/**
+ * Smart send configuration
+ */
+interface SmartSendConfig {
+    fastBatchThresholdMs: number        // If batch < this, scale faster
+    slowBatchThresholdMs: number        // If batch > this, scale slower
+    minSuccessRate: number              // Minimum success rate to scale up
+    enableSessionLearning: boolean      // Remember max successful batch per session
+    sessionMemoryTTL: number           // How long to remember (ms)
+    progressiveSequence: number[]      // Batch sizes progression
+    minRecipientsForSmartSend: number // Threshold to use smart send
+    maxBatchSize: number               // Never exceed this size
+}
+
+/**
+ * Session batch history for learning
+ */
+interface SessionBatchHistory {
+    sessionId: string
+    maxProvenBatchSize: number         // Largest successful batch
+    lastSuccessfulSend: Date
+    totalSuccessfulSends: number
+    averageBatchTime: number           // Average time per batch
+    successRate: number                // Overall success rate
+}
+
+/**
+ * Load configuration from environment
+ */
+const smartSendConfig: SmartSendConfig = {
+    fastBatchThresholdMs: parseInt(process.env.SMART_SEND_FAST_THRESHOLD_MS || '2000'),
+    slowBatchThresholdMs: parseInt(process.env.SMART_SEND_SLOW_THRESHOLD_MS || '10000'),
+    minSuccessRate: parseFloat(process.env.SMART_SEND_MIN_SUCCESS_RATE || '0.95'),
+    enableSessionLearning: process.env.SMART_SEND_ENABLE_LEARNING !== 'false',
+    sessionMemoryTTL: parseInt(process.env.SMART_SEND_MEMORY_TTL_HOURS || '24') * 60 * 60 * 1000,
+    progressiveSequence: [100, 500, 1000, 2000, 4000, 5000],
+    minRecipientsForSmartSend: 100,
+    maxBatchSize: parseInt(process.env.SMART_SEND_MAX_BATCH_SIZE || '10000')
+}
+
+/**
+ * Session history storage (in-memory)
+ * TODO: Consider persisting to database for cross-restart memory
+ */
+const sessionBatchHistory = new Map<string, SessionBatchHistory>()
+
+/**
+ * Get session history (with TTL check)
+ */
+function getSessionHistory(sessionId: string): SessionBatchHistory | null {
+    const history = sessionBatchHistory.get(sessionId)
+    if (!history) return null
+
+    // Check if expired
+    const age = Date.now() - history.lastSuccessfulSend.getTime()
+    if (age > smartSendConfig.sessionMemoryTTL) {
+        sessionBatchHistory.delete(sessionId)
+        logger.debug({ sessionId, age }, 'Session history expired')
+        return null
+    }
+
+    return history
+}
+
+/**
+ * Update session history after batch send
+ */
+function updateSessionHistory(
+    sessionId: string,
+    batchSize: number,
+    batchTime: number,
+    success: boolean
+) {
+    if (!smartSendConfig.enableSessionLearning) return
+
+    let history = sessionBatchHistory.get(sessionId)
+
+    if (!history) {
+        history = {
+            sessionId,
+            maxProvenBatchSize: 0,
+            lastSuccessfulSend: new Date(),
+            totalSuccessfulSends: 0,
+            averageBatchTime: 0,
+            successRate: 1.0
+        }
+    }
+
+    if (success) {
+        // Update max proven batch size
+        if (batchSize > history.maxProvenBatchSize) {
+            logger.info({
+                sessionId,
+                oldMax: history.maxProvenBatchSize,
+                newMax: batchSize
+            }, 'Updated max proven batch size')
+            history.maxProvenBatchSize = batchSize
+        }
+
+        history.lastSuccessfulSend = new Date()
+        history.totalSuccessfulSends++
+
+        // Update rolling average (80% old, 20% new)
+        history.averageBatchTime =
+            (history.averageBatchTime * 0.8) + (batchTime * 0.2)
+    }
+
+    sessionBatchHistory.set(sessionId, history)
+}
+
+/**
+ * Check if batch was fast enough to scale up
+ */
+function shouldSkipAhead(
+    batchSize: number,
+    duration: number,
+    sequence: number[]
+): number | null {
+    if (duration >= smartSendConfig.fastBatchThresholdMs) {
+        return null // Not fast enough
+    }
+
+    const currentIndex = sequence.indexOf(batchSize)
+    if (currentIndex === -1 || currentIndex >= sequence.length - 2) {
+        return null // Can't skip ahead
+    }
+
+    // Skip one level ahead
+    const skipTo = sequence[currentIndex + 2]!
+    logger.info({
+        batchSize,
+        duration,
+        threshold: smartSendConfig.fastBatchThresholdMs,
+        skippingTo: skipTo
+    }, 'Fast batch detected - skipping ahead!')
+
+    return skipTo
+}
+
+/**
+ * Create progressive ramping batches with session learning
+ * Start small and gradually increase batch sizes
+ *
+ * If session has history, skip ramping and start at proven level
+ *
+ * Examples:
+ * - 500 contacts: [100, 399] (1→100→rest)
+ * - 2,000 contacts: [100, 500, 1000, 399] (1→100→500→1000→rest)
+ * - 20,000 contacts: [100, 500, 1000, 2000, 4000, 5000, 5399] (1→100→500→1000→2000→4000→5000→rest)
+ * - With history (proven=5000): [5000, rest] (skip ramping!)
+ */
+function createProgressiveBatches(
+    remainingRecipients: string[],
+    sessionId?: string
+): string[][] {
+    const batches: string[][] = []
+    const sequence = smartSendConfig.progressiveSequence
+    let remaining = remainingRecipients.slice() // Copy array
+
+    // Check session history - skip ramping if we have proven batch size
+    let startIndex = 0
+    let usedHistory = false
+
+    if (sessionId && smartSendConfig.enableSessionLearning) {
+        const history = getSessionHistory(sessionId)
+
+        if (history && history.maxProvenBatchSize > 0) {
+            const provenSize = history.maxProvenBatchSize
+
+            logger.info({
+                sessionId,
+                provenSize,
+                totalRecipients: remainingRecipients.length,
+                skippingRamping: true
+            }, 'Using session history - skipping to proven batch size')
+
+            // If we have enough recipients for proven size, use it
+            if (remaining.length >= provenSize) {
+                batches.push(remaining.slice(0, provenSize))
+                remaining = remaining.slice(provenSize)
+                usedHistory = true
+
+                // Continue with sizes larger than proven
+                startIndex = sequence.findIndex(size => size > provenSize)
+                if (startIndex === -1) startIndex = sequence.length
+            }
+        }
+    }
+
+    // Progressive ramping (or continue after proven batch)
+    for (let i = startIndex; i < sequence.length; i++) {
+        const batchSize = sequence[i]!
+
+        // If we have enough contacts for this batch size (at least 1.5x)
+        // then create a batch of this size, otherwise send all remaining
+        if (remaining.length >= batchSize * 1.5) {
+            batches.push(remaining.slice(0, batchSize))
+            remaining = remaining.slice(batchSize)
+        } else {
+            // Not enough for this batch size, send all remaining and stop
+            break
+        }
+    }
+
+    // Add final batch with all remaining recipients
+    if (remaining.length > 0) {
+        batches.push(remaining)
+    }
+
+    return batches
+}
+
+/**
+ * Smart send status using message anchoring and adaptive batching
+ *
+ * Process:
+ * 1. Send to ONE contact (anchor) to get message ID
+ * 2. Resend same message ID to remaining contacts in adaptive batches
+ */
+async function smartSendStatus(
+    session: any,
+    message: any,
+    recipients: string[],
+    options: any = {}
+): Promise<any> {
+    const startTime = Date.now()
+
+    // If too few recipients, use direct send
+    const minRecipientsForSmartSend = 100
+    if (recipients.length < minRecipientsForSmartSend) {
+        logger.debug({
+            recipients: recipients.length,
+            threshold: minRecipientsForSmartSend
+        }, 'Using direct send (below smart send threshold)')
+
+        const result = await session.socket.sendMessage('status@broadcast', message, {
+            statusJidList: recipients,
+            ...options
+        })
+
+        return {
+            key: result.key,
+            storyId: result.key?.id,
+            messageId: result.key?.id,
+            totalRecipients: recipients.length,
+            strategy: 'direct-send',
+            duration: Date.now() - startTime
+        }
+    }
+
+    // SMART SEND: Step 1 - Send to anchor contact to get message ID
+    const anchorContact = recipients[0]!
+    logger.info({
+        totalRecipients: recipients.length,
+        anchorContact
+    }, 'Smart send: Sending to anchor contact')
+
+    const anchorResult = await session.socket.sendMessage('status@broadcast', message, {
+        statusJidList: [anchorContact],
+        ...options
+    })
+
+    const messageId = anchorResult.key?.id
+    if (!messageId) {
+        throw new Error('Failed to get message ID from anchor send')
+    }
+
+    logger.info({ messageId }, 'Smart send: Anchor message sent successfully')
+
+    // SMART SEND: Step 2 - Create progressive ramping batches (with session learning)
+    const sessionId = session.sessionId
+    const remainingRecipients = recipients.slice(1)
+    const batches = createProgressiveBatches(remainingRecipients, sessionId)
+
+    logger.info({
+        messageId,
+        sessionId,
+        totalRecipients: recipients.length,
+        remainingRecipients: remainingRecipients.length,
+        totalBatches: batches.length,
+        batchSequence: batches.map(b => b.length)
+    }, 'Smart send: Created progressive batches, starting resend')
+
+    // SMART SEND: Step 3 - Send batches with performance monitoring
+    const batchResults: Array<{ size: number, duration: number, success: boolean }> = []
+    let totalSent = 1 // Anchor already sent
+
+    for (let i = 0; i < batches.length; i++) {
+        const batch = batches[i]!
+        const batchNumber = i + 1
+        const batchStartTime = Date.now()
+
+        logger.debug({
+            messageId,
+            sessionId,
+            batchNumber,
+            totalBatches: batches.length,
+            batchSize: batch.length,
+            progress: `${Math.round((totalSent / recipients.length) * 100)}%`
+        }, 'Smart send: Sending batch')
+
+        try {
+            // Resend using SAME message ID
+            await session.socket.sendMessage('status@broadcast', message, {
+                statusJidList: batch,
+                messageId: messageId,  // ← KEY: Reuse same message ID!
+                ...options
+            })
+
+            const batchDuration = Date.now() - batchStartTime
+            batchResults.push({ size: batch.length, duration: batchDuration, success: true })
+
+            // Update session history with successful batch
+            updateSessionHistory(sessionId, batch.length, batchDuration, true)
+
+            // Check performance for dynamic scaling
+            const performance = batchDuration < smartSendConfig.fastBatchThresholdMs ? 'FAST' :
+                               batchDuration > smartSendConfig.slowBatchThresholdMs ? 'SLOW' : 'NORMAL'
+
+            logger.debug({
+                messageId,
+                sessionId,
+                batchNumber,
+                batchSize: batch.length,
+                duration: batchDuration,
+                performance
+            }, 'Smart send: Batch sent successfully')
+
+            totalSent += batch.length
+
+            // Dynamic scaling: If fast, could skip ahead (future enhancement)
+            const skipTo = shouldSkipAhead(batch.length, batchDuration, smartSendConfig.progressiveSequence)
+            if (skipTo && i < batches.length - 1) {
+                logger.info({
+                    messageId,
+                    currentBatch: batch.length,
+                    nextPlanned: batches[i + 1]?.length,
+                    suggestedSkip: skipTo
+                }, 'Fast batch detected - consider dynamic scaling in next iteration')
+            }
+
+        } catch (error: any) {
+            const batchDuration = Date.now() - batchStartTime
+            batchResults.push({ size: batch.length, duration: batchDuration, success: false })
+
+            logger.error({
+                messageId,
+                sessionId,
+                batchNumber,
+                batchSize: batch.length,
+                duration: batchDuration,
+                error: error.message
+            }, 'Smart send: Batch send failed')
+
+            // Don't update session history on failure
+            throw error
+        }
+    }
+
+    const duration = Date.now() - startTime
+    const avgBatchTime = batchResults.reduce((sum, r) => sum + r.duration, 0) / batchResults.length
+
+    logger.info({
+        messageId,
+        sessionId,
+        totalRecipients: recipients.length,
+        totalBatches: batches.length,
+        batchSequence: batches.map(b => b.length),
+        duration,
+        avgBatchTime: Math.round(avgBatchTime),
+        strategy: 'smart-send-adaptive'
+    }, 'Smart send: Completed successfully')
+
+    // Get updated session history for response
+    const history = getSessionHistory(sessionId)
+
+    return {
+        key: anchorResult.key,
+        storyId: messageId,
+        messageId: messageId,
+        totalRecipients: recipients.length,
+        batches: batches.length,
+        batchSequence: batches.map(b => b.length),
+        strategy: 'smart-send-adaptive',
+        duration,
+        avgBatchTime: Math.round(avgBatchTime),
+        sessionLearning: history ? {
+            maxProvenBatchSize: history.maxProvenBatchSize,
+            avgBatchTime: Math.round(history.averageBatchTime),
+            totalSuccessfulSends: history.totalSuccessfulSends,
+            willSkipRampingNextTime: history.maxProvenBatchSize >= 1000
+        } : undefined
+    }
+}
+
 // Default status recipients per account (permanent broadcast list)
 // Key: accountPhoneNumber, Value: array of JIDs
 const defaultStatusRecipients = new Map<string, string[]>()
@@ -677,6 +1076,7 @@ function queueStatus(sessionId: string, type: StatusQueueItem['type'], data: any
 }
 
 // Internal status send functions (called by queue processor)
+// Now use smart send system with message anchoring and adaptive batching
 async function sendTextStatusInternal(session: any, data: any) {
     const { text, backgroundColor, font, processedJidList } = data
 
@@ -692,9 +1092,7 @@ async function sendTextStatusInternal(session: any, data: any) {
         contextInfo
     }
 
-    const options: any = {
-        statusJidList: processedJidList
-    }
+    const options: any = {}
 
     if (backgroundColor) {
         options.backgroundColor = backgroundColor
@@ -704,7 +1102,8 @@ async function sendTextStatusInternal(session: any, data: any) {
         options.font = font
     }
 
-    const result = await session.socket.sendMessage('status@broadcast', message, options)
+    // Use smart send system (message anchoring + adaptive batching)
+    const result = await smartSendStatus(session, message, processedJidList, options)
     return result
 }
 
@@ -724,11 +1123,10 @@ async function sendImageStatusInternal(session: any, data: any) {
         contextInfo
     }
 
-    const options: any = {
-        statusJidList: processedJidList
-    }
+    const options: any = {}
 
-    const result = await session.socket.sendMessage('status@broadcast', message, options)
+    // Use smart send system (message anchoring + adaptive batching)
+    const result = await smartSendStatus(session, message, processedJidList, options)
     return result
 }
 
@@ -748,11 +1146,10 @@ async function sendVideoStatusInternal(session: any, data: any) {
         contextInfo
     }
 
-    const options: any = {
-        statusJidList: processedJidList
-    }
+    const options: any = {}
 
-    const result = await session.socket.sendMessage('status@broadcast', message, options)
+    // Use smart send system (message anchoring + adaptive batching)
+    const result = await smartSendStatus(session, message, processedJidList, options)
     return result
 }
 
@@ -772,11 +1169,10 @@ async function sendAudioStatusInternal(session: any, data: any) {
         contextInfo
     }
 
-    const options: any = {
-        statusJidList: processedJidList
-    }
+    const options: any = {}
 
-    const result = await session.socket.sendMessage('status@broadcast', message, options)
+    // Use smart send system (message anchoring + adaptive batching)
+    const result = await smartSendStatus(session, message, processedJidList, options)
     return result
 }
 
