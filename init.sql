@@ -1,3 +1,10 @@
+-- ============================================
+-- Stories Tables
+-- ============================================
+-- NOTE: Story JID lists (recipient lists) are stored in JSON files (./story-jids/)
+--       with automatic 24-hour cleanup. They are NOT stored in the database.
+--       Files are only needed for the deletion functionality.
+
 -- Create stories table with aggregated counts
 CREATE TABLE IF NOT EXISTS stories (
     id SERIAL PRIMARY KEY,
@@ -96,3 +103,43 @@ CREATE TRIGGER trigger_stories_updated_at
 BEFORE UPDATE ON stories
 FOR EACH ROW
 EXECUTE FUNCTION update_updated_at_column();
+
+-- ============================================
+-- Bandwidth Metrics Tables
+-- ============================================
+
+-- Create bandwidth_minutes table for per-minute aggregated data
+CREATE TABLE IF NOT EXISTS bandwidth_minutes (
+    id SERIAL PRIMARY KEY,
+    minute_timestamp TIMESTAMP WITH TIME ZONE NOT NULL,
+    total_bytes BIGINT NOT NULL DEFAULT 0,
+    total_kb DECIMAL(12, 2) NOT NULL DEFAULT 0,
+    request_count INTEGER NOT NULL DEFAULT 0,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+
+    -- Unique constraint on minute timestamp
+    CONSTRAINT bandwidth_minutes_timestamp_key UNIQUE (minute_timestamp)
+);
+
+-- Create bandwidth_endpoints table for per-minute per-endpoint data
+CREATE TABLE IF NOT EXISTS bandwidth_endpoints (
+    id SERIAL PRIMARY KEY,
+    minute_timestamp TIMESTAMP WITH TIME ZONE NOT NULL,
+    endpoint VARCHAR(255) NOT NULL,
+    bytes BIGINT NOT NULL DEFAULT 0,
+    kb DECIMAL(12, 2) NOT NULL DEFAULT 0,
+    request_count INTEGER NOT NULL DEFAULT 0,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+
+    -- Foreign key reference
+    FOREIGN KEY (minute_timestamp) REFERENCES bandwidth_minutes(minute_timestamp) ON DELETE CASCADE,
+
+    -- Unique constraint on minute + endpoint combination
+    CONSTRAINT bandwidth_endpoints_minute_endpoint_key UNIQUE (minute_timestamp, endpoint)
+);
+
+-- Create indexes for better query performance
+CREATE INDEX IF NOT EXISTS idx_bandwidth_minutes_timestamp ON bandwidth_minutes(minute_timestamp DESC);
+CREATE INDEX IF NOT EXISTS idx_bandwidth_endpoints_timestamp ON bandwidth_endpoints(minute_timestamp DESC);
+CREATE INDEX IF NOT EXISTS idx_bandwidth_endpoints_endpoint ON bandwidth_endpoints(endpoint);
+CREATE INDEX IF NOT EXISTS idx_bandwidth_minutes_created_at ON bandwidth_minutes(created_at DESC);

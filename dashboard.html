@@ -499,6 +499,15 @@
             100% { transform: rotate(360deg); }
         }
 
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .refresh-indicator-active {
+            animation: pulse 2s ease-in-out infinite;
+        }
+
         /* Chart container */
         .chart-container {
             position: relative;
@@ -690,6 +699,14 @@
                 <a class="nav-item" onclick="showPage('lists')" data-page="lists">
                     <span class="nav-icon">📋</span>
                     <span>Lists</span>
+                </a>
+                <a class="nav-item" onclick="showPage('events')" data-page="events">
+                    <span class="nav-icon">⚡</span>
+                    <span>Events</span>
+                </a>
+                <a class="nav-item" onclick="showPage('metrics')" data-page="metrics">
+                    <span class="nav-icon">📈</span>
+                    <span>Bandwidth</span>
                 </a>
                 <a class="nav-item" onclick="showPage('settings')" data-page="settings">
                     <span class="nav-icon">⚙️</span>
@@ -916,6 +933,156 @@
                 </div>
             </div>
 
+            <!-- Events Page -->
+            <div class="page" id="events">
+                <div class="header">
+                    <h1 class="header-title">System Events</h1>
+                    <div class="header-actions">
+                        <button class="btn btn-secondary" onclick="loadEvents()">
+                            <span>🔄</span> Refresh
+                        </button>
+                        <button class="btn btn-secondary" onclick="clearEventsFilter()">
+                            Clear Filters
+                        </button>
+                        <button class="btn btn-secondary" onclick="clearAllEvents()" style="color: var(--error);">
+                            <span>🗑️</span> Clear All Events
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Filters -->
+                <div class="card" style="margin-bottom: 1.5rem;">
+                    <div class="filters-row">
+                        <div class="filter-group">
+                            <label class="form-label">Session</label>
+                            <select class="form-select" id="events-filter-session" onchange="applyEventsFilter()">
+                                <option value="">All Sessions</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="form-label">Category</label>
+                            <select class="form-select" id="events-filter-category" onchange="applyEventsFilter()">
+                                <option value="">All Categories</option>
+                                <option value="connection">Connection</option>
+                                <option value="message">Messages</option>
+                                <option value="contact">Contacts</option>
+                                <option value="group">Groups</option>
+                                <option value="call">Calls</option>
+                                <option value="story">Stories</option>
+                                <option value="error">Errors</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="form-label">Search</label>
+                            <input type="text" class="form-input" id="events-filter-search" placeholder="Search events..." oninput="applyEventsFilter()">
+                        </div>
+                        <div class="filter-group" style="display: flex; align-items: flex-end;">
+                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; padding: 0.5rem; border: 1px solid var(--border); border-radius: 6px; background: var(--bg-secondary);">
+                                <input type="checkbox" id="events-auto-refresh" onchange="toggleAutoRefresh()" checked style="cursor: pointer; width: 1rem; height: 1rem;">
+                                <span class="form-label" style="margin: 0; font-weight: 600;">Auto-refresh (5s)</span>
+                                <span id="refresh-indicator" class="refresh-indicator-active" style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--success); margin-left: 0.25rem;" title="Auto-refresh active"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="events-container">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        Loading events...
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bandwidth Metrics Page -->
+            <div class="page" id="metrics">
+                <div class="header">
+                    <h1 class="header-title">Bandwidth Metrics</h1>
+                    <div class="header-actions">
+                        <button class="btn btn-primary" onclick="loadBandwidthMetrics()">
+                            <span>🔄</span> Refresh Data
+                        </button>
+                        <button class="btn btn-secondary" onclick="resetBandwidthMetrics()" style="color: var(--warning);">
+                            <span>↺</span> Reset Metrics
+                        </button>
+                    </div>
+                </div>
+
+                <div style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; margin-bottom: 1.5rem;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem; color: var(--info);">
+                        <span style="font-size: 1.25rem;">💡</span>
+                        <span style="font-size: 0.875rem;">Click <strong>"Refresh Data"</strong> to update metrics. No auto-refresh to keep bandwidth stats accurate!</span>
+                    </div>
+                </div>
+
+                <!-- Current Stats -->
+                <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                    <div class="stat-card">
+                        <div class="stat-icon info">📊</div>
+                        <div class="stat-content">
+                            <div class="stat-label">Current Minute</div>
+                            <div class="stat-value" id="bandwidth-current">0 KB</div>
+                            <div class="stat-change" id="bandwidth-current-requests">0 requests</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon success">📈</div>
+                        <div class="stat-content">
+                            <div class="stat-label">Last Minute</div>
+                            <div class="stat-value" id="bandwidth-last">0 KB</div>
+                            <div class="stat-change" id="bandwidth-last-requests">0 requests</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon warning">💾</div>
+                        <div class="stat-content">
+                            <div class="stat-label">Total Traffic</div>
+                            <div class="stat-value" id="bandwidth-total">0 MB</div>
+                            <div class="stat-change" id="bandwidth-total-requests">0 requests</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon primary">⚡</div>
+                        <div class="stat-content">
+                            <div class="stat-label">Avg Per Minute</div>
+                            <div class="stat-value" id="bandwidth-avg">0 KB</div>
+                            <div class="stat-change">Last 60 min</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bandwidth Chart -->
+                <div class="card" style="margin-top: 1.5rem;">
+                    <h2 style="margin-bottom: 1rem; font-size: 1.25rem;">Bandwidth Over Time (Last 60 Minutes)</h2>
+                    <div class="chart-container" style="height: 400px;">
+                        <canvas id="bandwidthChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Endpoint Breakdown -->
+                <div class="card" style="margin-top: 1.5rem;">
+                    <h2 style="margin-bottom: 1rem; font-size: 1.25rem;">Bandwidth by Endpoint</h2>
+                    <div id="bandwidth-endpoints">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                            Loading endpoint data...
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detailed Stats -->
+                <div class="card" style="margin-top: 1.5rem;">
+                    <h2 style="margin-bottom: 1rem; font-size: 1.25rem;">Minute-by-Minute History</h2>
+                    <div id="bandwidth-details">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                            Loading bandwidth data...
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Settings Page -->
             <div class="page" id="settings">
                 <div class="header">
@@ -1114,6 +1281,12 @@
         let currentTheme = 'dark';
         let ws = null;
         let engagementChart = null;
+        let allEvents = [];
+        let filteredEvents = [];
+        let eventsAutoRefreshInterval = null;
+        let expandedEventIds = new Set(); // Track which events are expanded
+        let bandwidthChart = null;
+        let bandwidthAutoRefreshInterval = null;
 
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
@@ -1160,6 +1333,17 @@
                 typeDistributionChart.options.plugins.legend.labels.color = isDark ? '#cbd5e1' : '#475569';
                 typeDistributionChart.update();
             }
+
+            // Update bandwidth chart
+            if (bandwidthChart) {
+                bandwidthChart.options.scales.y.grid.color = isDark ? '#475569' : '#e2e8f0';
+                bandwidthChart.options.scales.x.grid.color = isDark ? '#475569' : '#e2e8f0';
+                bandwidthChart.options.plugins.legend.labels.color = isDark ? '#cbd5e1' : '#475569';
+                bandwidthChart.options.scales.y.ticks.color = isDark ? '#cbd5e1' : '#475569';
+                bandwidthChart.options.scales.x.ticks.color = isDark ? '#cbd5e1' : '#475569';
+                bandwidthChart.options.scales.y.title.color = isDark ? '#cbd5e1' : '#475569';
+                bandwidthChart.update();
+            }
         }
 
         // Navigation
@@ -1200,7 +1384,108 @@
             } else if (data.event === 'connected') {
                 loadSessions();
                 refreshOverview();
+            } else if (data.event === 'story.created') {
+                // New story created (from phone or API)
+                console.log('📱 New story created:', data.data);
+                // Reload stories list if on stories page
+                const storiesPage = document.getElementById('stories');
+                if (storiesPage && storiesPage.classList.contains('active')) {
+                    loadStories();
+                }
+                // Show notification
+                showNotification(`New ${data.data.type} story created`, 'success');
+            } else if (data.event === 'story.viewed') {
+                // Story view event
+                console.log('👁️ Story viewed:', data.data);
+                // If viewing this specific story's analytics, refresh it
+                const modal = document.getElementById('storyDetailsModal');
+                if (modal && modal.classList.contains('active')) {
+                    // Reload the current story details
+                    const currentStoryId = modal.dataset.storyId;
+                    if (currentStoryId) {
+                        viewStoryDetails(currentStoryId);
+                    }
+                }
+            } else if (data.event === 'story.like') {
+                // Story like event
+                console.log('💚 Story liked:', data.data);
+                // If viewing this specific story's analytics, refresh it
+                const modal = document.getElementById('storyDetailsModal');
+                if (modal && modal.classList.contains('active')) {
+                    const currentStoryId = modal.dataset.storyId;
+                    if (currentStoryId === data.data.storyId) {
+                        viewStoryDetails(currentStoryId);
+                    }
+                }
+            } else if (data.event === 'story.reaction') {
+                // Story reaction event
+                console.log('😍 Story reaction:', data.data);
+                // If viewing this specific story's analytics, refresh it
+                const modal = document.getElementById('storyDetailsModal');
+                if (modal && modal.classList.contains('active')) {
+                    const currentStoryId = modal.dataset.storyId;
+                    if (currentStoryId === data.data.storyId) {
+                        viewStoryDetails(currentStoryId);
+                    }
+                }
+            } else if (data.event === 'story.reply') {
+                // Story reply event
+                console.log('💬 Story reply:', data.data);
+                // If viewing this specific story's analytics, refresh it
+                const modal = document.getElementById('storyDetailsModal');
+                if (modal && modal.classList.contains('active')) {
+                    const currentStoryId = modal.dataset.storyId;
+                    if (currentStoryId === data.data.storyId) {
+                        viewStoryDetails(currentStoryId);
+                    }
+                }
+                // Show notification
+                showNotification(`New reply on story: "${data.data.message.substring(0, 30)}..."`, 'info');
+            } else if (data.type === 'system-event') {
+                // Handle real-time system events
+                if (data.event) {
+                    // Add the new event to the beginning of the list
+                    allEvents.unshift(data.event);
+
+                    // Keep only last 500 events
+                    if (allEvents.length > 500) {
+                        allEvents.pop();
+                    }
+
+                    // Update filtered events and re-render if on events page
+                    const eventsPage = document.getElementById('events');
+                    if (eventsPage && eventsPage.classList.contains('active')) {
+                        applyEventsFilter();
+                    }
+                }
             }
+        }
+
+        // Show notification helper
+        function showNotification(message, type = 'info') {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#3b82f6'};
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 8px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                z-index: 10000;
+                animation: slideIn 0.3s ease-out;
+            `;
+            document.body.appendChild(notification);
+
+            // Auto-remove after 3 seconds
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease-in';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
         }
 
         // API calls
@@ -1252,7 +1537,7 @@
                         </div>
                         ${session.qr ? `
                             <div class="qr-container">
-                                <img src="${session.qr}" id="qr-${sessionId}">
+                                <img src="/session/${sessionId}/qr-image" id="qr-${sessionId}">
                             </div>
                         ` : session.status === 'connected' && session.accountPhoneNumber ? `
                             <div style="padding: 1rem; background: var(--bg-main); border-radius: 8px; margin: 1rem 0;">
@@ -1300,7 +1585,7 @@
         function updateSessionQR(sessionId, qr) {
             const img = document.getElementById(`qr-${sessionId}`);
             if (img) {
-                img.src = qr;
+                img.src = `/session/${sessionId}/qr-image`;
             }
         }
 
@@ -1349,25 +1634,44 @@
 
         // Stories
         async function loadStories() {
-            const data = await apiCall('/stories');
-            if (data && data.stories) {
-                stories = data.stories;
-                allStories = [...stories];
-                filteredStories = [...stories];
+            // Load stories for each session
+            const sessionIds = Object.keys(sessions);
+            let allStoriesData = [];
 
-                // Populate session filter dropdown
-                const sessionFilter = document.getElementById('filter-session');
-                if (sessionFilter) {
-                    const uniqueSessions = [...new Set(stories.map(s => s.sessionId))];
-                    sessionFilter.innerHTML = '<option value="">All Sessions</option>' +
-                        uniqueSessions.map(id => `<option value="${id}">${id}</option>`).join('');
+            for (const sessionId of sessionIds) {
+                const data = await apiCall(`/stories?sessionId=${sessionId}`);
+                if (data && data.stories) {
+                    allStoriesData = allStoriesData.concat(data.stories);
                 }
-
-                renderStories();
-                updateStats();
-                updateTypeDistribution();
-                loadTopStories();
             }
+
+            // Also try loading without sessionId in case there are stories from disconnected sessions
+            const generalData = await apiCall('/stories');
+            if (generalData && generalData.stories) {
+                allStoriesData = allStoriesData.concat(generalData.stories);
+            }
+
+            // Remove duplicates based on storyId
+            const uniqueStories = Array.from(
+                new Map(allStoriesData.map(story => [story.storyId, story])).values()
+            );
+
+            stories = uniqueStories;
+            allStories = [...stories];
+            filteredStories = [...stories];
+
+            // Populate session filter dropdown
+            const sessionFilter = document.getElementById('filter-session');
+            if (sessionFilter) {
+                const uniqueSessions = [...new Set(stories.map(s => s.sessionId))];
+                sessionFilter.innerHTML = '<option value="">All Sessions</option>' +
+                    uniqueSessions.map(id => `<option value="${id}">${id}</option>`).join('');
+            }
+
+            renderStories();
+            updateStats();
+            updateTypeDistribution();
+            loadTopStories();
         }
 
         function renderStories() {
@@ -1411,12 +1715,13 @@
                                 <th>Likes</th>
                                 <th>Reactions</th>
                                 <th>Replies</th>
+                                <th>Status</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             ${storiesToShow.map(story => `
-                                <tr>
+                                <tr style="${story.deletedFromWhatsapp ? 'opacity: 0.6;' : ''}">
                                     <td>${story.sessionId}</td>
                                     <td><span class="status-badge info">${story.type}</span></td>
                                     <td>${new Date(story.createdAt).toLocaleString()}</td>
@@ -1424,6 +1729,11 @@
                                     <td>${story.likes.total}</td>
                                     <td>${story.reactions.total}</td>
                                     <td>${story.replies.total}</td>
+                                    <td>
+                                        ${story.deletedFromWhatsapp
+                                            ? '<span class="status-badge disconnected" style="background: rgba(239, 68, 68, 0.1); color: var(--error);">❌ DELETED</span>'
+                                            : '<span class="status-badge connected" style="background: rgba(34, 197, 94, 0.1); color: var(--success);">✓ Active</span>'}
+                                    </td>
                                     <td>
                                         <button class="btn btn-secondary" style="padding: 0.25rem 0.75rem; font-size: 0.875rem;" onclick="viewStoryDetails('${story.storyId}')">
                                             View
@@ -1438,36 +1748,63 @@
         }
 
         async function viewStoryDetails(storyId) {
-            document.getElementById('storyDetailsModal').classList.add('active');
+            const modal = document.getElementById('storyDetailsModal');
+            modal.classList.add('active');
+            modal.dataset.storyId = storyId; // Store for WebSocket updates
             const container = document.getElementById('story-details-content');
 
             // Fetch story details
             const data = await apiCall(`/story/${storyId}/views`);
 
-            if (!data || !data.story) {
+            if (!data || !data.storyId) {
                 container.innerHTML = '<div class="empty-state"><div class="empty-state-text">Failed to load story details</div></div>';
                 return;
             }
 
-            const story = data.story;
+            // Get story info from the stories list
+            const storyInfo = allStories.find(s => s.storyId === storyId) || {};
 
             container.innerHTML = `
                 <div class="analytics-grid">
                     <div class="analytics-card">
-                        <div class="analytics-card-value">${story.views.total}</div>
+                        <div class="analytics-card-value">${data.totalViews || 0}</div>
                         <div class="analytics-card-label">Total Views</div>
                     </div>
                     <div class="analytics-card">
-                        <div class="analytics-card-value">${story.likes.total}</div>
-                        <div class="analytics-card-label">Likes</div>
+                        <div class="analytics-card-value">${data.viewsBreakdown?.viewed || 0}</div>
+                        <div class="analytics-card-label">Viewed</div>
                     </div>
                     <div class="analytics-card">
-                        <div class="analytics-card-value">${story.reactions.total}</div>
+                        <div class="analytics-card-value">${data.totalLikes || 0}</div>
+                        <div class="analytics-card-label">Likes 💚</div>
+                    </div>
+                    <div class="analytics-card">
+                        <div class="analytics-card-value">${data.totalReactions || 0}</div>
                         <div class="analytics-card-label">Reactions</div>
                     </div>
                     <div class="analytics-card">
-                        <div class="analytics-card-value">${story.replies.total}</div>
+                        <div class="analytics-card-value">${data.totalReplies || 0}</div>
                         <div class="analytics-card-label">Replies</div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 1.5rem;">
+                    <h3 style="margin-bottom: 1rem; font-size: 1.125rem;">Views Breakdown</h3>
+                    <div style="background: var(--bg-main); padding: 1rem; border-radius: 8px;">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem;">
+                            <div>
+                                <div style="font-size: 1.5rem; font-weight: 600; color: var(--primary);">${data.viewsBreakdown?.delivered || 0}</div>
+                                <div style="color: var(--text-muted); font-size: 0.875rem;">Delivered</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 1.5rem; font-weight: 600; color: var(--success);">${data.viewsBreakdown?.viewed || 0}</div>
+                                <div style="color: var(--text-muted); font-size: 0.875rem;">Viewed</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 1.5rem; font-weight: 600; color: var(--info);">${data.viewsBreakdown?.played || 0}</div>
+                                <div style="color: var(--text-muted); font-size: 0.875rem;">Played</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -1475,54 +1812,96 @@
                     <h3 style="margin-bottom: 1rem; font-size: 1.125rem;">Story Information</h3>
                     <div style="background: var(--bg-main); padding: 1rem; border-radius: 8px;">
                         <div style="margin-bottom: 0.75rem;">
-                            <span style="color: var(--text-muted);">Session:</span>
-                            <span style="margin-left: 0.5rem; font-weight: 600;">${story.sessionId}</span>
-                        </div>
-                        <div style="margin-bottom: 0.75rem;">
                             <span style="color: var(--text-muted);">Type:</span>
-                            <span class="status-badge info" style="margin-left: 0.5rem;">${story.type}</span>
+                            <span class="status-badge info" style="margin-left: 0.5rem;">${storyInfo.type || 'unknown'}</span>
                         </div>
                         <div style="margin-bottom: 0.75rem;">
                             <span style="color: var(--text-muted);">Posted:</span>
-                            <span style="margin-left: 0.5rem;">${new Date(story.createdAt).toLocaleString()}</span>
+                            <span style="margin-left: 0.5rem;">${storyInfo.createdAt ? new Date(storyInfo.createdAt).toLocaleString() : 'Unknown'}</span>
+                        </div>
+                        <div style="margin-bottom: 0.75rem;">
+                            <span style="color: var(--text-muted);">Data Source:</span>
+                            <span style="margin-left: 0.5rem; font-size: 0.875rem;">${data.dataSource || 'N/A'}</span>
                         </div>
                         <div>
                             <span style="color: var(--text-muted);">Story ID:</span>
-                            <span style="margin-left: 0.5rem; font-family: monospace; font-size: 0.875rem;">${story.storyId}</span>
+                            <span style="margin-left: 0.5rem; font-family: monospace; font-size: 0.875rem;">${data.storyId}</span>
                         </div>
                     </div>
                 </div>
 
-                ${story.views.total > 0 ? `
+                ${data.views && data.views.length > 0 ? `
                     <div style="margin-top: 1.5rem;">
-                        <h3 style="margin-bottom: 1rem; font-size: 1.125rem;">Viewers (${story.views.total})</h3>
-                        <div class="viewer-list">
-                            ${story.views.viewers && story.views.viewers.length > 0 ? story.views.viewers.map(viewer => `
-                                <div class="viewer-item">
+                        <h3 style="margin-bottom: 1rem; font-size: 1.125rem;">Viewers (${data.views.length})</h3>
+                        <div class="viewer-list" style="max-height: 400px; overflow-y: auto;">
+                            ${data.views.map(view => `
+                                <div class="viewer-item" style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; background: var(--bg-main); border-radius: 8px; margin-bottom: 0.5rem;">
                                     <div>
-                                        <div style="font-weight: 600;">${viewer.jid.split('@')[0]}</div>
+                                        <div style="font-weight: 600; font-family: monospace;">${view.viewer.split('@')[0]}</div>
                                         <div style="font-size: 0.75rem; color: var(--text-muted);">
-                                            ${viewer.timestamp ? new Date(viewer.timestamp).toLocaleString() : 'Recently'}
+                                            ${view.viewedAt ? '👁️ Viewed: ' + new Date(view.viewedAt).toLocaleTimeString() :
+                                              view.deliveredAt ? '📬 Delivered: ' + new Date(view.deliveredAt).toLocaleTimeString() :
+                                              view.playedAt ? '▶️ Played: ' + new Date(view.playedAt).toLocaleTimeString() : 'Recently'}
                                         </div>
                                     </div>
                                 </div>
-                            `).join('') : '<div style="padding: 1rem; text-align: center; color: var(--text-muted);">No viewer details available</div>'}
+                            `).join('')}
+                        </div>
+                    </div>
+                ` : '<div style="margin-top: 1.5rem; padding: 1rem; text-align: center; color: var(--text-muted); background: var(--bg-main); border-radius: 8px;">No views yet</div>'}
+
+                ${data.likes && data.likes.length > 0 ? `
+                    <div style="margin-top: 1.5rem;">
+                        <h3 style="margin-bottom: 1rem; font-size: 1.125rem;">Likes 💚 (${data.likes.length})</h3>
+                        <div style="background: var(--bg-main); padding: 1rem; border-radius: 8px; max-height: 200px; overflow-y: auto;">
+                            ${data.likes.map(like => `
+                                <div style="display: inline-block; margin: 0.25rem; padding: 0.5rem 0.75rem; background: var(--bg-card); border-radius: 12px; font-size: 0.875rem;">
+                                    💚 ${like.liker.split('@')[0]}
+                                </div>
+                            `).join('')}
                         </div>
                     </div>
                 ` : ''}
 
-                ${story.reactions.total > 0 ? `
+                ${data.totalReactions > 0 ? `
                     <div style="margin-top: 1.5rem;">
-                        <h3 style="margin-bottom: 1rem; font-size: 1.125rem;">Reactions</h3>
+                        <h3 style="margin-bottom: 1rem; font-size: 1.125rem;">Reactions (${data.totalReactions})</h3>
                         <div style="background: var(--bg-main); padding: 1rem; border-radius: 8px;">
                             <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-                                ${Object.entries(story.reactions.breakdown || {}).map(([emoji, count]) => `
-                                    <div style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background: var(--bg-card); border-radius: 8px;">
+                                ${Object.entries(data.reactionBreakdown || {})
+                                    .filter(([emoji, count]) => count > 0)
+                                    .map(([emoji, count]) => `
+                                    <div style="display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1rem; background: var(--bg-card); border-radius: 12px;">
                                         <span style="font-size: 1.5rem;">${emoji}</span>
                                         <span style="font-weight: 600;">${count}</span>
                                     </div>
-                                `).join('') || '<div style="color: var(--text-muted);">No reaction details available</div>'}
+                                `).join('') || '<div style="color: var(--text-muted);">No reactions yet</div>'}
                             </div>
+                        </div>
+                    </div>
+                ` : ''}
+
+                ${data.replies && data.replies.length > 0 ? `
+                    <div style="margin-top: 1.5rem;">
+                        <h3 style="margin-bottom: 1rem; font-size: 1.125rem;">Replies (${data.replies.length})</h3>
+                        <div style="max-height: 300px; overflow-y: auto;">
+                            ${data.replies.map(reply => `
+                                <div style="background: var(--bg-main); padding: 1rem; border-radius: 8px; margin-bottom: 0.5rem;">
+                                    <div style="font-weight: 600; margin-bottom: 0.5rem;">${reply.replier.split('@')[0]}</div>
+                                    <div style="color: var(--text-main);">${reply.message}</div>
+                                    <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem;">
+                                        ${new Date(reply.timestamp).toLocaleString()}
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                ` : ''}
+
+                ${data.note ? `
+                    <div style="margin-top: 1.5rem; padding: 1rem; background: var(--warning-bg); border-left: 4px solid var(--warning); border-radius: 8px;">
+                        <div style="font-size: 0.875rem; color: var(--text-main);">
+                            ℹ️ ${data.note}
                         </div>
                     </div>
                 ` : ''}
@@ -1993,6 +2372,622 @@
             document.getElementById('filter-search').value = '';
             filteredStories = [...allStories];
             renderStories();
+        }
+
+        // Events functions
+        async function loadEvents() {
+            const data = await apiCall('/events?limit=500');
+            if (data && data.events) {
+                allEvents = data.events;
+                filteredEvents = [...allEvents];
+
+                // Populate session filter dropdown
+                const sessionFilter = document.getElementById('events-filter-session');
+                if (sessionFilter) {
+                    const uniqueSessions = [...new Set(allEvents.map(e => e.sessionId))];
+                    sessionFilter.innerHTML = '<option value="">All Sessions</option>' +
+                        uniqueSessions.map(id => `<option value="${id}">${id}</option>`).join('');
+                }
+
+                applyEventsFilter();
+            }
+        }
+
+        function renderEvents() {
+            const container = document.getElementById('events-container');
+            const eventsToShow = filteredEvents;
+
+            if (eventsToShow.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">⚡</div>
+                        <div class="empty-state-title">No Events</div>
+                        <div class="empty-state-text">Events will appear here as they occur</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="card">
+                    ${eventsToShow.map(event => {
+                        const categoryIcons = {
+                            connection: '🔌',
+                            message: '💬',
+                            contact: '👤',
+                            group: '👥',
+                            call: '📞',
+                            story: '📸',
+                            error: '❌',
+                            other: '⚡'
+                        };
+                        const icon = categoryIcons[event.eventCategory] || '⚡';
+                        const categoryColors = {
+                            connection: 'var(--info)',
+                            message: 'var(--primary)',
+                            contact: 'var(--success)',
+                            group: 'var(--warning)',
+                            call: 'var(--secondary)',
+                            story: 'var(--info)',
+                            error: 'var(--error)',
+                            other: 'var(--text-muted)'
+                        };
+                        const color = categoryColors[event.eventCategory] || 'var(--text-muted)';
+
+                        return `
+                            <div class="log-entry" style="border-left-color: ${color}; margin-bottom: 0.75rem; cursor: pointer;" onclick="toggleEventDetails('${event.id}')">
+                                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
+                                    <div style="display: flex; align-items: center; gap: 0.75rem; flex: 1;">
+                                        <span style="font-size: 1.5rem;">${icon}</span>
+                                        <div style="flex: 1;">
+                                            <div style="font-weight: 600; font-size: 0.875rem; color: var(--text-primary);">
+                                                ${event.summary}
+                                            </div>
+                                            <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">
+                                                <span class="status-badge ${event.eventCategory}" style="padding: 0.125rem 0.375rem; font-size: 0.65rem; margin-right: 0.5rem;">${event.eventCategory}</span>
+                                                <span>${event.sessionId}</span>
+                                                <span style="margin-left: 0.5rem;">${event.eventType}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                        <div style="font-size: 0.75rem; color: var(--text-muted); white-space: nowrap;">
+                                            ${new Date(event.timestamp).toLocaleString()}
+                                        </div>
+                                        <button
+                                            onclick="event.stopPropagation(); copyEventToClipboard('${event.id}')"
+                                            class="btn btn-secondary"
+                                            style="padding: 0.25rem 0.5rem; font-size: 0.75rem; min-width: auto;"
+                                            title="Copy event JSON">
+                                            📋
+                                        </button>
+                                        <span id="toggle-${event.id}" style="font-size: 0.875rem; color: var(--text-muted);">${expandedEventIds.has(event.id) ? '▲' : '▼'}</span>
+                                    </div>
+                                </div>
+                                <div id="details-${event.id}" style="display: ${expandedEventIds.has(event.id) ? 'block' : 'none'}; margin-top: 0.75rem; padding: 0.75rem; background: var(--bg-main); border-radius: 6px; font-family: monospace; font-size: 0.75rem; overflow-x: auto;">
+                                    <div style="margin-bottom: 0.5rem; font-weight: 600; color: var(--text-secondary); font-family: inherit;">Event Data:</div>
+                                    <pre style="margin: 0; color: var(--text-primary); white-space: pre-wrap; word-wrap: break-word;">${JSON.stringify(event.data, null, 2)}</pre>
+                                    <div style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--border);">
+                                        <div style="font-weight: 600; color: var(--text-secondary); margin-bottom: 0.5rem; font-family: inherit;">Full Event:</div>
+                                        <pre style="margin: 0; color: var(--text-primary); white-space: pre-wrap; word-wrap: break-word;">${JSON.stringify(event, null, 2)}</pre>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+        }
+
+        function applyEventsFilter() {
+            const sessionFilter = document.getElementById('events-filter-session')?.value || '';
+            const categoryFilter = document.getElementById('events-filter-category')?.value || '';
+            const searchFilter = document.getElementById('events-filter-search')?.value.toLowerCase() || '';
+
+            filteredEvents = allEvents.filter(event => {
+                if (sessionFilter && event.sessionId !== sessionFilter) return false;
+                if (categoryFilter && event.eventCategory !== categoryFilter) return false;
+                if (searchFilter && !event.summary.toLowerCase().includes(searchFilter) && !event.eventType.toLowerCase().includes(searchFilter)) return false;
+                return true;
+            });
+
+            renderEvents();
+        }
+
+        function clearEventsFilter() {
+            document.getElementById('events-filter-session').value = '';
+            document.getElementById('events-filter-category').value = '';
+            document.getElementById('events-filter-search').value = '';
+            filteredEvents = [...allEvents];
+            renderEvents();
+        }
+
+        async function clearAllEvents() {
+            if (!confirm('Are you sure you want to clear all events? This cannot be undone.')) {
+                return;
+            }
+
+            try {
+                const response = await fetch('/events/clear', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    allEvents = [];
+                    filteredEvents = [];
+                    renderEvents();
+                    alert(`Cleared ${result.clearedCount} events`);
+                } else {
+                    alert('Failed to clear events');
+                }
+            } catch (err) {
+                console.error('Failed to clear events:', err);
+                alert('Failed to clear events');
+            }
+        }
+
+        function toggleEventDetails(eventId) {
+            const detailsDiv = document.getElementById(`details-${eventId}`);
+            const toggleIcon = document.getElementById(`toggle-${eventId}`);
+
+            if (detailsDiv.style.display === 'none') {
+                detailsDiv.style.display = 'block';
+                toggleIcon.textContent = '▲';
+                expandedEventIds.add(eventId);
+            } else {
+                detailsDiv.style.display = 'none';
+                toggleIcon.textContent = '▼';
+                expandedEventIds.delete(eventId);
+            }
+        }
+
+        async function copyEventToClipboard(eventId) {
+            // Find the event in the filtered or all events
+            const eventData = filteredEvents.find(e => e.id === eventId) || allEvents.find(e => e.id === eventId);
+
+            if (!eventData) {
+                alert('Event not found');
+                return;
+            }
+
+            const jsonText = JSON.stringify(eventData, null, 2);
+            const button = window.event.currentTarget;
+            const originalText = button.textContent;
+
+            try {
+                // Try modern clipboard API first
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    await navigator.clipboard.writeText(jsonText);
+                } else {
+                    // Fallback for older browsers or non-HTTPS
+                    const textArea = document.createElement('textarea');
+                    textArea.value = jsonText;
+                    textArea.style.position = 'fixed';
+                    textArea.style.left = '-999999px';
+                    textArea.style.top = '-999999px';
+                    document.body.appendChild(textArea);
+                    textArea.focus();
+                    textArea.select();
+
+                    try {
+                        document.execCommand('copy');
+                        textArea.remove();
+                    } catch (err) {
+                        textArea.remove();
+                        throw err;
+                    }
+                }
+
+                // Show success feedback
+                button.textContent = '✓';
+                button.style.backgroundColor = 'var(--success)';
+
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.style.backgroundColor = '';
+                }, 1500);
+            } catch (err) {
+                console.error('Failed to copy:', err);
+
+                // Ultimate fallback: show the JSON in a prompt
+                prompt('Copy this JSON (Ctrl+C):', jsonText);
+
+                button.textContent = originalText;
+                button.style.backgroundColor = '';
+            }
+        }
+
+        function toggleAutoRefresh() {
+            const enabled = document.getElementById('events-auto-refresh').checked;
+            const indicator = document.getElementById('refresh-indicator');
+
+            if (enabled) {
+                // Load events immediately
+                loadEvents();
+                // Set up interval for 5 seconds
+                eventsAutoRefreshInterval = setInterval(() => {
+                    loadEvents();
+                }, 5000);
+
+                // Update indicator
+                if (indicator) {
+                    indicator.style.background = 'var(--success)';
+                    indicator.title = 'Auto-refresh active';
+                    indicator.classList.add('refresh-indicator-active');
+                }
+            } else {
+                // Clear interval
+                if (eventsAutoRefreshInterval) {
+                    clearInterval(eventsAutoRefreshInterval);
+                    eventsAutoRefreshInterval = null;
+                }
+
+                // Update indicator
+                if (indicator) {
+                    indicator.style.background = 'var(--text-muted)';
+                    indicator.title = 'Auto-refresh disabled';
+                    indicator.classList.remove('refresh-indicator-active');
+                }
+            }
+        }
+
+        // Update showPage function to load events when events page is shown
+        const originalShowPage = showPage;
+        showPage = function(pageName) {
+            originalShowPage(pageName);
+            if (pageName === 'events') {
+                loadEvents();
+                // Start auto-refresh if enabled
+                if (document.getElementById('events-auto-refresh').checked) {
+                    toggleAutoRefresh();
+                }
+            } else {
+                // Stop auto-refresh when leaving events page
+                if (eventsAutoRefreshInterval) {
+                    clearInterval(eventsAutoRefreshInterval);
+                    eventsAutoRefreshInterval = null;
+                }
+            }
+
+            // Load bandwidth metrics when metrics page is shown
+            if (pageName === 'metrics') {
+                loadBandwidthMetrics();
+                initBandwidthChart();
+                // No auto-refresh - manual only to avoid tracking the tracker!
+            } else {
+                // Stop auto-refresh when leaving metrics page (if any)
+                if (bandwidthAutoRefreshInterval) {
+                    clearInterval(bandwidthAutoRefreshInterval);
+                    bandwidthAutoRefreshInterval = null;
+                }
+            }
+        };
+
+        // Bandwidth Metrics Functions
+        async function loadBandwidthMetrics() {
+            try {
+                const data = await apiCall('/metrics/bandwidth');
+                if (data) {
+                    updateBandwidthStats(data);
+                    updateBandwidthChart(data);
+                    updateBandwidthEndpoints(data);
+                    updateBandwidthDetails(data);
+                }
+            } catch (error) {
+                console.error('Failed to load bandwidth metrics:', error);
+            }
+        }
+
+        function updateBandwidthStats(data) {
+            // Current minute
+            document.getElementById('bandwidth-current').textContent =
+                data.currentMinute.totalKB.toFixed(2) + ' KB';
+            document.getElementById('bandwidth-current-requests').textContent =
+                data.currentMinute.requestCount + ' requests';
+
+            // Last minute
+            document.getElementById('bandwidth-last').textContent =
+                data.lastMinute.totalKB.toFixed(2) + ' KB';
+            document.getElementById('bandwidth-last-requests').textContent =
+                data.lastMinute.requestCount + ' requests';
+
+            // Total
+            const totalMB = data.totalKB / 1024;
+            document.getElementById('bandwidth-total').textContent =
+                (totalMB >= 1 ? totalMB.toFixed(2) + ' MB' : data.totalKB.toFixed(2) + ' KB');
+            document.getElementById('bandwidth-total-requests').textContent =
+                data.totalRequests + ' requests';
+
+            // Average
+            const avgKB = data.last60Minutes.length > 0
+                ? data.last60Minutes.reduce((sum, m) => sum + m.kb, 0) / data.last60Minutes.length
+                : 0;
+            document.getElementById('bandwidth-avg').textContent =
+                avgKB.toFixed(2) + ' KB';
+        }
+
+        function initBandwidthChart() {
+            if (bandwidthChart) return; // Already initialized
+
+            const ctx = document.getElementById('bandwidthChart');
+            if (!ctx) return;
+
+            const isDark = currentTheme === 'dark';
+            bandwidthChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'KB per Minute',
+                        data: [],
+                        borderColor: '#25D366',
+                        backgroundColor: 'rgba(37, 211, 102, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: { color: isDark ? '#cbd5e1' : '#475569' }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ' + context.parsed.y.toFixed(2) + ' KB';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: isDark ? '#475569' : '#e2e8f0' },
+                            ticks: {
+                                color: isDark ? '#cbd5e1' : '#475569',
+                                callback: function(value) {
+                                    return value.toFixed(0) + ' KB';
+                                }
+                            },
+                            title: {
+                                display: true,
+                                text: 'Kilobytes (KB)',
+                                color: isDark ? '#cbd5e1' : '#475569'
+                            }
+                        },
+                        x: {
+                            grid: { color: isDark ? '#475569' : '#e2e8f0' },
+                            ticks: {
+                                color: isDark ? '#cbd5e1' : '#475569',
+                                maxRotation: 45,
+                                minRotation: 45
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateBandwidthChart(data) {
+            if (!bandwidthChart) {
+                initBandwidthChart();
+            }
+
+            if (!bandwidthChart || !data.last60Minutes) return;
+
+            // Sort by timestamp
+            const sortedData = [...data.last60Minutes].sort((a, b) =>
+                new Date(a.timestamp) - new Date(b.timestamp)
+            );
+
+            // Update chart data
+            bandwidthChart.data.labels = sortedData.map(m => {
+                const date = new Date(m.timestamp);
+                return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            });
+            bandwidthChart.data.datasets[0].data = sortedData.map(m => m.kb);
+            bandwidthChart.update('none'); // Update without animation for smoother real-time updates
+        }
+
+        function updateBandwidthEndpoints(data) {
+            const container = document.getElementById('bandwidth-endpoints');
+            if (!container) return;
+
+            if (!data.byEndpoint || data.byEndpoint.length === 0) {
+                container.innerHTML = `
+                    <div style="padding: 2rem; text-align: center; color: var(--text-muted);">
+                        No endpoint data available yet
+                    </div>
+                `;
+                return;
+            }
+
+            // Show top 20 endpoints
+            const topEndpoints = data.byEndpoint.slice(0, 20);
+
+            container.innerHTML = `
+                <div class="table-container">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Endpoint</th>
+                                <th>Total KB</th>
+                                <th>Bytes</th>
+                                <th>Requests</th>
+                                <th>% of Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${topEndpoints.map((endpoint, index) => `
+                                <tr>
+                                    <td>
+                                        <div style="font-family: monospace; font-size: 0.875rem;">
+                                            ${endpoint.endpoint}
+                                        </div>
+                                    </td>
+                                    <td style="font-weight: 600; color: var(--primary);">
+                                        ${endpoint.kb.toFixed(2)} KB
+                                    </td>
+                                    <td style="color: var(--text-muted);">
+                                        ${endpoint.bytes.toLocaleString()}
+                                    </td>
+                                    <td style="color: var(--text-secondary);">
+                                        ${endpoint.requestCount}
+                                    </td>
+                                    <td>
+                                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                            <div style="flex: 1; background: var(--bg-main); border-radius: 4px; height: 20px; overflow: hidden;">
+                                                <div style="background: var(--primary); height: 100%; width: ${endpoint.percentage.toFixed(1)}%; transition: width 0.3s;"></div>
+                                            </div>
+                                            <span style="min-width: 50px; text-align: right; font-size: 0.875rem; color: var(--text-muted);">
+                                                ${endpoint.percentage.toFixed(1)}%
+                                            </span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+                ${data.byEndpoint.length > 20 ? `
+                    <div style="padding: 1rem; text-align: center; color: var(--text-muted); font-size: 0.875rem;">
+                        Showing top 20 of ${data.byEndpoint.length} endpoints
+                    </div>
+                ` : ''}
+            `;
+        }
+
+        function updateBandwidthDetails(data) {
+            const container = document.getElementById('bandwidth-details');
+            if (!container) return;
+
+            const sortedData = [...data.last60Minutes].sort((a, b) =>
+                new Date(b.timestamp) - new Date(a.timestamp)
+            );
+
+            if (sortedData.length === 0) {
+                container.innerHTML = `
+                    <div style="padding: 2rem; text-align: center; color: var(--text-muted);">
+                        No bandwidth data available yet
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="table-container">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Kilobytes (KB)</th>
+                                <th>Bytes</th>
+                                <th>Details</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${sortedData.slice(0, 20).map((metric, index) => {
+                                const hasEndpoints = metric.endpoints && metric.endpoints.length > 0;
+                                const rowId = `minute-${index}`;
+                                const detailId = `detail-${index}`;
+
+                                return `
+                                    <tr id="${rowId}" style="cursor: ${hasEndpoints ? 'pointer' : 'default'};"
+                                        ${hasEndpoints ? `onclick="toggleMinuteDetails('${detailId}', '${rowId}')"` : ''}>
+                                        <td>${new Date(metric.timestamp).toLocaleTimeString()}</td>
+                                        <td style="font-weight: 600; color: var(--primary);">${metric.kb.toFixed(2)} KB</td>
+                                        <td style="color: var(--text-muted);">${metric.bytes.toLocaleString()} bytes</td>
+                                        <td>
+                                            ${hasEndpoints ?
+                                                `<span style="color: var(--info); font-size: 0.75rem;">▶ ${metric.endpoints.length} endpoint(s)</span>` :
+                                                '<span style="color: var(--text-muted); font-size: 0.75rem;">-</span>'
+                                            }
+                                        </td>
+                                    </tr>
+                                    ${hasEndpoints ? `
+                                        <tr id="${detailId}" style="display: none; background: var(--bg-secondary);">
+                                            <td colspan="4" style="padding: 0;">
+                                                <div style="padding: 1rem; border-left: 3px solid var(--primary);">
+                                                    <div style="font-weight: 600; margin-bottom: 0.5rem; color: var(--text-secondary);">
+                                                        Endpoint Breakdown:
+                                                    </div>
+                                                    <table style="width: 100%; font-size: 0.875rem;">
+                                                        ${metric.endpoints.map(ep => `
+                                                            <tr>
+                                                                <td style="padding: 0.25rem 0; font-family: monospace; color: var(--text-secondary);">
+                                                                    ${ep.endpoint}
+                                                                </td>
+                                                                <td style="text-align: right; padding: 0.25rem 0; color: var(--primary); font-weight: 600;">
+                                                                    ${ep.kb.toFixed(2)} KB
+                                                                </td>
+                                                                <td style="text-align: right; padding: 0.25rem 0; color: var(--text-muted);">
+                                                                    ${ep.requestCount} req
+                                                                </td>
+                                                            </tr>
+                                                        `).join('')}
+                                                    </table>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ` : ''}
+                                `;
+                            }).join('')}
+                        </tbody>
+                    </table>
+                </div>
+                ${sortedData.length > 20 ? `
+                    <div style="padding: 1rem; text-align: center; color: var(--text-muted); font-size: 0.875rem;">
+                        Showing latest 20 of ${sortedData.length} minutes
+                    </div>
+                ` : ''}
+            `;
+        }
+
+        function toggleMinuteDetails(detailId, rowId) {
+            const detailRow = document.getElementById(detailId);
+            const mainRow = document.getElementById(rowId);
+            if (!detailRow) return;
+
+            const isHidden = detailRow.style.display === 'none';
+            detailRow.style.display = isHidden ? 'table-row' : 'none';
+
+            // Update arrow indicator
+            const arrow = mainRow.querySelector('td:last-child span');
+            if (arrow && arrow.textContent.includes('▶')) {
+                arrow.textContent = arrow.textContent.replace('▶', isHidden ? '▼' : '▶');
+            }
+        }
+
+        async function resetBandwidthMetrics() {
+            if (!confirm('Are you sure you want to reset all bandwidth metrics? This cannot be undone.')) {
+                return;
+            }
+
+            try {
+                const response = await fetch('/metrics/bandwidth/reset', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    alert('Bandwidth metrics reset successfully');
+                    loadBandwidthMetrics();
+                } else {
+                    alert('Failed to reset bandwidth metrics');
+                }
+            } catch (error) {
+                console.error('Failed to reset bandwidth metrics:', error);
+                alert('Failed to reset bandwidth metrics');
+            }
         }
     </script>
 </body>

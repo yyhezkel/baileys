@@ -1,7 +1,7 @@
 export type StoryData = {
     storyId: string,
     sessionId: string,
-    type: 'text' | 'image' | 'video',
+    type: 'text' | 'image' | 'video' | 'audio',
     content: string,
     caption?: string,
     backgroundColor?: string,
@@ -17,7 +17,8 @@ export type StoryData = {
         reusedMessageId?: boolean
     }>,
     createdAt: Date,
-    viewsFetchedFromHistory?: boolean
+    viewsFetchedFromHistory?: boolean,
+    deletedFromWhatsapp?: boolean
 }
 
 export type StoryView = {
@@ -49,7 +50,7 @@ export type StoryReply = {
 }
 
 export interface StatusQueueItem {
-    type: 'text' | 'image' | 'video' | 'audio'
+    type: 'text' | 'image' | 'video' | 'audio' | 'image-with-question'
     data: any
     resolve: (value: any) => void
     reject: (error: any) => void

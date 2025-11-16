@@ -26,6 +26,33 @@ export async function warmupEncryptionKeys(
     batchSize: number = 1000,
     maxContacts?: number
 ): Promise<void> {
+    // 🔍 CHECK: Is warmup disabled via environment variable?
+    const WARMUP_DISABLED = process.env.AUTO_WARMUP_ENABLED === 'false'
+
+    // 🔍 LOG: WARMUP CALLED - Track every warmup invocation
+    logger.warn({
+        sessionId,
+        accountPhoneNumber,
+        batchSize,
+        maxContacts,
+        warmupDisabled: WARMUP_DISABLED,
+        envVar: process.env.AUTO_WARMUP_ENABLED,
+        timestamp: new Date().toISOString(),
+        caller: 'warmupEncryptionKeys'
+    }, WARMUP_DISABLED
+        ? '⚠️ WARMUP CALLED BUT DISABLED - Returning immediately without sending statuses'
+        : '🚨 WARMUP FUNCTION CALLED - Starting encryption key warmup')
+
+    // If warmup is disabled, return immediately without doing anything
+    if (WARMUP_DISABLED) {
+        logger.info({
+            sessionId,
+            reason: 'AUTO_WARMUP_ENABLED=false',
+            timestamp: new Date().toISOString()
+        }, '✅ WARMUP SKIPPED - No statuses sent (warmup disabled)')
+        return
+    }
+
     try {
         // Get all individual contacts
         const allContacts: string[] = []
@@ -77,6 +104,17 @@ async function warmupWithSmartResend(
     const firstContact = contactsToWarmup[0]!
     logger.info({ sessionId, firstContact }, 'Sending initial status to first contact')
 
+    // 🔍 LOG: OUTGOING STATUS - Initial warmup status
+    logger.warn({
+        sessionId,
+        type: 'OUTGOING_STATUS',
+        source: 'warmup-smart-resend-initial',
+        recipient: firstContact,
+        recipientCount: 1,
+        message: '.',
+        timestamp: new Date().toISOString()
+    }, '📤 SENDING STATUS: Warmup initial message to first contact')
+
     const initialResult = await socket.sendMessage('status@broadcast', {
         text: '.'
     }, {
@@ -118,6 +156,19 @@ async function warmupWithSmartResend(
         }, 'Resending to batch')
 
         try {
+            // 🔍 LOG: OUTGOING STATUS - Batch resend
+            logger.warn({
+                sessionId,
+                type: 'OUTGOING_STATUS',
+                source: 'warmup-smart-resend-batch',
+                batchNumber: i + 1,
+                batchSize: batch.length,
+                totalBatches: batches.length,
+                messageId,
+                message: '.',
+                timestamp: new Date().toISOString()
+            }, `📤 SENDING STATUS: Warmup batch ${i + 1}/${batches.length} (${batch.length} contacts)`)
+
             // Resend using the SAME message ID
             await socket.sendMessage('status@broadcast', {
                 text: '.'
@@ -169,6 +220,18 @@ async function warmupWithSimpleBatch(
         }, 'Sending warmup batch')
 
         try {
+            // 🔍 LOG: OUTGOING STATUS - Simple batch
+            logger.warn({
+                sessionId,
+                type: 'OUTGOING_STATUS',
+                source: 'warmup-simple-batch',
+                batchNumber: i + 1,
+                batchSize: batch.length,
+                totalBatches: batches.length,
+                message: '.',
+                timestamp: new Date().toISOString()
+            }, `📤 SENDING STATUS: Warmup batch ${i + 1}/${batches.length} (${batch.length} contacts)`)
+
             await socket.sendMessage('status@broadcast', {
                 text: '.'
             }, {

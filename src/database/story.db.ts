@@ -4,6 +4,7 @@ import { logger } from '../api-utils/logger.js'
 
 /**
  * Save story to database
+ * Note: JID lists are now stored in JSON files (see story-jids.service.ts)
  */
 export async function saveStoryToDatabase(
     dbPool: Pool,
@@ -33,10 +34,24 @@ export async function saveStoryToDatabase(
                 storyData.canBeReshared !== false
             ]
         )
+
         logger.info({ storyId: storyData.storyId }, 'Story saved to database')
     } catch (error: any) {
         logger.error({ error: error.message, storyId: storyData.storyId }, 'Error saving story to database')
     }
+}
+
+/**
+ * Load story sends from database
+ * DEPRECATED: JID lists are now stored in JSON files (see story-jids.service.ts)
+ * This function is kept for backward compatibility but will return empty array
+ */
+export async function loadStorySends(
+    dbPool: Pool,
+    storyId: string
+): Promise<any[]> {
+    logger.warn({ storyId }, 'loadStorySends called but JIDs are now stored in files, not database')
+    return []
 }
 
 /**

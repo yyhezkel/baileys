@@ -9,7 +9,7 @@ export interface SessionRoutesDeps {
     sessionLogs: Map<string, any[]>
     createSession: (sessionId: string, force?: boolean) => Promise<any>
     warmupEncryptionKeys: (sessionId: string, batchSize?: number, maxContacts?: number) => Promise<void>
-    addSessionLog: (sessionId: string, level: string, message: string, data?: any) => void
+    addSessionLog: (sessionId: string, level: 'info' | 'warn' | 'error', message: string, data?: any) => void
     contacts: Map<string, any>
 }
 
@@ -48,6 +48,10 @@ export function createSessionRoutes(deps: SessionRoutesDeps): Router {
     router.post('/:sessionId/request-code', async (req: Request, res: Response) => {
         try {
             const { sessionId } = req.params
+            if (!sessionId) {
+                return res.status(400).json({ error: 'sessionId is required' })
+            }
+
             const { phoneNumber } = req.body
 
             if (!phoneNumber) {
@@ -99,6 +103,9 @@ export function createSessionRoutes(deps: SessionRoutesDeps): Router {
     // GET /session/:sessionId/status - Get session status
     router.get('/:sessionId/status', (req: Request, res: Response) => {
         const { sessionId } = req.params
+        if (!sessionId) {
+            return res.status(400).json({ error: 'sessionId is required' })
+        }
         const session = sessions.get(sessionId)
 
         if (!session) {
@@ -117,6 +124,9 @@ export function createSessionRoutes(deps: SessionRoutesDeps): Router {
     // GET /session/:sessionId/qr - Get QR code for session
     router.get('/:sessionId/qr', (req: Request, res: Response) => {
         const { sessionId } = req.params
+        if (!sessionId) {
+            return res.status(400).json({ error: 'sessionId is required' })
+        }
         const session = sessions.get(sessionId)
 
         if (!session) {
@@ -137,6 +147,9 @@ export function createSessionRoutes(deps: SessionRoutesDeps): Router {
     router.get('/:sessionId/qr-image', async (req: Request, res: Response) => {
         try {
             const { sessionId } = req.params
+            if (!sessionId) {
+                return res.status(400).json({ error: 'sessionId is required' })
+            }
             const session = sessions.get(sessionId)
 
             if (!session) {
@@ -168,6 +181,9 @@ export function createSessionRoutes(deps: SessionRoutesDeps): Router {
     router.post('/:sessionId/warmup', async (req: Request, res: Response) => {
         try {
             const { sessionId } = req.params
+            if (!sessionId) {
+                return res.status(400).json({ error: 'sessionId is required' })
+            }
             const { batchSize, maxContacts } = req.body
 
             const session = sessions.get(sessionId)
@@ -227,7 +243,7 @@ export function createSessionRoutes(deps: SessionRoutesDeps): Router {
     })
 
     // GET /sessions - List all sessions
-    router.get('s', (req: Request, res: Response) => {
+    router.get('', (req: Request, res: Response) => {
         const sessionsObject = Object.fromEntries(
             Array.from(sessions.entries()).map(([id, session]) => [
                 id,
@@ -248,6 +264,9 @@ export function createSessionRoutes(deps: SessionRoutesDeps): Router {
     // GET /session/:sessionId/logs - Get logs for a session
     router.get('/:sessionId/logs', (req: Request, res: Response) => {
         const { sessionId } = req.params
+        if (!sessionId) {
+            return res.status(400).json({ error: 'sessionId is required' })
+        }
         const logs = sessionLogs.get(sessionId) || []
 
         res.json({
@@ -265,6 +284,9 @@ export function createSessionRoutes(deps: SessionRoutesDeps): Router {
     router.delete('/:sessionId', async (req: Request, res: Response) => {
         try {
             const { sessionId } = req.params
+            if (!sessionId) {
+                return res.status(400).json({ error: 'sessionId is required' })
+            }
             const { logout } = req.query
             const session = sessions.get(sessionId)
 

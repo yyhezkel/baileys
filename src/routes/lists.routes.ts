@@ -142,6 +142,9 @@ export function createListsRoutes(deps: ListsRoutesDeps): Router {
     router.delete('/:listName', async (req: Request, res: Response) => {
         try {
             const { listName } = req.params
+            if (!listName) {
+                return res.status(400).json({ error: 'listName is required' })
+            }
             const { sessionId } = req.query
 
             if (!sessionId) {
@@ -188,6 +191,9 @@ export function createListsRoutes(deps: ListsRoutesDeps): Router {
     router.get('/:listName/contacts', async (req: Request, res: Response) => {
         try {
             const { listName } = req.params
+            if (!listName) {
+                return res.status(400).json({ error: 'listName is required' })
+            }
             const { sessionId } = req.query
 
             if (!sessionId) {
@@ -231,6 +237,9 @@ export function createListsRoutes(deps: ListsRoutesDeps): Router {
     router.post('/:listName/contacts/add', async (req: Request, res: Response) => {
         try {
             const { listName } = req.params
+            if (!listName) {
+                return res.status(400).json({ error: 'listName is required' })
+            }
             const { sessionId, contacts: newContacts } = req.body
 
             if (!sessionId) {
@@ -313,6 +322,9 @@ export function createListsRoutes(deps: ListsRoutesDeps): Router {
     router.post('/:listName/contacts/remove', async (req: Request, res: Response) => {
         try {
             const { listName } = req.params
+            if (!listName) {
+                return res.status(400).json({ error: 'listName is required' })
+            }
             const { sessionId, contacts: contactsToRemove } = req.body
 
             if (!sessionId) {

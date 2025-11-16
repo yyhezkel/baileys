@@ -408,6 +408,9 @@ export function createContactsRoutes(deps: ContactsRoutesDeps): Router {
     router.delete('/:contactId', async (req: Request, res: Response) => {
         try {
             const { contactId } = req.params
+            if (!contactId) {
+                return res.status(400).json({ error: 'contactId is required' })
+            }
             const { sessionId } = req.query
 
             if (!sessionId) {

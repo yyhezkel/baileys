@@ -1,6 +1,9 @@
 import { Router, type Request, type Response } from 'express'
 import { logger } from '../api-utils/logger.js'
-import type { StoryData, StoryView, StoryLike, StoryReaction, StoryReply, SessionData, AnyMessageContent } from '../api-types/index.js'
+import type { StoryData, StoryView, StoryLike, StoryReaction, StoryReply, SessionData } from '../api-types/index.js'
+import type { AnyMessageContent } from '../Types'
+import { storyJidsService } from '../services/story-jids.service.js'
+import { systemMetricsService } from '../services/system-metrics.service.js'
 
 // Dependencies interface
 export interface StoryRoutesDeps {
@@ -15,9 +18,11 @@ export interface StoryRoutesDeps {
     processStatusJidList: (statusJidList: any, send_to_own_device: any, send_to_all_contacts: any, accountPhoneNumber: any, includeOwnDevice: boolean, list?: any) => string[]
     queueStatus: (sessionId: string, type: any, data: any, maxRetries: number) => Promise<any>
     saveStoryToDatabase: (storyData: StoryData, accountPhoneNumber?: string) => Promise<void>
+    loadStorySends: (storyId: string) => Promise<any[]>
     broadcastEvent: (sessionId: string, event: string, data: any) => void
     loadStoryEventsFromDatabase: (storyId?: string) => Promise<void>
-    addSessionLog: (sessionId: string, level: string, message: string, data?: any) => void
+    addSessionLog: (sessionId: string, level: 'info' | 'warn' | 'error', message: string, data?: any) => void
+    fetchStoryViewsFromHistory: (sessionId: string, storyId: string, sock: any) => Promise<void>
 }
 
 /**
@@ -25,6 +30,28 @@ export interface StoryRoutesDeps {
  */
 export function createStoryRoutes(deps: StoryRoutesDeps): Router {
     const router = Router()
+
+    // Wrapper to track performance of status sends
+    async function queueStatusWithTracking(
+        sessionId: string,
+        type: string,
+        data: any,
+        maxRetries: number = 3
+    ): Promise<any> {
+        const endTimer = systemMetricsService.startTimer(`send-status-${type}`)
+        try {
+            const result = await deps.queueStatus(sessionId, type, data, maxRetries)
+            endTimer(true, {
+                sessionId,
+                type,
+                recipientCount: data.processedJidList?.length || 0
+            })
+            return result
+        } catch (error: any) {
+            endTimer(false, { sessionId, type, error: error?.message || 'Unknown error' })
+            throw error
+        }
+    }
     const {
         sessions,
         stories,
@@ -37,24 +64,86 @@ export function createStoryRoutes(deps: StoryRoutesDeps): Router {
         processStatusJidList,
         queueStatus,
         saveStoryToDatabase,
+        loadStorySends,
         broadcastEvent,
         loadStoryEventsFromDatabase,
-        addSessionLog
+        addSessionLog,
+        fetchStoryViewsFromHistory
     } = deps
+
+    // Helper function to save story JIDs to file
+    function saveStoryJidsToFile(storyData: StoryData): void {
+        try {
+            storyJidsService.saveStoryJids({
+                storyId: storyData.storyId,
+                sessionId: storyData.sessionId,
+                messageKey: storyData.messageKey,
+                sends: storyData.sends,
+                createdAt: storyData.createdAt
+            })
+        } catch (error: any) {
+            logger.error({ error: error.message, storyId: storyData.storyId }, 'Error saving story JIDs to file')
+        }
+    }
 
     // Helper function to send a single video story
     async function sendSingleVideoStory(session: SessionData, sessionId: string, videoSource: any, caption: string, statusJidList: string[], canBeReshared: boolean) {
-        const result = await queueStatus(sessionId, 'video', {
+        const contentUrl = typeof videoSource === 'string' ? videoSource : (videoSource.url || 'base64')
+
+        const result = await queueStatusWithTracking(sessionId, 'video', {
             videoSource,
             caption,
             processedJidList: statusJidList,
             canBeReshared,
-            content: typeof videoSource === 'string' ? videoSource : (videoSource.url || 'base64')
+            content: contentUrl
         }, 3)
 
+        // Generate unique story ID
+        const storyId = `story_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+
+        // Store story data
+        const storyData: StoryData = {
+            storyId,
+            sessionId,
+            type: 'video',
+            content: contentUrl,
+            caption,
+            canBeReshared,
+            messageIds: [result?.messageId || ''],
+            messageKey: result?.key,
+            messageTimestamp: result?.messageTimestamp ? Number(result.messageTimestamp) : Date.now(),
+            sends: [{
+                messageId: result?.messageId || '',
+                statusJidList,
+                timestamp: new Date()
+            }],
+            createdAt: new Date()
+        }
+
+        stories.set(storyId, storyData)
+
+        // Save JIDs to file for deletion functionality
+        saveStoryJidsToFile(storyData)
+
+        // Log status sent to session logs
+        addSessionLog(sessionId, 'info', `Status sent: video`, {
+            storyId,
+            type: 'video',
+            recipients: statusJidList.length,
+            hasCaption: !!caption
+        })
+
+        // Save story to database
+        const accountPhoneNumber = session.accountPhoneNumber
+        if (accountPhoneNumber) {
+            await saveStoryToDatabase(storyData, accountPhoneNumber)
+        }
+
+        broadcastEvent(sessionId, 'story.sent', { result, storyId })
+
         return {
-            storyId: result.storyId,
-            messageId: result.messageId
+            storyId,
+            messageId: result?.messageId
         }
     }
 
@@ -155,6 +244,9 @@ export function createStoryRoutes(deps: StoryRoutesDeps): Router {
 
             stories.set(storyId, storyData)
 
+            // Save JIDs to file for deletion functionality
+            saveStoryJidsToFile(storyData)
+
             // Log status sent to session logs
             addSessionLog(sessionId, 'info', `Status sent: ${type}`, {
                 storyId,
@@ -232,8 +324,8 @@ export function createStoryRoutes(deps: StoryRoutesDeps): Router {
                 options.font = font
             }
 
-            // Queue the status send with retry mechanism
-            const result = await queueStatus(sessionId, 'text', {
+            // Queue the status send with retry mechanism (with performance tracking)
+            const result = await queueStatusWithTracking(sessionId, 'text', {
                 text,
                 backgroundColor,
                 font,
@@ -241,10 +333,62 @@ export function createStoryRoutes(deps: StoryRoutesDeps): Router {
                 canBeReshared
             }, 3)
 
+            // Generate unique story ID
+            const storyId = `story_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+
+            // Store story data
+            const storyData: StoryData = {
+                storyId,
+                sessionId,
+                type: 'text',
+                content: text,
+                backgroundColor,
+                font,
+                canBeReshared: canBeReshared !== false,
+                messageIds: [result?.messageId || ''],
+                messageKey: result?.key,
+                messageTimestamp: result?.messageTimestamp ? Number(result.messageTimestamp) : Date.now(),
+                sends: [{
+                    messageId: result?.messageId || '',
+                    statusJidList: processedJidList,
+                    timestamp: new Date()
+                }],
+                createdAt: new Date()
+            }
+
+            stories.set(storyId, storyData)
+
+            // Save JIDs to file for deletion functionality
+            saveStoryJidsToFile(storyData)
+
+            // Log status sent to session logs
+            addSessionLog(sessionId, 'info', `Status sent: text`, {
+                storyId,
+                type: 'text',
+                recipients: processedJidList.length
+            })
+
+            // Save story to database
+            const accountPhoneNumber = session.accountPhoneNumber
+            if (accountPhoneNumber) {
+                await saveStoryToDatabase(storyData, accountPhoneNumber)
+            }
+
+            broadcastEvent(sessionId, 'story.sent', { result, storyId })
+
+            // Auto-fetch views from WhatsApp history (runs in background)
+            setTimeout(async () => {
+                try {
+                    await fetchStoryViewsFromHistory(sessionId, storyId, session.socket)
+                } catch (error: any) {
+                    logger.error({ storyId, error: error.message }, 'Failed to auto-fetch views for API-sent text status')
+                }
+            }, 3000)
+
             res.json({
                 success: true,
-                storyId: result.storyId,
-                messageId: result.messageId,
+                storyId,
+                messageId: result?.messageId,
                 message: 'Text status queued successfully'
             })
         } catch (error: any) {
@@ -295,20 +439,175 @@ export function createStoryRoutes(deps: StoryRoutesDeps): Router {
             // Process statusJidList to support plain phone numbers, send_to_own_device, and list
             const processedJidList = processStatusJidList(statusJidList, send_to_own_device, send_to_all_contacts, session.accountPhoneNumber, true, list)
 
-            // Queue the status send with retry mechanism
-            const result = await queueStatus(sessionId, 'image', {
+            const contentUrl = url || file || 'base64'
+
+            // Queue the status send with retry mechanism (with performance tracking)
+            const result = await queueStatusWithTracking(sessionId, 'image', {
                 imageSource,
                 caption,
                 processedJidList,
                 canBeReshared,
-                content: url || file || 'base64'
+                content: contentUrl
             }, 3)
+
+            // Generate unique story ID
+            const storyId = `story_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+
+            // Store story data
+            const storyData: StoryData = {
+                storyId,
+                sessionId,
+                type: 'image',
+                content: contentUrl,
+                caption,
+                canBeReshared: canBeReshared !== false,
+                messageIds: [result?.messageId || ''],
+                messageKey: result?.key,
+                messageTimestamp: result?.messageTimestamp ? Number(result.messageTimestamp) : Date.now(),
+                sends: [{
+                    messageId: result?.messageId || '',
+                    statusJidList: processedJidList,
+                    timestamp: new Date()
+                }],
+                createdAt: new Date()
+            }
+
+            stories.set(storyId, storyData)
+
+            // Save JIDs to file for deletion functionality
+            saveStoryJidsToFile(storyData)
+
+            // Log status sent to session logs
+            addSessionLog(sessionId, 'info', `Status sent: image`, {
+                storyId,
+                type: 'image',
+                recipients: processedJidList.length,
+                hasCaption: !!caption
+            })
+
+            // Save story to database
+            const accountPhoneNumber = session.accountPhoneNumber
+            if (accountPhoneNumber) {
+                await saveStoryToDatabase(storyData, accountPhoneNumber)
+            }
+
+            broadcastEvent(sessionId, 'story.sent', { result, storyId })
+
+            // Auto-fetch views from WhatsApp history (runs in background)
+            setTimeout(async () => {
+                try {
+                    await fetchStoryViewsFromHistory(sessionId, storyId, session.socket)
+                } catch (error: any) {
+                    logger.error({ storyId, error: error.message }, 'Failed to auto-fetch views for API-sent image status')
+                }
+            }, 3000)
 
             res.json({
                 success: true,
-                storyId: result.storyId,
-                messageId: result.messageId,
+                storyId,
+                messageId: result?.messageId,
                 message: 'Image status queued successfully'
+            })
+        } catch (error: any) {
+            res.status(500).json({ error: error.message })
+        }
+    })
+
+    // POST /story/image-with-question - Send image status with question sticker
+    router.post('/image-with-question', async (req: Request, res: Response) => {
+        try {
+            const { sessionId, url, data, file, caption, questionText, statusJidList, canBeReshared, send_to_own_device, send_to_all_contacts, list } = req.body
+
+            if (!sessionId) {
+                return res.status(400).json({ error: 'sessionId is required' })
+            }
+
+            if (!url && !data && !file) {
+                return res.status(400).json({ error: 'One of url, data, or file is required' })
+            }
+
+            if (!questionText) {
+                return res.status(400).json({ error: 'questionText is required' })
+            }
+
+            const session = sessions.get(sessionId)
+            if (!session || session.status !== 'connected') {
+                return res.status(400).json({ error: 'Session not connected' })
+            }
+
+            // Process statusJidList to support plain phone numbers, send_to_own_device, and list
+            const processedJidList = processStatusJidList(statusJidList, send_to_own_device, send_to_all_contacts, session.accountPhoneNumber, true, list)
+
+            let imageSource: any
+            if (url) {
+                imageSource = { url }
+            } else if (data) {
+                imageSource = Buffer.from(data, 'base64')
+            } else if (file) {
+                imageSource = { url: file }
+            }
+
+            const contentUrl = url || file || 'base64'
+
+            // Queue the status send with retry mechanism (with performance tracking)
+            const result = await queueStatusWithTracking(sessionId, 'image-with-question', {
+                imageSource,
+                caption,
+                questionText,
+                processedJidList,
+                canBeReshared,
+                content: contentUrl
+            }, 3)
+
+            // Generate unique story ID
+            const storyId = `story_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+
+            // Store story data
+            const storyData: StoryData = {
+                storyId,
+                sessionId,
+                type: 'image',
+                content: contentUrl,
+                caption,
+                canBeReshared: canBeReshared !== false,
+                messageIds: [result?.messageId || ''],
+                messageKey: result?.key,
+                messageTimestamp: result?.messageTimestamp ? Number(result.messageTimestamp) : Date.now(),
+                sends: [{
+                    messageId: result?.messageId || '',
+                    statusJidList: processedJidList,
+                    timestamp: new Date()
+                }],
+                createdAt: new Date()
+            }
+
+            stories.set(storyId, storyData)
+
+            // Save JIDs to file for deletion functionality
+            saveStoryJidsToFile(storyData)
+
+            // Log status sent to session logs
+            addSessionLog(sessionId, 'info', `Status sent: image with question`, {
+                storyId,
+                type: 'image-with-question',
+                recipients: processedJidList.length,
+                hasCaption: !!caption,
+                questionText
+            })
+
+            // Save story to database
+            const accountPhoneNumber = session.accountPhoneNumber
+            if (accountPhoneNumber) {
+                await saveStoryToDatabase(storyData, accountPhoneNumber)
+            }
+
+            broadcastEvent(sessionId, 'story.sent', { result, storyId })
+
+            res.json({
+                success: true,
+                storyId,
+                messageId: result?.messageId,
+                message: 'Image status with question queued successfully'
             })
         } catch (error: any) {
             res.status(500).json({ error: error.message })
@@ -529,18 +828,70 @@ export function createStoryRoutes(deps: StoryRoutesDeps): Router {
             // Process statusJidList to support plain phone numbers, send_to_own_device, and list
             const processedJidList = processStatusJidList(statusJidList, send_to_own_device, send_to_all_contacts, session.accountPhoneNumber, true, list)
 
-            // Queue the status send with retry mechanism
-            const result = await queueStatus(sessionId, 'audio', {
+            const contentUrl = url || file || 'base64'
+
+            // Queue the status send with retry mechanism (with performance tracking)
+            const result = await queueStatusWithTracking(sessionId, 'audio', {
                 audioSource,
                 processedJidList,
                 canBeReshared,
-                content: url || file || 'base64'
+                content: contentUrl
             }, 3)
+
+            // Generate unique story ID
+            const storyId = `story_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+
+            // Store story data
+            const storyData: StoryData = {
+                storyId,
+                sessionId,
+                type: 'audio',
+                content: contentUrl,
+                canBeReshared: canBeReshared !== false,
+                messageIds: [result?.messageId || ''],
+                messageKey: result?.key,
+                messageTimestamp: result?.messageTimestamp ? Number(result.messageTimestamp) : Date.now(),
+                sends: [{
+                    messageId: result?.messageId || '',
+                    statusJidList: processedJidList,
+                    timestamp: new Date()
+                }],
+                createdAt: new Date()
+            }
+
+            stories.set(storyId, storyData)
+
+            // Save JIDs to file for deletion functionality
+            saveStoryJidsToFile(storyData)
+
+            // Log status sent to session logs
+            addSessionLog(sessionId, 'info', `Status sent: audio`, {
+                storyId,
+                type: 'audio',
+                recipients: processedJidList.length
+            })
+
+            // Save story to database
+            const accountPhoneNumber = session.accountPhoneNumber
+            if (accountPhoneNumber) {
+                await saveStoryToDatabase(storyData, accountPhoneNumber)
+            }
+
+            broadcastEvent(sessionId, 'story.sent', { result, storyId })
+
+            // Auto-fetch views from WhatsApp history (runs in background)
+            setTimeout(async () => {
+                try {
+                    await fetchStoryViewsFromHistory(sessionId, storyId, session.socket)
+                } catch (error: any) {
+                    logger.error({ storyId, error: error.message }, 'Failed to auto-fetch views for API-sent audio status')
+                }
+            }, 3000)
 
             res.json({
                 success: true,
-                storyId: result.storyId,
-                messageId: result.messageId,
+                storyId,
+                messageId: result?.messageId,
                 message: 'Audio status queued successfully'
             })
         } catch (error: any) {
@@ -552,6 +903,9 @@ export function createStoryRoutes(deps: StoryRoutesDeps): Router {
     router.post('/:storyId/resend', async (req: Request, res: Response) => {
         try {
             const { storyId } = req.params
+            if (!storyId) {
+                return res.status(400).json({ error: 'storyId is required' })
+            }
             const { statusJidList, send_to_own_device, send_to_all_contacts, list } = req.body
 
             const story = stories.get(storyId)
@@ -633,6 +987,9 @@ export function createStoryRoutes(deps: StoryRoutesDeps): Router {
 
             stories.set(storyId, story)
 
+            // Save JIDs to file for deletion functionality
+            saveStoryJidsToFile(story)
+
             broadcastEvent(story.sessionId, 'story.resent', { result, storyId })
 
             res.json({
@@ -654,6 +1011,9 @@ export function createStoryRoutes(deps: StoryRoutesDeps): Router {
     // GET /story/:storyId - Get story information
     router.get('/:storyId', (req: Request, res: Response) => {
         const { storyId } = req.params
+        if (!storyId) {
+            return res.status(400).json({ error: 'storyId is required' })
+        }
         const story = stories.get(storyId)
 
         if (!story) {
@@ -675,7 +1035,7 @@ export function createStoryRoutes(deps: StoryRoutesDeps): Router {
     })
 
     // GET /stories - List all stories
-    router.get('s', async (req: Request, res: Response) => {
+    router.get('', async (req: Request, res: Response) => {
         try {
             const { sessionId } = req.query
 
@@ -703,7 +1063,8 @@ export function createStoryRoutes(deps: StoryRoutesDeps): Router {
                                 messageKey: row.message_key,
                                 messageTimestamp: row.message_timestamp,
                                 sends: row.sends || [],
-                                createdAt: new Date(row.created_at)
+                                createdAt: new Date(row.created_at),
+                                deletedFromWhatsapp: row.deleted_from_whatsapp || false
                             }
                             stories.set(row.story_id, storyData)
                         }
@@ -771,6 +1132,7 @@ export function createStoryRoutes(deps: StoryRoutesDeps): Router {
                         content: story.content.substring(0, 100) + (story.content.length > 100 ? '...' : ''),
                         totalSends: story.sends.length,
                         createdAt: story.createdAt,
+                        deletedFromWhatsapp: story.deletedFromWhatsapp || false,
                         // View statistics
                         views: {
                             total: views.length,
@@ -813,7 +1175,7 @@ export function createStoryRoutes(deps: StoryRoutesDeps): Router {
     })
 
     // POST /stories/sync - Sync stories from WhatsApp history
-    router.post('s/sync', async (req: Request, res: Response) => {
+    router.post('/sync', async (req: Request, res: Response) => {
         try {
             const { sessionId, count } = req.body
 
@@ -863,6 +1225,9 @@ export function createStoryRoutes(deps: StoryRoutesDeps): Router {
     // GET /story/:storyId/views - Get story views
     router.get('/:storyId/views', (req: Request, res: Response) => {
         const { storyId } = req.params
+        if (!storyId) {
+            return res.status(400).json({ error: 'storyId is required' })
+        }
         const story = stories.get(storyId)
 
         if (!story) {
@@ -985,6 +1350,9 @@ export function createStoryRoutes(deps: StoryRoutesDeps): Router {
     router.post('/:storyId/fetch-views', async (req: Request, res: Response) => {
         try {
             const { storyId } = req.params
+            if (!storyId) {
+                return res.status(400).json({ error: 'storyId is required' })
+            }
             const { force } = req.body
             const story = stories.get(storyId)
 
@@ -1134,6 +1502,9 @@ export function createStoryRoutes(deps: StoryRoutesDeps): Router {
     router.delete('/:storyId', async (req: Request, res: Response) => {
         try {
             const { storyId } = req.params
+            if (!storyId) {
+                return res.status(400).json({ error: 'storyId is required' })
+            }
             const story = stories.get(storyId)
 
             if (!story) {
@@ -1148,13 +1519,45 @@ export function createStoryRoutes(deps: StoryRoutesDeps): Router {
 
             let deleted = false
 
+            // Load sends and messageKey from file if not in memory
+            let sends = story.sends || []
+            let messageKey = story.messageKey
+
+            if ((!sends || sends.length === 0) || !messageKey) {
+                logger.info({ storyId }, 'Loading JIDs from file for deletion')
+                const jidsData = storyJidsService.loadStoryJids(storyId)
+                if (jidsData) {
+                    sends = jidsData.sends
+                    messageKey = jidsData.messageKey
+                    logger.info({ storyId, sendsCount: sends.length }, 'Loaded JIDs from file')
+                }
+            }
+
             // Delete the story from WhatsApp using the message key
-            if (story.messageKey) {
-                logger.info({ messageKey: story.messageKey }, 'Deleting story from WhatsApp')
+            if (messageKey) {
+                // Get all recipients from all sends
+                const allRecipients: string[] = []
+                if (sends && sends.length > 0) {
+                    sends.forEach(send => {
+                        if (send.statusJidList) {
+                            allRecipients.push(...send.statusJidList)
+                        }
+                    })
+                }
+
+                // Remove duplicates
+                const uniqueRecipients = [...new Set(allRecipients)]
+
+                logger.info({
+                    messageKey,
+                    recipientsCount: uniqueRecipients.length
+                }, 'Deleting story from WhatsApp for all recipients')
 
                 try {
                     const result = await session.socket.sendMessage('status@broadcast', {
-                        delete: story.messageKey
+                        delete: messageKey
+                    }, {
+                        statusJidList: uniqueRecipients
                     })
                     logger.info({ result }, 'Delete result from WhatsApp')
                     deleted = true
@@ -1163,8 +1566,22 @@ export function createStoryRoutes(deps: StoryRoutesDeps): Router {
                 }
             }
 
+            // Mark as deleted in database
+            try {
+                await dbPool.query(
+                    'UPDATE stories SET deleted_from_whatsapp = TRUE WHERE story_id = $1',
+                    [storyId]
+                )
+                logger.info({ storyId }, 'Story marked as deleted in database')
+            } catch (dbError: any) {
+                logger.error({ error: dbError.message, storyId }, 'Error marking story as deleted in database')
+            }
+
             // Remove from local storage
             stories.delete(storyId)
+
+            // Delete JIDs file
+            storyJidsService.deleteStoryJids(storyId)
 
             // Remove views/likes/reactions/replies
             story.messageIds.forEach(messageId => {

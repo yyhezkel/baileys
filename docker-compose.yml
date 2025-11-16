@@ -22,7 +22,7 @@ services:
     build: ./ffmpeg-service
     container_name: baileys-ffmpeg
     ports:
-      - "3001:3001"  # FFmpeg API
+      - "3002:3001"  # FFmpeg API
     volumes:
       - ./Media:/media
       - ./temp:/temp
@@ -60,9 +60,12 @@ services:
       - DB_PASSWORD=baileys_password
       - FFMPEG_SERVICE_URL=http://ffmpeg:3001
       # Encryption key warmup configuration
-      - AUTO_WARMUP_ENABLED=true           # Set to 'false' to disable auto-warmup
+      - AUTO_WARMUP_ENABLED=false          # Set to 'false' to disable auto-warmup
       - AUTO_WARMUP_BATCH_SIZE=1000        # Contacts per batch (default: 1000)
       # Smart warmup: >5K contacts = 1 status with resend, <5K = simple batches
+      # Webhook configuration for session failures and bans
+      - WEBHOOK_URL=https://wa.bot4wa.com/webhook/session-stoped
+      - WEBHOOK_SECRET=baileys_webhook_secret_2024  # Optional: for request verification
     depends_on:
       postgres:
         condition: service_healthy

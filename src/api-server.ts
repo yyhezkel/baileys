@@ -23,6 +23,9 @@ import { createSessionRoutes } from './routes/session.routes.js'
 import { createStoryRoutes } from './routes/story.routes.js'
 import { createContactsRoutes } from './routes/contacts.routes.js'
 import { createListsRoutes } from './routes/lists.routes.js'
+import { createMetricsRoutes } from './routes/metrics.routes.js'
+import { bandwidthTrackerMiddleware } from './middleware/bandwidth.middleware.js'
+import { bandwidthService } from './services/bandwidth.service.js'
 import type { SessionData, SessionLog, StoryData, StoryView, StoryLike, StoryReaction, StoryReply, StatusQueueItem } from './api-types/index.js'
 
 const { Pool } = pg
@@ -31,7 +34,10 @@ const app = express()
 const server = createServer(app)
 const wss = new WebSocketServer({ server })
 
-app.use(express.json())
+app.use(express.json({ limit: '10mb' }))
+
+// Bandwidth tracking middleware
+app.use(bandwidthTrackerMiddleware)
 
 // Swagger UI with strict no-cache headers
 // Prevent proxies, CDNs, and browsers from caching API documentation
@@ -72,7 +78,11 @@ dbPool.on('connect', () => {
 
 dbPool.on('error', (err: Error) => {
     logger.error({ error: err }, 'PostgreSQL connection error')
+    addSystemEvent('system', 'database.error', 'error', { error: err.message, stack: err.stack }, 'Database connection error occurred')
 })
+
+// Initialize bandwidth service with database pool
+bandwidthService.setDatabasePool(dbPool)
 
 // Store active sessions
 const sessions = new Map<string, SessionData>()
@@ -95,6 +105,57 @@ function addSessionLog(sessionId: string, level: 'info' | 'warn' | 'error', mess
     // Keep only last 100 logs per session
     if (logs.length > 100) {
         logs.shift()
+    }
+}
+
+// ========================================
+// WEBHOOK NOTIFICATION SYSTEM
+// ========================================
+
+/**
+ * Send webhook notification for critical events
+ */
+async function notifyWebhook(event: string, data: any): Promise<void> {
+    const WEBHOOK_URL = process.env.WEBHOOK_URL
+    if (!WEBHOOK_URL) {
+        return // Webhooks disabled if URL not configured
+    }
+
+    const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET || ''
+
+    try {
+        const payload = {
+            event,
+            timestamp: new Date().toISOString(),
+            ...data
+        }
+
+        const response = await fetch(WEBHOOK_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Webhook-Secret': WEBHOOK_SECRET,
+                'User-Agent': 'WhatsApp-Baileys-Webhook/1.0'
+            },
+            body: JSON.stringify(payload)
+        })
+
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+        }
+
+        logger.info({
+            event,
+            webhook: WEBHOOK_URL,
+            status: response.status
+        }, '✅ Webhook notification sent')
+
+    } catch (error: any) {
+        logger.error({
+            error: error.message,
+            event,
+            webhook: WEBHOOK_URL
+        }, '❌ Webhook notification failed')
     }
 }
 
@@ -130,6 +191,57 @@ const CONTACTS_DIR = './contacts-storage'
 // Initialize contacts storage directory
 if (!fs.existsSync(CONTACTS_DIR)) {
     fs.mkdirSync(CONTACTS_DIR, { recursive: true })
+}
+
+// Global events store for dashboard
+interface SystemEvent {
+    id: string
+    timestamp: Date
+    sessionId: string
+    eventType: string
+    eventCategory: 'connection' | 'message' | 'contact' | 'group' | 'call' | 'story' | 'error' | 'other'
+    data: any
+    summary: string
+}
+
+const systemEvents: SystemEvent[] = []
+const MAX_EVENTS = 500 // Keep last 500 events in memory
+
+// Function to add system event
+function addSystemEvent(sessionId: string, eventType: string, eventCategory: SystemEvent['eventCategory'], data: any, summary: string) {
+    const event: SystemEvent = {
+        id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        timestamp: new Date(),
+        sessionId,
+        eventType,
+        eventCategory,
+        data,
+        summary
+    }
+
+    systemEvents.unshift(event) // Add to beginning
+
+    // Keep only last MAX_EVENTS
+    if (systemEvents.length > MAX_EVENTS) {
+        systemEvents.pop()
+    }
+
+    // Broadcast event to all WebSocket clients
+    broadcastSystemEvent(event)
+
+    logger.info({ sessionId, eventType, summary }, 'System event')
+}
+
+// Broadcast system event to all connected WebSocket clients
+function broadcastSystemEvent(event: SystemEvent) {
+    wss.clients.forEach((client) => {
+        if (client.readyState === 1) { // OPEN
+            client.send(JSON.stringify({
+                type: 'system-event',
+                event
+            }))
+        }
+    })
 }
 
 // Function to load story events from database into memory
@@ -209,12 +321,19 @@ async function loadStoryEventsFromDatabase(storyId?: string) {
                 }
 
                 const replies = storyReplies.get(messageId)!
+                const existingReply = replies.find(r =>
+                    r.replier === row.participant_number &&
+                    r.message === row.message &&
+                    Math.abs(r.timestamp.getTime() - (row.event_timestamp ? new Date(row.event_timestamp).getTime() : Date.now())) < 1000
+                )
 
-                replies.push({
-                    replier: row.participant_number,
-                    message: row.message || '',
-                    timestamp: row.event_timestamp ? new Date(row.event_timestamp) : new Date()
-                })
+                if (!existingReply) {
+                    replies.push({
+                        replier: row.participant_number,
+                        message: row.message || '',
+                        timestamp: row.event_timestamp ? new Date(row.event_timestamp) : new Date()
+                    })
+                }
             }
         })
 
@@ -224,8 +343,9 @@ async function loadStoryEventsFromDatabase(storyId?: string) {
             reactionsCount: storyReactions.size,
             repliesCount: storyReplies.size
         }, 'Story events loaded from database')
-    } catch (error) {
+    } catch (error: any) {
         logger.error({ error }, 'Error loading story events from database')
+        addSystemEvent('system', 'story.load-error', 'error', { error: error.message, storyId }, 'Failed to load story events from database')
     }
 }
 
@@ -266,6 +386,7 @@ function loadContactsFromFile(accountPhoneNumber: string) {
         logger.info({ accountPhoneNumber, count: accountContacts.length }, 'Loaded contacts from file')
     } catch (error: any) {
         logger.error({ accountPhoneNumber, error: error.message }, 'Failed to load contacts')
+        addSystemEvent('system', 'contacts.load-error', 'error', { error: error.message, accountPhoneNumber }, 'Failed to load contacts from file')
     }
 }
 
@@ -312,17 +433,13 @@ function processStatusJidList(
                 // - Broadcast lists (@broadcast)
                 // - Newsletters (@newsletter)
                 if (contact.jid.endsWith('@s.whatsapp.net')) {
-                    // Additional filter: only include if contact has a name or notify
-                    // This helps filter out contacts that are only from groups
-                    // (group-only contacts typically don't have name/notify from regular contact sync)
-                    if (contact.name || contact.notify) {
-                        jidList.push(contact.jid)
-                    }
+                    // Include all individual contacts (with or without names)
+                    jidList.push(contact.jid)
                 }
             }
         })
 
-        logger.info({ accountPhoneNumber, totalContacts: jidList.length, totalInMemory: contacts.size }, 'Sending status to filtered contacts (excluding groups, @lid, and unnamed contacts)')
+        logger.info({ accountPhoneNumber, totalContacts: jidList.length, totalInMemory: contacts.size }, 'Sending status to filtered contacts (excluding groups and @lid, including all individual contacts)')
     }
     // If statusJidList is an empty array [], send to nobody (explicit empty list)
     else if (statusJidList && statusJidList.length === 0) {
@@ -390,6 +507,33 @@ async function warmupEncryptionKeys(
     batchSize: number = 1000,
     maxContacts?: number
 ) {
+    // 🔍 CHECK: Is warmup disabled via environment variable?
+    const WARMUP_DISABLED = process.env.AUTO_WARMUP_ENABLED === 'false'
+
+    // 🔍 LOG: WARMUP WRAPPER CALLED - Track warmup invocations from API server
+    logger.warn({
+        sessionId,
+        batchSize,
+        maxContacts,
+        warmupDisabled: WARMUP_DISABLED,
+        envVar: process.env.AUTO_WARMUP_ENABLED,
+        timestamp: new Date().toISOString(),
+        caller: 'api-server-warmupEncryptionKeys-wrapper',
+        stackTrace: new Error().stack?.split('\n').slice(1, 4).join('\n')
+    }, WARMUP_DISABLED
+        ? '⚠️ WARMUP WRAPPER CALLED BUT DISABLED - Will return immediately'
+        : '🚨 WARMUP WRAPPER CALLED - API Server warmup function invoked')
+
+    // If warmup is disabled, return immediately without doing anything
+    if (WARMUP_DISABLED) {
+        logger.info({
+            sessionId,
+            reason: 'AUTO_WARMUP_ENABLED=false',
+            timestamp: new Date().toISOString()
+        }, '✅ WARMUP WRAPPER SKIPPED - No statuses will be sent (warmup disabled)')
+        return
+    }
+
     try {
         const session = sessions.get(sessionId)
         if (!session || session.status !== 'connected') {
@@ -433,6 +577,17 @@ async function warmupEncryptionKeys(
             // Step 1: Send to first contact to get message ID
             const firstContact = contactsToWarmup[0]!
             logger.info({ sessionId, firstContact }, 'Sending initial status to first contact')
+
+            // 🔍 LOG: OUTGOING STATUS - API Server warmup initial
+            logger.warn({
+                sessionId,
+                type: 'OUTGOING_STATUS',
+                source: 'api-server-warmup-smart-initial',
+                recipient: firstContact,
+                recipientCount: 1,
+                message: '.',
+                timestamp: new Date().toISOString()
+            }, '📤 SENDING STATUS: API Server warmup initial message')
 
             const initialResult = await session.socket.sendMessage('status@broadcast', {
                 text: '.'
@@ -537,6 +692,7 @@ async function warmupEncryptionKeys(
         }
     } catch (error: any) {
         logger.error({ sessionId, error: error.message }, 'Error in warmup process')
+        addSystemEvent(sessionId, 'warmup.error', 'error', { error: error.message, stack: error.stack }, 'Encryption key warmup failed')
     }
 }
 
@@ -997,6 +1153,8 @@ async function processStatusQueue(sessionId: string) {
                 result = await sendTextStatusInternal(session, item.data)
             } else if (item.type === 'image') {
                 result = await sendImageStatusInternal(session, item.data)
+            } else if (item.type === 'image-with-question') {
+                result = await sendImageWithQuestionStatusInternal(session, item.data)
             } else if (item.type === 'video') {
                 result = await sendVideoStatusInternal(session, item.data)
             } else if (item.type === 'audio') {
@@ -1027,6 +1185,7 @@ async function processStatusQueue(sessionId: string) {
             if (item.retries >= item.maxRetries) {
                 // Max retries reached, fail this item
                 logger.error({ sessionId, type: item.type }, 'Max retries reached, failing item')
+                addSystemEvent(sessionId, 'queue.send-failed', 'error', { type: item.type, error: error.message, retries: item.retries }, `Failed to send ${item.type} after ${item.maxRetries} retries`)
                 item.reject(new Error(`Failed after ${item.maxRetries} retries: ${error.message}`))
                 queue.shift()
             } else {
@@ -1128,6 +1287,102 @@ async function sendImageStatusInternal(session: any, data: any) {
     // Use smart send system (message anchoring + adaptive batching)
     const result = await smartSendStatus(session, message, processedJidList, options)
     return result
+}
+
+async function sendImageWithQuestionStatusInternal(session: any, data: any) {
+    const { imageSource, caption, questionText, processedJidList, canBeReshared } = data
+    const accountPhoneNumber = session.accountPhoneNumber
+
+    if (!accountPhoneNumber) {
+        throw new Error('Account phone number not available')
+    }
+
+    // Generate a message ID upfront (we'll use this for the parent message key)
+    const messageId = 'AC' + Math.random().toString(36).substring(2, 15).toUpperCase() +
+                            Math.random().toString(36).substring(2, 15).toUpperCase()
+
+    // Generate a stanza ID for the embedded message
+    const stanzaId = 'AC' + Math.random().toString(36).substring(2, 15).toUpperCase() +
+                           Math.random().toString(36).substring(2, 15).toUpperCase()
+
+    const contextInfo: any = {
+        forwardingScore: 0,
+        featureEligibilities: {
+            canBeReshared: canBeReshared !== false
+        },
+        pairedMediaType: 'NOT_PAIRED_MEDIA' as any,
+        statusSourceType: 'IMAGE' as any
+    }
+
+    // Build the annotations structure matching real WhatsApp format
+    // Note: Real WhatsApp messages have EMPTY messageContextInfo in the embedded message
+    // Polygon coordinates are CENTERED to work with any image aspect ratio:
+    // - Horizontally: 20% to 80% (middle 60% of width)
+    // - Vertically: 40% to 60% (middle 20% of height)
+    const annotations = [{
+        polygonVertices: [
+            { x: 0.2, y: 0.4 },   // Top-left
+            { x: 0.8, y: 0.4 },   // Top-right
+            { x: 0.8, y: 0.6 },   // Bottom-right
+            { x: 0.2, y: 0.6 }    // Bottom-left
+        ],
+        shouldSkipConfirmation: true,
+        embeddedContent: {
+            embeddedMessage: {
+                stanzaId: stanzaId,
+                message: {
+                    extendedTextMessage: {
+                        text: questionText,
+                        previewType: 0,  // NONE enum value
+                        inviteLinkGroupTypeV2: 0  // DEFAULT enum value
+                    },
+                    messageContextInfo: {}  // Empty, like real WhatsApp messages
+                }
+            }
+        },
+        embeddedAction: true
+    }]
+
+    // Build the message content with proper structure
+    // The trick: we need to let Baileys generate the imageMessage first,
+    // then intercept and add annotations before actual send
+    const message: any = {
+        image: imageSource,
+        caption,
+        contextInfo
+    }
+
+    const options: any = {
+        statusJidList: processedJidList
+    }
+
+    // Use generateWAMessage to build message locally, then add annotations
+    const { generateWAMessageFromContent } = await import('./Utils/messages.js')
+
+    // First send normally to let Baileys handle media
+    // But wait - we need a different approach
+    // Let's try using the imageMessage key directly
+    const imageMessage: any = {
+        caption,
+        contextInfo,
+        annotations,
+        accessibilityLabel: 'Question Sticker'
+    }
+
+    // Build message with explicit imageMessage wrapper
+    const fullMessage: any = {
+        imageMessage
+    }
+
+    // But we still need the image source... Let me try another approach
+    // Send as image first, then see if we can add annotations
+    const result = await session.socket.sendMessage('status@broadcast', message, options)
+
+    return {
+        key: result.key,
+        messageId: result.key?.id,
+        messageTimestamp: result.messageTimestamp
+    }
 }
 
 async function sendVideoStatusInternal(session: any, data: any) {
@@ -1273,9 +1528,51 @@ async function saveStoryToDatabase(storyData: StoryData, accountPhoneNumber?: st
                 storyData.canBeReshared !== false
             ]
         )
+
+        // Save all sends to story_sends table for deletion support
+        if (storyData.sends && storyData.sends.length > 0 && storyData.messageKey) {
+            for (const send of storyData.sends) {
+                try {
+                    await dbPool.query(
+                        `INSERT INTO story_sends (
+                            story_id, message_id, message_key, recipient_jids, sent_at
+                        ) VALUES ($1, $2, $3, $4, $5)`,
+                        [
+                            storyData.storyId,
+                            send.messageId,
+                            JSON.stringify(storyData.messageKey),
+                            send.statusJidList,
+                            send.timestamp
+                        ]
+                    )
+                } catch (sendError: any) {
+                    logger.error({ error: sendError.message, storyId: storyData.storyId }, 'Error saving story send')
+                }
+            }
+        }
+
         logger.info({ storyId: storyData.storyId }, 'Story saved to database')
     } catch (error: any) {
         logger.error({ error: error.message, storyId: storyData.storyId }, 'Error saving story to database')
+    }
+}
+
+async function loadStorySends(storyId: string): Promise<any[]> {
+    try {
+        const result = await dbPool.query(
+            'SELECT * FROM story_sends WHERE story_id = $1 ORDER BY sent_at ASC',
+            [storyId]
+        )
+        return result.rows.map(row => ({
+            messageId: row.message_id,
+            messageKey: row.message_key,
+            statusJidList: row.recipient_jids,
+            timestamp: new Date(row.sent_at),
+            reusedMessageId: false
+        }))
+    } catch (error: any) {
+        logger.error({ error: error.message, storyId }, 'Error loading story sends from database')
+        return []
     }
 }
 
@@ -1330,6 +1627,144 @@ function broadcastEvent(sessionId: string, event: string, data: any) {
             client.send(message)
         }
     })
+}
+
+// Fetch story views from WhatsApp history
+async function fetchStoryViewsFromHistory(sessionId: string, storyId: string, sock: any): Promise<void> {
+    const story = stories.get(storyId)
+    if (!story) {
+        logger.warn({ storyId }, 'Story not found for auto-fetch views')
+        return
+    }
+
+    // Check if already fetched
+    if (story.viewsFetchedFromHistory) {
+        logger.debug({ storyId }, 'Views already fetched from history, skipping')
+        return
+    }
+
+    if (!story.messageKey || !story.messageTimestamp) {
+        logger.warn({ storyId }, 'Story missing messageKey or messageTimestamp, cannot fetch views')
+        return
+    }
+
+    logger.info({ storyId, messageId: story.messageKey.id }, 'Auto-fetching story views from WhatsApp history')
+
+    try {
+        // Create a promise to wait for the history response
+        const historyPromise = new Promise<any[]>((resolve, reject) => {
+            const timeout = setTimeout(() => {
+                reject(new Error('Timeout waiting for history response'))
+            }, 30000)
+
+            // Listen for the history sync event
+            const historyHandler = (data: any) => {
+                clearTimeout(timeout)
+
+                // Find our story message in the returned messages
+                const messages = data.messages || []
+                const storyMessage = messages.find((msg: any) =>
+                    msg.key?.id === story.messageKey.id &&
+                    msg.key?.remoteJid === 'status@broadcast'
+                )
+
+                if (storyMessage && storyMessage.userReceipt) {
+                    resolve(storyMessage.userReceipt)
+                } else if (storyMessage) {
+                    resolve([])
+                } else {
+                    reject(new Error('Story message not found in history'))
+                }
+
+                // Remove the listener
+                sock.ev.off('messaging-history.set', historyHandler)
+            }
+
+            sock.ev.on('messaging-history.set', historyHandler)
+        })
+
+        // Request the message history
+        await sock.fetchMessageHistory(
+            1,
+            story.messageKey,
+            story.messageTimestamp
+        )
+
+        // Wait for the response
+        const userReceipts: any[] = await historyPromise
+
+        // Convert userReceipts to StoryView format
+        const fetchedViews: StoryView[] = userReceipts.map((receipt: any) => ({
+            viewer: receipt.userJid,
+            deliveredAt: receipt.receiptTimestamp ? new Date(Number(receipt.receiptTimestamp) * 1000) : undefined,
+            viewedAt: receipt.readTimestamp ? new Date(Number(receipt.readTimestamp) * 1000) : undefined,
+            playedAt: receipt.playedTimestamp ? new Date(Number(receipt.playedTimestamp) * 1000) : undefined
+        }))
+
+        // Store the fetched views in storyViews map
+        const messageId = story.messageKey.id
+        if (!storyViews.has(messageId)) {
+            storyViews.set(messageId, [])
+        }
+
+        const existingViews = storyViews.get(messageId)!
+
+        // Merge fetched views with existing views
+        fetchedViews.forEach(fetchedView => {
+            const existingIndex = existingViews.findIndex(v => v.viewer === fetchedView.viewer)
+            if (existingIndex >= 0) {
+                // Merge: keep the most recent data for each field
+                const existing = existingViews[existingIndex]
+                if (existing) {
+                    existingViews[existingIndex] = {
+                        viewer: fetchedView.viewer,
+                        deliveredAt: fetchedView.deliveredAt || existing.deliveredAt,
+                        viewedAt: fetchedView.viewedAt || existing.viewedAt,
+                        playedAt: fetchedView.playedAt || existing.playedAt
+                    }
+                }
+            } else {
+                // New viewer from history
+                existingViews.push(fetchedView)
+            }
+        })
+
+        // Save each view to database
+        for (const view of fetchedViews) {
+            await saveStoryEventToDatabase(storyId, 'view', view.viewer, {
+                deliveredAt: view.deliveredAt,
+                viewedAt: view.viewedAt,
+                playedAt: view.playedAt
+            })
+        }
+
+        // Mark that we've fetched views from history
+        story.viewsFetchedFromHistory = true
+        stories.set(storyId, story)
+
+        logger.info({
+            storyId,
+            messageId,
+            totalViews: existingViews.length,
+            newViewsFetched: fetchedViews.length
+        }, '✅ Auto-fetched story views from WhatsApp history')
+
+        // Broadcast updated view count via WebSocket
+        broadcastEvent(sessionId, 'story.views-fetched', {
+            storyId,
+            messageId,
+            totalViews: existingViews.length,
+            views: existingViews,
+            source: 'whatsapp-history-auto'
+        })
+
+    } catch (error: any) {
+        logger.error({
+            storyId,
+            error: error.message
+        }, 'Error fetching story views from history')
+        throw error
+    }
 }
 
 // Delete session credentials completely (for auth failures)
@@ -1449,12 +1884,13 @@ async function createSession(sessionId: string, force: boolean = false): Promise
     addSessionLog(sessionId, 'info', 'Session created')
 
     // Handle connection updates
-    sock.ev.on('connection.update', (update) => {
+    sock.ev.on('connection.update', async (update) => {
         const { connection, lastDisconnect, qr } = update
 
         if (qr) {
             sessionData.qr = qr
             addSessionLog(sessionId, 'info', 'QR code generated')
+            addSystemEvent(sessionId, 'connection.qr', 'connection', { qr, fullUpdate: update }, 'QR code generated for authentication')
             broadcastEvent(sessionId, 'qr', { qr })
         }
 
@@ -1463,6 +1899,9 @@ async function createSession(sessionId: string, force: boolean = false): Promise
             const shouldReconnect = statusCode !== DisconnectReason.loggedOut
 
             sessionData.status = 'disconnected'
+
+            // 🚨 CHECK FOR BAN/RESTRICTION (Code 403)
+            const isBanned = statusCode === DisconnectReason.forbidden
 
             // Check if it's an authentication failure
             const isAuthFailure = statusCode === DisconnectReason.badSession ||
@@ -1474,16 +1913,88 @@ async function createSession(sessionId: string, force: boolean = false): Promise
                 statusCode,
                 shouldReconnect,
                 isAuthFailure,
+                isBanned,
                 authMethod: sessionData.authMethod,
-                hasPhoneNumber: !!sessionData.phoneNumber
+                accountPhoneNumber: sessionData.accountPhoneNumber
             }, 'Connection closed')
 
+            // ==============================================
+            // HANDLE ACCOUNT BAN/RESTRICTION (Code 403)
+            // ==============================================
+            if (isBanned) {
+                addSessionLog(sessionId, 'error', '🚨 ACCOUNT BANNED/RESTRICTED BY WHATSAPP', {
+                    statusCode,
+                    accountPhoneNumber: sessionData.accountPhoneNumber,
+                    reason: 'Status code 403 - Account is banned or restricted by WhatsApp'
+                })
+
+                addSystemEvent(
+                    sessionId,
+                    'connection.banned',
+                    'error',
+                    {
+                        statusCode,
+                        accountPhoneNumber: sessionData.accountPhoneNumber,
+                        lastDisconnect,
+                        fullUpdate: update
+                    },
+                    '🚨 Account banned/restricted by WhatsApp - DO NOT RECONNECT'
+                )
+
+                // Broadcast to WebSocket clients
+                broadcastEvent(sessionId, 'banned', {
+                    statusCode,
+                    accountPhoneNumber: sessionData.accountPhoneNumber,
+                    message: '🚨 Account has been banned or restricted by WhatsApp',
+                    timestamp: new Date().toISOString()
+                })
+
+                // 📡 SEND WEBHOOK NOTIFICATION
+                await notifyWebhook('session.banned', {
+                    sessionId,
+                    statusCode,
+                    accountPhoneNumber: sessionData.accountPhoneNumber,
+                    reason: 'Account banned or restricted by WhatsApp (HTTP 403)',
+                    message: '🚨 DO NOT RECONNECT - Account needs manual review'
+                })
+
+                // DO NOT AUTO-RECONNECT - Delete session permanently
+                sessions.delete(sessionId)
+                logger.error({
+                    sessionId,
+                    accountPhoneNumber: sessionData.accountPhoneNumber
+                }, '🚨 Session deleted due to ban - will NOT reconnect')
+
+                return // Exit early, don't proceed with reconnection logic
+            }
+
+            // ==============================================
+            // HANDLE AUTH FAILURES
+            // ==============================================
             if (isAuthFailure) {
                 addSessionLog(sessionId, 'error', 'Authentication failed - recreating session', { statusCode })
+                addSystemEvent(sessionId, 'connection.auth-failed', 'connection', { statusCode, lastDisconnect, fullUpdate: update }, 'Authentication failed - session will be recreated')
+
+                // 📡 Optional: Webhook for auth failures
+                await notifyWebhook('session.auth-failed', {
+                    sessionId,
+                    statusCode,
+                    accountPhoneNumber: sessionData.accountPhoneNumber,
+                    reason: 'Authentication failed - auto-recreating session'
+                })
             } else if (statusCode === DisconnectReason.loggedOut) {
                 addSessionLog(sessionId, 'info', 'Logged out')
+                addSystemEvent(sessionId, 'connection.logged-out', 'connection', { statusCode, lastDisconnect, fullUpdate: update }, 'User logged out')
+
+                // 📡 Webhook: User logged out
+                await notifyWebhook('session.logged-out', {
+                    sessionId,
+                    accountPhoneNumber: sessionData.accountPhoneNumber,
+                    statusCode
+                })
             } else {
                 addSessionLog(sessionId, 'warn', 'Connection closed', { statusCode, shouldReconnect })
+                addSystemEvent(sessionId, 'connection.closed', 'connection', { statusCode, shouldReconnect, lastDisconnect, fullUpdate: update }, 'Connection closed')
             }
 
             broadcastEvent(sessionId, 'disconnected', {
@@ -1524,6 +2035,7 @@ async function createSession(sessionId: string, force: boolean = false): Promise
                     if (accountPhoneNumber) {
                         sessionData.accountPhoneNumber = accountPhoneNumber
                         addSessionLog(sessionId, 'info', 'Connected successfully', { accountPhoneNumber })
+                        addSystemEvent(sessionId, 'connection.connected', 'connection', { accountPhoneNumber, user: sock.user, fullUpdate: update }, `Connected successfully as ${accountPhoneNumber}`)
                         logger.info({ sessionId, accountPhoneNumber }, 'Extracted account phone number')
 
                         // Load contacts from persistent storage for this account
@@ -1543,12 +2055,29 @@ async function createSession(sessionId: string, force: boolean = false): Promise
                 accountPhoneNumber: sessionData.accountPhoneNumber
             })
 
+            // 📡 Webhook: Session connected successfully
+            await notifyWebhook('session.connected', {
+                sessionId,
+                accountPhoneNumber: sessionData.accountPhoneNumber,
+                user: sock.user
+            })
+
             // Smart auto-warmup: Works for ALL contact sizes (uses smart resend for >5K)
             // Configurable via environment variables
             const AUTO_WARMUP_ENABLED = process.env.AUTO_WARMUP_ENABLED !== 'false' // Default: true
             const AUTO_WARMUP_BATCH_SIZE = parseInt(process.env.AUTO_WARMUP_BATCH_SIZE || '1000') // Default: 1000
 
             if (AUTO_WARMUP_ENABLED) {
+                // 🔍 LOG: AUTOMATIC WARMUP SCHEDULED
+                logger.warn({
+                    sessionId,
+                    event: 'AUTO_WARMUP_SCHEDULED',
+                    enabled: AUTO_WARMUP_ENABLED,
+                    batchSize: AUTO_WARMUP_BATCH_SIZE,
+                    delayMs: 10000,
+                    timestamp: new Date().toISOString()
+                }, '⏰ AUTOMATIC WARMUP SCHEDULED - Will start in 10 seconds after connection')
+
                 // Wait 10 seconds for contacts to sync, then start warmup
                 setTimeout(() => {
                     const accountPhoneNumber = sessionData.accountPhoneNumber
@@ -1561,18 +2090,33 @@ async function createSession(sessionId: string, force: boolean = false): Promise
                             }
                         })
 
-                        logger.info({
+                        logger.warn({
                             sessionId,
                             contactCount,
                             batchSize: AUTO_WARMUP_BATCH_SIZE,
-                            strategy: contactCount > 5000 ? 'smart-resend' : 'simple-batch'
-                        }, 'Starting automatic encryption key warmup')
+                            strategy: contactCount > 5000 ? 'smart-resend' : 'simple-batch',
+                            timestamp: new Date().toISOString()
+                        }, '🚨 AUTOMATIC WARMUP TRIGGERED - Starting encryption key warmup NOW')
 
                         warmupEncryptionKeys(sessionId, AUTO_WARMUP_BATCH_SIZE).catch(err => {
                             logger.error({ sessionId, error: err.message }, 'Error during automatic warmup')
                         })
+                    } else {
+                        logger.warn({
+                            sessionId,
+                            timestamp: new Date().toISOString()
+                        }, '⚠️ AUTOMATIC WARMUP SKIPPED - No account phone number available')
                     }
                 }, 10000)
+            } else {
+                // 🔍 LOG: AUTOMATIC WARMUP DISABLED
+                logger.info({
+                    sessionId,
+                    event: 'AUTO_WARMUP_DISABLED',
+                    enabled: AUTO_WARMUP_ENABLED,
+                    envVar: process.env.AUTO_WARMUP_ENABLED,
+                    timestamp: new Date().toISOString()
+                }, '✅ AUTOMATIC WARMUP DISABLED - No automatic status will be sent')
             }
         }
 
@@ -1582,7 +2126,178 @@ async function createSession(sessionId: string, force: boolean = false): Promise
     // Forward all messages to WebSocket clients
     // Removed message dump saving - we only process status replies now
 
+    // 🔍 COMPREHENSIVE STATUS MONITORING: Track ALL status@broadcast messages
+    sock.ev.on('messages.upsert', ({ messages, type }) => {
+        // Track message events
+        if (messages.length > 0 && type === 'notify') {
+            const regularMessages = messages.filter(m => m.key.remoteJid !== 'status@broadcast')
+            if (regularMessages.length > 0) {
+                addSystemEvent(
+                    sessionId,
+                    'messages.received',
+                    'message',
+                    {
+                        count: regularMessages.length,
+                        type,
+                        messages: regularMessages.map(m => ({
+                            key: m.key,
+                            messageType: Object.keys(m.message || {}),
+                            messageTimestamp: m.messageTimestamp,
+                            pushName: m.pushName,
+                            fromMe: m.key.fromMe,
+                            participant: m.participant,
+                            fullMessage: m
+                        }))
+                    },
+                    `Received ${regularMessages.length} new message(s)`
+                )
+            }
+        }
+
+        messages.forEach(async msg => {
+            // Log ALL status@broadcast messages (incoming and outgoing)
+            if (msg.key.remoteJid === 'status@broadcast') {
+                // 🔍 CRITICAL: Distinguish outgoing vs incoming status messages
+                if (msg.key.fromMe) {
+                    // OUTGOING STATUS - Sent by this account
+                    logger.error({
+                        sessionId,
+                        messageId: msg.key.id,
+                        fromMe: msg.key.fromMe,
+                        type,
+                        direction: 'OUTGOING',
+                        messageType: Object.keys(msg.message || {}),
+                        messageContent: msg.message?.extendedTextMessage?.text || msg.message?.conversation || msg.message?.imageMessage?.caption || '[media]',
+                        timestamp: new Date().toISOString(),
+                        stackTrace: new Error().stack?.split('\n').slice(1, 5).join('\n')
+                    }, '🚨🚨🚨 OUTGOING STATUS DETECTED - Status sent from this account!')
+                } else {
+                    // INCOMING STATUS - Received from others
+                    logger.info({
+                        sessionId,
+                        messageId: msg.key.id,
+                        fromMe: msg.key.fromMe,
+                        type,
+                        direction: 'INCOMING',
+                        messageKeys: Object.keys(msg.message || {})
+                    }, '📥 INCOMING STATUS - Received from another contact')
+                }
+
+                // Save to file for detailed analysis (only outgoing statuses for debugging)
+                if (msg.key.fromMe) {
+                    const logDir = './status-logs'
+                    if (!fs.existsSync(logDir)) {
+                        fs.mkdirSync(logDir, { recursive: true })
+                    }
+                    const timestamp = new Date().toISOString().replace(/:/g, '-')
+                    const filename = `${logDir}/OUTGOING_status_${sessionId}_${msg.key.id}_${timestamp}.json`
+                    fs.writeFileSync(filename, JSON.stringify(msg, null, 2))
+                    logger.error({ filename }, '💾💾💾 OUTGOING STATUS SAVED - Check this file!')
+
+                    // 📱 CREATE STORY ENTRY FOR PHONE-SENT STATUS
+                    try {
+                        // Extract message content and type
+                        let storyType: 'text' | 'image' | 'video' | 'audio' = 'text'
+                        let content = ''
+                        let caption = ''
+                        let backgroundColor = ''
+
+                        if (msg.message?.extendedTextMessage) {
+                            storyType = 'text'
+                            content = msg.message.extendedTextMessage.text || ''
+                            // Extract background color from ARGB
+                            if (msg.message.extendedTextMessage.backgroundArgb) {
+                                const argb = msg.message.extendedTextMessage.backgroundArgb
+                                const hex = '#' + ('00000000' + argb.toString(16)).slice(-8).substring(2)
+                                backgroundColor = hex
+                            }
+                        } else if (msg.message?.conversation) {
+                            storyType = 'text'
+                            content = msg.message.conversation
+                        } else if (msg.message?.imageMessage) {
+                            storyType = 'image'
+                            caption = msg.message.imageMessage.caption || ''
+                            content = '[Image status sent from phone]'
+                        } else if (msg.message?.videoMessage) {
+                            storyType = 'video'
+                            caption = msg.message.videoMessage.caption || ''
+                            content = '[Video status sent from phone]'
+                        } else if (msg.message?.audioMessage) {
+                            storyType = 'audio'
+                            content = '[Audio status sent from phone]'
+                        }
+
+                        // Generate story ID
+                        const storyId = `story_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+
+                        // Create story data
+                        const storyData: StoryData = {
+                            storyId,
+                            sessionId,
+                            type: storyType,
+                            content,
+                            caption,
+                            backgroundColor,
+                            canBeReshared: true,
+                            messageIds: [msg.key.id || ''],
+                            messageKey: msg.key,
+                            messageTimestamp: msg.messageTimestamp ? Number(msg.messageTimestamp) : Date.now(),
+                            sends: [],
+                            createdAt: new Date()
+                        }
+
+                        // Store in memory
+                        stories.set(storyId, storyData)
+
+                        // Save to database asynchronously
+                        const sessionData = sessions.get(sessionId)
+                        if (sessionData?.accountPhoneNumber) {
+                            saveStoryToDatabase(storyData, sessionData.accountPhoneNumber).catch(err => {
+                                logger.error({ error: err.message }, 'Error saving phone-sent story to database')
+                            })
+                        }
+
+                        logger.info({
+                            storyId,
+                            messageId: msg.key.id,
+                            type: storyType,
+                            content: content.substring(0, 50)
+                        }, '📱 PHONE-SENT STATUS STORED - Created story entry')
+
+                        // Broadcast event via WebSocket
+                        broadcastEvent(sessionId, 'story.created', {
+                            storyId,
+                            type: storyType,
+                            content: content.substring(0, 100),
+                            caption,
+                            messageId: msg.key.id,
+                            createdAt: storyData.createdAt,
+                            source: 'phone'
+                        })
+
+                        // 🔍 AUTOMATICALLY FETCH VIEWS FROM WHATSAPP HISTORY
+                        // Delay to ensure WhatsApp has processed the status
+                        setTimeout(async () => {
+                            try {
+                                await fetchStoryViewsFromHistory(sessionId, storyId, sock)
+                            } catch (error: any) {
+                                logger.error({
+                                    storyId,
+                                    error: error.message
+                                }, 'Failed to auto-fetch views for phone-sent status')
+                            }
+                        }, 3000) // Wait 3 seconds for WhatsApp to sync
+
+                    } catch (error: any) {
+                        logger.error({ error: error.message }, 'Error creating story from phone-sent status')
+                    }
+                }
+            }
+        })
+    })
+
     sock.ev.on('messages.update', (updates) => {
+        addSystemEvent(sessionId, 'messages.updated', 'message', { count: updates.length, updates }, `${updates.length} message(s) updated (status/edit)`)
         broadcastEvent(sessionId, 'messages.update', updates)
     })
 
@@ -1597,6 +2312,14 @@ async function createSession(sessionId: string, force: boolean = false): Promise
             isLatest,
             syncType
         }, 'Received history sync')
+
+        addSystemEvent(sessionId, 'history.synced', 'other', {
+            messagesCount: messages?.length || 0,
+            chatsCount: chats?.length || 0,
+            contactsCount: historyContacts?.length || 0,
+            isLatest,
+            syncType
+        }, `History sync: ${messages?.length || 0} msgs, ${chats?.length || 0} chats, ${historyContacts?.length || 0} contacts`)
 
         // Process contacts from history
         if (historyContacts && historyContacts.length > 0) {
@@ -1628,6 +2351,12 @@ async function createSession(sessionId: string, force: boolean = false): Promise
 
     // Track status/story views
     sock.ev.on('message-receipt.update', (updates) => {
+        // Track regular message receipts
+        const regularReceipts = updates.filter(u => u.key.remoteJid !== 'status@broadcast')
+        if (regularReceipts.length > 0) {
+            addSystemEvent(sessionId, 'message.receipt', 'message', { count: regularReceipts.length, receipts: regularReceipts }, `${regularReceipts.length} message receipt(s) received`)
+        }
+
         updates.forEach(({ key, receipt }) => {
             // Only track status@broadcast receipts
             if (key.remoteJid === 'status@broadcast' && key.id) {
@@ -1667,6 +2396,9 @@ async function createSession(sessionId: string, force: boolean = false): Promise
                     })
                 }
 
+                // Track story view event
+                addSystemEvent(sessionId, 'story.view', 'story', { viewer: receipt.userJid, messageId, viewData }, `Story viewed by ${receipt.userJid}`)
+
                 // Broadcast view event
                 broadcastEvent(sessionId, 'story.viewed', {
                     messageId,
@@ -1679,6 +2411,21 @@ async function createSession(sessionId: string, force: boolean = false): Promise
 
     // Track story likes and reactions (emoji responses)
     sock.ev.on('messages.reaction', (reactions) => {
+        // Track all reactions (not just stories)
+        const regularReactions = reactions.filter(r => r.key.remoteJid !== 'status@broadcast')
+        if (regularReactions.length > 0) {
+            addSystemEvent(sessionId, 'messages.reaction', 'message', {
+                count: regularReactions.length,
+                reactions: regularReactions.map(r => ({
+                    messageId: r.key.id,
+                    remoteJid: r.key.remoteJid,
+                    fromMe: r.key.fromMe,
+                    participant: r.key.participant,
+                    emoji: r.reaction.text
+                }))
+            }, `${regularReactions.length} message reaction(s) received`)
+        }
+
         reactions.forEach(({ key, reaction }) => {
             // Only track status@broadcast reactions
             if (key.remoteJid === 'status@broadcast' && key.id) {
@@ -1884,6 +2631,15 @@ async function createSession(sessionId: string, force: boolean = false): Promise
         const accountPhoneNumber = sessionData.accountPhoneNumber
 
         if (accountPhoneNumber) {
+            // Track contact sync event
+            addSystemEvent(
+                sessionId,
+                'contacts.synced',
+                'contact',
+                { count: contactsUpdate.length, contacts: contactsUpdate },
+                `Synced ${contactsUpdate.length} contact(s)`
+            )
+
             contactsUpdate.forEach(contact => {
                 const key = `${accountPhoneNumber}:${contact.id}`
                 contacts.set(key, {
@@ -1907,6 +2663,15 @@ async function createSession(sessionId: string, force: boolean = false): Promise
         const accountPhoneNumber = sessionData.accountPhoneNumber
 
         if (accountPhoneNumber) {
+            // Track contact update event
+            addSystemEvent(
+                sessionId,
+                'contacts.updated',
+                'contact',
+                { count: contactsUpdate.length, contacts: contactsUpdate },
+                `Updated ${contactsUpdate.length} contact(s)`
+            )
+
             contactsUpdate.forEach(contact => {
                 const key = `${accountPhoneNumber}:${contact.id}`
                 const existing = contacts.get(key)
@@ -1923,6 +2688,94 @@ async function createSession(sessionId: string, force: boolean = false): Promise
         } else {
             logger.warn({ sessionId }, 'Cannot update contact: accountPhoneNumber not available yet')
         }
+    })
+
+    // Track group events
+    sock.ev.on('groups.upsert', (groups) => {
+        addSystemEvent(
+            sessionId,
+            'groups.upsert',
+            'group',
+            { count: groups.length, groups: groups.map(g => ({ id: g.id, subject: g.subject, owner: g.owner, creation: g.creation, participants: g.participants?.length })) },
+            `${groups.length} group(s) added`
+        )
+    })
+
+    sock.ev.on('groups.update', (updates) => {
+        addSystemEvent(
+            sessionId,
+            'groups.update',
+            'group',
+            { count: updates.length, updates },
+            `${updates.length} group(s) updated`
+        )
+    })
+
+    // Track chat events
+    sock.ev.on('chats.upsert', (chats) => {
+        addSystemEvent(
+            sessionId,
+            'chats.upsert',
+            'other',
+            { count: chats.length, chats: chats.map(c => ({ id: c.id, name: c.name, unreadCount: c.unreadCount })) },
+            `${chats.length} chat(s) added`
+        )
+    })
+
+    sock.ev.on('chats.update', (updates) => {
+        addSystemEvent(
+            sessionId,
+            'chats.update',
+            'other',
+            { count: updates.length, updates },
+            `${updates.length} chat(s) updated`
+        )
+    })
+
+    sock.ev.on('chats.delete', (deletions) => {
+        addSystemEvent(
+            sessionId,
+            'chats.delete',
+            'other',
+            { count: deletions.length, chatIds: deletions },
+            `${deletions.length} chat(s) deleted`
+        )
+    })
+
+    // Track presence updates (typing, online/offline)
+    sock.ev.on('presence.update', ({ id, presences }) => {
+        const presenceList = Object.entries(presences).map(([jid, presence]) => ({
+            jid,
+            lastKnownPresence: presence.lastKnownPresence,
+            lastSeen: presence.lastSeen
+        }))
+        addSystemEvent(
+            sessionId,
+            'presence.update',
+            'other',
+            { chatId: id, presences: presenceList },
+            `Presence update in ${id}: ${presenceList.map(p => `${p.jid} is ${p.lastKnownPresence}`).join(', ')}`
+        )
+    })
+
+    // Track call events
+    sock.ev.on('call', (calls) => {
+        calls.forEach(call => {
+            addSystemEvent(
+                sessionId,
+                'call.received',
+                'call',
+                {
+                    callId: call.id,
+                    from: call.from,
+                    status: call.status,
+                    isVideo: call.isVideo,
+                    isGroup: call.isGroup,
+                    fullCall: call
+                },
+                `${call.isVideo ? 'Video' : 'Voice'} call ${call.status} from ${call.from}`
+            )
+        })
     })
 
     sock.ev.on('creds.update', saveCreds)
@@ -1944,6 +2797,50 @@ app.get('/health', (req, res) => {
     })
 })
 
+// Events endpoint - Get system events
+app.get('/events', (req, res) => {
+    const { sessionId, category, limit = 100 } = req.query
+
+    let filteredEvents = systemEvents
+
+    // Filter by sessionId if provided
+    if (sessionId && typeof sessionId === 'string') {
+        filteredEvents = filteredEvents.filter(e => e.sessionId === sessionId)
+    }
+
+    // Filter by category if provided
+    if (category && typeof category === 'string') {
+        filteredEvents = filteredEvents.filter(e => e.eventCategory === category)
+    }
+
+    // Limit results
+    const limitNum = parseInt(limit as string) || 100
+    filteredEvents = filteredEvents.slice(0, Math.min(limitNum, 500))
+
+    res.json({
+        success: true,
+        events: filteredEvents.map(e => ({
+            ...e,
+            timestamp: e.timestamp.toISOString()
+        })),
+        total: filteredEvents.length
+    })
+})
+
+// Clear all events endpoint
+app.post('/events/clear', (req, res) => {
+    const clearedCount = systemEvents.length
+    systemEvents.length = 0 // Clear the array
+
+    logger.info({ clearedCount }, 'Cleared all system events')
+
+    res.json({
+        success: true,
+        clearedCount,
+        message: `Cleared ${clearedCount} events`
+    })
+})
+
 // Mount Session Routes
 const sessionRoutes = createSessionRoutes({
     sessions,
@@ -1954,6 +2851,7 @@ const sessionRoutes = createSessionRoutes({
     contacts
 })
 app.use('/session', sessionRoutes)
+app.use('/sessions', sessionRoutes) // Also mount at /sessions for compatibility
 
 // Mount Story Routes
 const storyRoutes = createStoryRoutes({
@@ -1968,12 +2866,247 @@ const storyRoutes = createStoryRoutes({
     processStatusJidList,
     queueStatus,
     saveStoryToDatabase,
+    loadStorySends,
     broadcastEvent,
     loadStoryEventsFromDatabase,
-    addSessionLog
+    addSessionLog,
+    fetchStoryViewsFromHistory
 })
 app.use('/story', storyRoutes)
 app.use('/stories', storyRoutes) // Also mount at /stories for compatibility
+
+// Internal endpoint to delete status with custom JID list (simple, no batching)
+app.post('/internal/delete-status', async (req, res) => {
+    try {
+        const { sessionId, messageKey, recipients } = req.body
+
+        if (!sessionId || !messageKey || !recipients) {
+            return res.status(400).json({ error: 'sessionId, messageKey, and recipients are required' })
+        }
+
+        const session = sessions.get(sessionId)
+        if (!session || session.status !== 'connected') {
+            return res.status(400).json({ error: 'Session not connected' })
+        }
+
+        logger.info({ sessionId, messageId: messageKey.id, recipientCount: recipients.length }, 'Deleting status with custom recipient list')
+
+        await session.socket.sendMessage('status@broadcast', {
+            delete: messageKey
+        }, {
+            statusJidList: recipients
+        })
+
+        res.json({
+            success: true,
+            message: 'Delete command sent',
+            recipientCount: recipients.length
+        })
+    } catch (error: any) {
+        logger.error({ error: error.message }, 'Error deleting status')
+        res.status(500).json({ error: error.message })
+    }
+})
+
+// Smart batch deletion with progressive ramping and error isolation
+app.post('/internal/delete-status-batch', async (req, res) => {
+    try {
+        const { sessionId, messageKey, recipients } = req.body
+
+        if (!sessionId || !messageKey || !recipients) {
+            return res.status(400).json({ error: 'sessionId, messageKey, and recipients are required' })
+        }
+
+        const session = sessions.get(sessionId)
+        if (!session || session.status !== 'connected') {
+            return res.status(400).json({ error: 'Session not connected' })
+        }
+
+        logger.info({ sessionId, messageId: messageKey.id, totalRecipients: recipients.length }, 'Starting smart batch deletion')
+
+        const results = {
+            totalRecipients: recipients.length,
+            successfulBatches: 0,
+            failedBatches: 0,
+            successfulRecipients: 0,
+            failedRecipients: 0,
+            problematicContacts: [] as string[],
+            batches: [] as any[]
+        }
+
+        // Progressive batch sizes
+        const batchSizes = [100, 500, 1000]
+        let remainingRecipients = [...recipients]
+        let currentIndex = 0
+
+        // Function to send delete to a batch
+        async function sendDeleteBatch(batch: string[], batchNumber: number): Promise<boolean> {
+            try {
+                const startTime = Date.now()
+                await session!.socket.sendMessage('status@broadcast', {
+                    delete: messageKey
+                }, {
+                    statusJidList: batch
+                })
+                const duration = Date.now() - startTime
+
+                logger.info({
+                    batchNumber,
+                    batchSize: batch.length,
+                    duration
+                }, 'Delete batch sent successfully')
+
+                results.batches.push({
+                    batchNumber,
+                    size: batch.length,
+                    status: 'success',
+                    duration
+                })
+
+                return true
+            } catch (error: any) {
+                logger.error({
+                    batchNumber,
+                    batchSize: batch.length,
+                    error: error.message
+                }, 'Delete batch failed')
+
+                results.batches.push({
+                    batchNumber,
+                    size: batch.length,
+                    status: 'failed',
+                    error: error.message
+                })
+
+                return false
+            }
+        }
+
+        // Function to isolate problematic contacts by subdividing
+        async function isolateProblematic(batch: string[], batchNumber: number, depth: number = 0): Promise<void> {
+            if (batch.length === 1) {
+                // Single contact failed
+                const contact = batch[0]
+                if (contact) {
+                    results.problematicContacts.push(contact)
+                    results.failedRecipients++
+                    logger.warn({ contact }, 'Isolated problematic contact')
+                }
+                return
+            }
+
+            if (depth > 10) {
+                // Too deep, mark all as failed
+                logger.error({ batchSize: batch.length }, 'Subdivision depth exceeded, marking batch as failed')
+                results.problematicContacts.push(...batch)
+                results.failedRecipients += batch.length
+                return
+            }
+
+            // Split batch in half
+            const mid = Math.floor(batch.length / 2)
+            const firstHalf = batch.slice(0, mid)
+            const secondHalf = batch.slice(mid)
+
+            logger.info({
+                batchNumber,
+                depth,
+                originalSize: batch.length,
+                firstHalfSize: firstHalf.length,
+                secondHalfSize: secondHalf.length
+            }, 'Subdividing failed batch')
+
+            // Try first half
+            await new Promise(resolve => setTimeout(resolve, 2000)) // Wait 2s between attempts
+            const firstSuccess = await sendDeleteBatch(firstHalf, batchNumber + 0.1 + depth * 0.01)
+            if (!firstSuccess) {
+                await isolateProblematic(firstHalf, batchNumber, depth + 1)
+            } else {
+                results.successfulBatches++
+                results.successfulRecipients += firstHalf.length
+            }
+
+            // Try second half
+            await new Promise(resolve => setTimeout(resolve, 2000)) // Wait 2s between attempts
+            const secondSuccess = await sendDeleteBatch(secondHalf, batchNumber + 0.5 + depth * 0.01)
+            if (!secondSuccess) {
+                await isolateProblematic(secondHalf, batchNumber, depth + 1)
+            } else {
+                results.successfulBatches++
+                results.successfulRecipients += secondHalf.length
+            }
+        }
+
+        let batchNumber = 1
+
+        // Process progressive batches
+        for (const batchSize of batchSizes) {
+            if (remainingRecipients.length === 0) break
+
+            const actualBatchSize = Math.min(batchSize, remainingRecipients.length)
+            const batch = remainingRecipients.slice(0, actualBatchSize)
+            remainingRecipients = remainingRecipients.slice(actualBatchSize)
+
+            logger.info({
+                batchNumber,
+                batchSize: actualBatchSize,
+                remaining: remainingRecipients.length
+            }, 'Processing delete batch')
+
+            const success = await sendDeleteBatch(batch, batchNumber)
+
+            if (success) {
+                results.successfulBatches++
+                results.successfulRecipients += batch.length
+            } else {
+                results.failedBatches++
+                // Isolate problematic contacts
+                await isolateProblematic(batch, batchNumber)
+            }
+
+            batchNumber++
+
+            // Wait between batches
+            if (remainingRecipients.length > 0) {
+                await new Promise(resolve => setTimeout(resolve, 3000))
+            }
+        }
+
+        // Process remaining recipients
+        if (remainingRecipients.length > 0) {
+            logger.info({
+                batchNumber,
+                batchSize: remainingRecipients.length
+            }, 'Processing final delete batch')
+
+            const success = await sendDeleteBatch(remainingRecipients, batchNumber)
+
+            if (success) {
+                results.successfulBatches++
+                results.successfulRecipients += remainingRecipients.length
+            } else {
+                results.failedBatches++
+                await isolateProblematic(remainingRecipients, batchNumber)
+            }
+        }
+
+        logger.info({
+            totalRecipients: results.totalRecipients,
+            successful: results.successfulRecipients,
+            failed: results.failedRecipients,
+            problematicCount: results.problematicContacts.length
+        }, 'Smart batch deletion completed')
+
+        res.json({
+            success: true,
+            message: 'Smart batch deletion completed',
+            ...results
+        })
+    } catch (error: any) {
+        logger.error({ error: error.message }, 'Error in smart batch deletion')
+        res.status(500).json({ error: error.message })
+    }
+})
 
 // Mount Contacts Routes
 const contactsRoutes = createContactsRoutes({
@@ -1992,6 +3125,9 @@ const listsRoutes = createListsRoutes({
     saveContactListsToFile
 })
 app.use('/lists', listsRoutes)
+
+// Mount Metrics Routes
+createMetricsRoutes(app, dbPool)
 
 // Send regular message
 app.post('/message/send', async (req, res) => {
