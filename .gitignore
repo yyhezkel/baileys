@@ -1,5 +1,7 @@
 .DS_Store
 .env
+.env.*
+.env.git
 .yarn/
 *.tgz
 */.DS_Store
@@ -19,3 +21,21 @@ test.ts
 TestData
 wa-logs.txt
 coverage
+
+# Session and authentication data
+sessions/
+creds.json
+*_contacts.json
+contacts-storage/
+device-list-*.json
+app-state-sync-*.json
+
+# Knowledge base (may contain sensitive data)
+knowledge/
+
+# Credentials and secrets
+*.pem
+*.key
+*.p12
+credentials.json
+secrets.json

@@ -61,7 +61,9 @@
       "Bash(chmod:*)",
       "Bash(./deploy.sh)",
       "Bash(git log:*)",
-      "Bash(git rm:*)"
+      "Bash(git rm:*)",
+      "Read(//root/**)",
+      "Bash(env)"
     ],
     "deny": [],
     "ask": []
